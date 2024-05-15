@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vite + TS</title>
+    </head>
+    <body>
+        <div id="app"></div>
+
+        <sidebar>
+            <script type="module">
+                import TeamGenerator from '../pokemon-showdown/data/mods/base/cg-teams';
+
+                const team = new TeamGenerator('gen9randombattle').getTeam();
+                sidebar.innerHTML = JSON.stringify(team);
+            </script>
+            <style>
+                #sidebar {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    width: 400px;
+                    height: 100vh;
+                    overflow: scroll;
+                }
+            </style>
+            <div id="sidebar"></div>
+        </sidebar>
+
+        <script type="module" src="/src/main.ts"></script>
+    </body>
+</html>
