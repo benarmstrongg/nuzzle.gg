@@ -17,8 +17,7 @@ import {
     STORAGE,
     PREVIEW_PANEL,
     REQUIRED_ASSETS,
-    PARTY_BUTTON_POSITION,
-    START_BUTTON_POSITION,
+    BUTTONS,
 } from './box.const';
 import {
     StorageSlot,
@@ -145,14 +144,39 @@ export class Box extends Scene implements OnInit {
         },
     });
     private $partyButton = new Text({
-        text: 'PARTY',
+        text: BUTTONS.PARTY.TEXT,
         style: font('heading', 'bold'),
-        position: PARTY_BUTTON_POSITION,
+        position: BUTTONS.PARTY.POSITION,
     });
     private $startButton = new Text({
-        text: 'START',
+        text: BUTTONS.START.TEXT,
         style: font('heading', 'bold'),
-        position: START_BUTTON_POSITION,
+        position: BUTTONS.START.POSITION,
+    });
+    private $pokemonMenu = new ContainerObject({
+        sections: {
+            bg: new GameObject(),
+            cursor: new GameObject(),
+            options: new ContainerObject({
+                sections: {
+                    move: new Text({
+                        style: font('medium'),
+                    }),
+                    summary: new Text({
+                        style: font('medium'),
+                        text: 'SUMMARY',
+                    }),
+                    item: new Text({
+                        style: font('medium'),
+                        text: 'ITEM',
+                    }),
+                    back: new Text({
+                        style: font('medium'),
+                        text: 'BACK',
+                    }),
+                },
+            }),
+        },
     });
 
     private get activePage(): (typeof this.pages)[number] {

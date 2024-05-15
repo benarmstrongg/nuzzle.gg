@@ -1,7 +1,7 @@
 import { PokemonSet } from '../../../../pokemon-showdown/sim/teams';
 import { GameObject } from '../../engine/game-object';
 import type { Coordinate } from '../../engine/types';
-import type { PokemonIcon } from '../../objects/pokemon-icon';
+import type { PokemonIcon } from '../../objects/pokemon-icon.obj';
 
 type StorageGridCoordinate = { row: number; col: number } | 'header';
 

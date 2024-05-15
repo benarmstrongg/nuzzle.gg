@@ -88,8 +88,20 @@ export const PREVIEW_PANEL = {
     MOVE_GAP_Y: 36,
     MOVE_1_NAME_POSITION_Y: 240,
     MOVE_1_TYPE_POSITION_Y: 236,
-    MOVE_1_PP_POSITION_Y: 236,
+    MOVE_1_PP_POSITION_Y: 248,
 } as const;
 
-export const PARTY_BUTTON_POSITION = { x: 241, y: 328 };
-export const START_BUTTON_POSITION = { x: 415, y: 328 };
+export const PARTY_BUTTON = {
+    POSITION: { x: 241, y: 328 },
+    TEXT: 'PARTY',
+};
+export const BUTTONS = {
+    PARTY: {
+        POSITION: { x: 241, y: 328 },
+        TEXT: 'PARTY',
+    },
+    START: {
+        POSITION: { x: 415, y: 328 },
+        TEXT: 'START',
+    },
+};

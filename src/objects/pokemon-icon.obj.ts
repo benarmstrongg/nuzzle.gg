@@ -12,13 +12,13 @@ export class PokemonIcon extends GameObject {
                 asset = await Assets.load(
                     getPokemonAssetPath(pokemon, 'front')
                 );
-                this.scale = 0.5;
-                this.anchor = -0.25;
             } catch {
                 asset = await Assets.load(
                     'assets/sprites/pokemon/201-question.png'
                 );
             }
+            this.scale = 0.5;
+            this.anchor = -0.25;
         }
         this.setTexture(new Texture(asset), container);
     }
