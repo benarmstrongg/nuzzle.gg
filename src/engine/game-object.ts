@@ -10,7 +10,7 @@ import { App } from './app';
 
 const DEFAULT_SPEED_PPT = 10;
 
-type GameObjectOptions<TData extends Record<PropertyKey, any> = any> =
+export type GameObjectOptions<TData extends Record<PropertyKey, any> = any> =
     SpriteOptions & { data?: TData };
 
 export class GameObject<

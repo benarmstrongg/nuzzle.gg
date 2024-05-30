@@ -6,17 +6,16 @@ type ContainerObjectOptions<TSections extends Record<PropertyKey, any>> =
     };
 
 export class ContainerObject<
-    TSections extends Record<PropertyKey, any>,
+    TSections extends Record<PropertyKey, any> = {},
     TChildren extends Container = Container
 > extends Container {
     sections: TSections;
     children: TChildren[];
 
-    constructor(props: ContainerObjectOptions<TSections>) {
+    constructor(props: ContainerObjectOptions<TSections> = {}) {
         const children = (props.children || []).concat(
             Object.values(props.sections || {})
         );
-        console.log({ children });
         super({ ...props, children });
         this.children = children as TChildren[];
         this.sections = props.sections || ({} as TSections);

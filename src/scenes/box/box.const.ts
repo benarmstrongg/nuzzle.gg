@@ -64,6 +64,10 @@ export const STORAGE = {
     ICON_GAP: 2,
     CURSOR_OFFSET_X: 5,
     CURSOR_OFFSET_Y: -24,
+    PAGE_SIZE: 30,
+    PAGE_WIDTH: 324,
+    PAGE_X: 507,
+    PAGE_Y: 15,
 } as const;
 
 export const PREVIEW_PANEL = {

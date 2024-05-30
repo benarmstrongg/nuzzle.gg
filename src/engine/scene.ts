@@ -1,5 +1,6 @@
 import { Container } from 'pixi.js';
 import { Controls } from './controls';
+import { ContainerObject } from './container-object';
 
 export interface OnInit {
     onInit(): void | Promise<void>;
@@ -10,7 +11,7 @@ export interface OnDestroy {
 }
 
 export abstract class Scene {
-    abstract render(): Promise<Container>;
+    abstract render(): Promise<ContainerObject>;
     container: Container;
 
     async init() {
