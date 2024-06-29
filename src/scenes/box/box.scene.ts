@@ -39,14 +39,6 @@ export class Box extends Scene implements OnInit {
     }
 
     async onInit(): Promise<void> {
-        Assets.addBundle('fonts', [
-            { alias: 'PowerGreen', src: 'assets/fonts/power-green.ttf' },
-            {
-                alias: 'PowerClearBold',
-                src: 'assets/fonts/power-clear-bold.ttf',
-            },
-        ]);
-        await Assets.loadBundle('fonts');
         await Assets.load(REQUIRED_ASSETS);
         Controls.selected.on('up', () => this.moveCursor('y', -1));
         Controls.selected.on('down', () => this.moveCursor('y', 1));

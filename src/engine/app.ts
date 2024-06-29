@@ -1,6 +1,6 @@
 import type { Scene } from './scene';
 import type { ControlScheme } from './controls';
-import { Application as PixiApplication } from 'pixi.js';
+import { Assets, Application as PixiApplication } from 'pixi.js';
 
 type AppSettings = {
     controlScheme: ControlScheme;
@@ -25,6 +25,7 @@ export class App {
             antialias: true,
             roundPixels: true,
         });
+        await App.loadFonts();
         document.body.append(pixi.canvas);
     }
 
@@ -45,5 +46,16 @@ export class App {
     static tick(fn: (done: () => void) => void) {
         const callback = () => fn(() => pixi.ticker.remove<void>(callback));
         pixi.ticker.add(callback);
+    }
+
+    private static async loadFonts() {
+        Assets.addBundle('fonts', [
+            { alias: 'PowerGreen', src: 'assets/fonts/power-green.ttf' },
+            {
+                alias: 'PowerClearBold',
+                src: 'assets/fonts/power-clear-bold.ttf',
+            },
+        ]);
+        await Assets.loadBundle('fonts');
     }
 }
