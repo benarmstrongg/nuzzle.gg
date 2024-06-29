@@ -1,5 +1,5 @@
-import { Container, Text } from 'pixi.js';
-import { ContainerObject } from '../../../engine';
+import { Container } from 'pixi.js';
+import { ContainerObject, TextObject } from '../../../engine';
 import { ItemIcon, PokemonSprite, TypeIcon } from '../../../objects';
 import { font } from '../../../util/font.util';
 import { PREVIEW_PANEL } from '../box.const';
@@ -7,11 +7,11 @@ import { PokemonSet } from '../../../../../pokemon-showdown/sim/teams';
 import { Dex } from '../../../../../pokemon-showdown/sim';
 
 export class BoxPreview extends ContainerObject {
-    private $name = new Text({
+    private $name = new TextObject({
         style: font('xlarge'),
         position: PREVIEW_PANEL.NAME_POSITION,
     });
-    private $level = new Text({
+    private $level = new TextObject({
         style: font('small'),
         position: PREVIEW_PANEL.LEVEL_POSITION,
     });
@@ -29,17 +29,17 @@ export class BoxPreview extends ContainerObject {
             }),
         },
     });
-    private $ability = new Text({
+    private $ability = new TextObject({
         style: font('medium'),
         position: PREVIEW_PANEL.ABILITY_POSITION,
     });
     private $nature = new ContainerObject({
         sections: {
-            plus: new Text({
+            plus: new TextObject({
                 style: font('medium', 'regular', 'red'),
                 position: PREVIEW_PANEL.NATURE_PLUS_POSITION,
             }),
-            minus: new Text({
+            minus: new TextObject({
                 style: font('medium', 'regular', 'blue'),
                 position: PREVIEW_PANEL.NATURE_MINUS_POSITION,
             }),
@@ -56,7 +56,7 @@ export class BoxPreview extends ContainerObject {
                 anchor: PREVIEW_PANEL.ITEM_ANCHOR,
                 position: PREVIEW_PANEL.ITEM_ICON_POSITION,
             }),
-            name: new Text({
+            name: new TextObject({
                 style: font('medium'),
                 anchor: PREVIEW_PANEL.ITEM_ANCHOR,
                 position: PREVIEW_PANEL.ITEM_NAME_POSITION,
@@ -66,16 +66,16 @@ export class BoxPreview extends ContainerObject {
     private $moves = new ContainerObject<
         {},
         ContainerObject<{
-            name: Text;
+            name: TextObject;
             type: TypeIcon;
-            pp: Text;
+            pp: TextObject;
         }>
     >({
         children: [0, 1, 2, 3].map(
             (i) =>
                 new ContainerObject({
                     sections: {
-                        name: new Text({
+                        name: new TextObject({
                             position: {
                                 x: PREVIEW_PANEL.MOVE_NAME_POSITION_X,
                                 y:
@@ -94,7 +94,7 @@ export class BoxPreview extends ContainerObject {
                             },
                             scale: PREVIEW_PANEL.TYPE_SCALE,
                         }),
-                        pp: new Text({
+                        pp: new TextObject({
                             anchor: PREVIEW_PANEL.MOVE_TYPE_PP_ANCHOR,
                             position: {
                                 x: PREVIEW_PANEL.MOVE_TYPE_PP_POSITION_X,
@@ -128,42 +128,43 @@ export class BoxPreview extends ContainerObject {
 
     async update(set: PokemonSet, container: Container) {
         const speciesData = Dex.species.get(set.name);
-        this.$name.text = speciesData.baseSpecies;
-        this.$level.text = `lvl ${set.level}`;
-        await this.$types.sections.type1.setType(
-            speciesData.types[0],
-            this.$types
-        );
+        this.$name.setText(speciesData.baseSpecies, this);
+        this.$level.setText(`lvl ${set.level}`, this);
+        await this.$types.sections.type1.setType(speciesData.types[0], this);
         if (speciesData.types[1]) {
             await this.$types.sections.type2.setType(
                 speciesData.types[1],
-                this.$types
+                this
             );
         } else {
             this.$types.sections.type2.removeFromParent();
         }
-        this.$ability.text = set.ability;
+        this.$ability.setText(set.ability, this);
         const natureData = Dex.natures.get(set.nature);
         if (natureData.plus) {
-            this.$nature.sections.plus.text =
-                `+${natureData.plus}`.toUpperCase();
+            this.$nature.sections.plus.setText(
+                `+${natureData.plus}`.toUpperCase(),
+                this
+            );
         }
         if (natureData.minus) {
-            this.$nature.sections.minus.text =
-                `-${natureData.minus}`.toUpperCase();
+            this.$nature.sections.minus.setText(
+                `-${natureData.minus}`.toUpperCase(),
+                this
+            );
         }
         await this.$sprite.setPokemon(set.name, this);
         if (set.item) {
-            await this.$item.sections.icon.setItem(set.item, this.$item);
+            await this.$item.sections.icon.setItem(set.item, this);
         }
-        this.$item.sections.name.text = set.item;
+        this.$item.sections.name.setText(set.item, this);
         for (let i = 0; i < set.moves.length; i++) {
             const moveName = set.moves[i];
             const moveData = Dex.moves.get(moveName);
             const move = this.$moves.children[i];
-            move.sections.name.text = moveData.name;
-            move.sections.pp.text = `${moveData.pp}/${moveData.pp}`;
-            await move.sections.type.setType(moveData.type, move);
+            move.sections.name.setText(moveData.name, this);
+            move.sections.pp.setText(`${moveData.pp}/${moveData.pp}`, this);
+            await move.sections.type.setType(moveData.type, this);
         }
         container.addChild(this);
     }
