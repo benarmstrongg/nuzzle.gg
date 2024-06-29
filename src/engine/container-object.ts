@@ -20,4 +20,9 @@ export class ContainerObject<
         this.children = children as TChildren[];
         this.sections = props.sections || ({} as TSections);
     }
+
+    render(container: Container): this {
+        container.addChild(this);
+        return this;
+    }
 }

@@ -13,14 +13,14 @@ const DEFAULT_SPEED_PPT = 10;
 export type GameObjectOptions<TData extends Record<PropertyKey, any> = any> =
     SpriteOptions & { data?: TData };
 
-export class GameObject<
+export class SpriteObject<
     TData extends Record<PropertyKey, any> = any
 > extends Sprite {
     static from<TData extends Record<PropertyKey, any> = any>(
         source: Texture | TextureSourceLike,
         skipCache?: boolean | undefined
-    ): GameObject {
-        return new GameObject<TData>({ ...Sprite.from(source, skipCache) });
+    ): SpriteObject {
+        return new SpriteObject<TData>({ ...Sprite.from(source, skipCache) });
     }
 
     private isMoving: boolean = false;
@@ -65,8 +65,13 @@ export class GameObject<
         });
     }
 
-    setTexture(texture: Texture, container?: Container) {
+    setTexture(texture: Texture, container: Container) {
         this.texture = texture;
-        container?.addChild(this);
+        this.render(container);
+    }
+
+    render(container: Container): this {
+        container.addChild(this);
+        return this;
     }
 }

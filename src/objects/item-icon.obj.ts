@@ -1,9 +1,9 @@
 import { Assets, Container, Texture, TextureSource } from 'pixi.js';
-import { GameObject } from '../engine/game-object';
+import { SpriteObject } from '../engine';
 import { toID } from '../../../pokemon-showdown/sim/dex-data';
 
-export class ItemIcon extends GameObject {
-    async setItem(item: string, container?: Container) {
+export class ItemIcon extends SpriteObject {
+    async setItem(item: string, container: Container) {
         const id = toID(item);
         let url: string;
         if (id.includes('berry')) {
