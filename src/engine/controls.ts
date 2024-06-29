@@ -42,7 +42,7 @@ class ControlsInstance {
         callback: () => void
     ): (e: KeyboardEvent) => void {
         return (e: KeyboardEvent) => {
-            if (e.key === key) {
+            if (e.key.toLowerCase() === key.toLowerCase()) {
                 callback();
             }
         };
