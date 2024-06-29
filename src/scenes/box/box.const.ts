@@ -109,3 +109,8 @@ export const BUTTONS = {
         TEXT: 'START',
     },
 };
+
+export const MENU_ITEMS = {
+    POKEMON: ['MOVE', 'SUMMARY', 'ITEM', 'BACK'] as const,
+    ITEM: ['TAKE', 'GIVE', 'BACK'] as const,
+} as const;

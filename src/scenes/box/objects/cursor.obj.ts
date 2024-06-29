@@ -1,5 +1,5 @@
-import { Texture } from 'pixi.js';
-import { GameObject } from '../../../engine';
+import { Assets, Container, Texture } from 'pixi.js';
+import { SpriteObject } from '../../../engine';
 import { BoxSlot, StorageSlot } from '../box.types';
 import { ASSETS, STORAGE } from '../box.const';
 import { BoxPage } from './page.obj';
@@ -9,24 +9,28 @@ type ChangePageListener = (direction: 'next' | 'prev') => BoxPage;
 type BoxCursorInitOptions = {
     onPageChange: ChangePageListener;
     activePage: BoxPage;
+    container: Container;
 };
 
-export class BoxCursor extends GameObject {
+export class BoxCursor extends SpriteObject {
     private activePage: BoxPage;
     private onPageChange: ChangePageListener;
     hoveredSlot: BoxSlot;
 
-    constructor() {
+    private constructor() {
         super({ texture: Texture.from(ASSETS.CURSOR_GRAB) });
     }
 
-    init(options: BoxCursorInitOptions) {
-        this.width = 64;
-        this.height = 64;
-        this.activePage = options.activePage;
-        this.position = this.activePage.header.position;
-        this.hoveredSlot = this.activePage.header;
-        this.onPageChange = options.onPageChange;
+    static async init(options: BoxCursorInitOptions): Promise<BoxCursor> {
+        await Assets.load([ASSETS.CURSOR_GRAB, ASSETS.CURSOR_FIST]);
+        const cursor = new BoxCursor();
+        cursor.width = 64;
+        cursor.height = 64;
+        cursor.activePage = options.activePage;
+        cursor.position = cursor.activePage.header.position;
+        cursor.hoveredSlot = cursor.activePage.header;
+        cursor.onPageChange = options.onPageChange;
+        return cursor;
     }
 
     move(axis: 'x' | 'y', distance: 1 | -1): BoxSlot {
@@ -57,6 +61,13 @@ export class BoxCursor extends GameObject {
             }
         }
         return this.moveToSlot(nextSlot);
+    }
+
+    getHoveredStorageSlot(): StorageSlot | null {
+        if (this.hoveredSlot.gridLocation === 'header') {
+            return null;
+        }
+        return this.hoveredSlot as StorageSlot;
     }
 
     private moveToSlot(slot: StorageSlot, speed = 1): BoxSlot {

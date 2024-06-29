@@ -9,8 +9,8 @@ export class BoxPage extends ContainerObject {
     header: BoxSlot = {
         gridLocation: 'header',
         position: {
-            x: STORAGE.PAGE_X - STORAGE.PAGE_WIDTH / 2,
-            y: 55, // STORAGE.PAGE_Y - STORAGE.ICON_HEIGHT / 2,
+            x: STORAGE.PAGE_X - STORAGE.PAGE_WIDTH / 2 - STORAGE.ICON_WIDTH / 2,
+            y: 0, // STORAGE.PAGE_Y - STORAGE.ICON_HEIGHT / 2,
         },
     };
     grid: StorageGrid;
