@@ -1,6 +1,6 @@
 import { Assets, Sprite, Texture } from 'pixi.js';
 import { ContainerObject, Random } from '../../../engine';
-import { PokemonSet } from '../../../../../pokemon-showdown/sim/teams';
+import { Pokemon } from '../../../../../pokemon-showdown/sim';
 import { PokemonIcon } from '../../../objects';
 import { BoxSlot, StorageGrid, StorageRow, StorageSlot } from '../box.types';
 import { ASSETS, STORAGE } from '../box.const';
@@ -15,7 +15,7 @@ export class BoxPage extends ContainerObject {
     };
     grid: StorageGrid;
 
-    async init(pokemonData: PokemonSet[]) {
+    async init(pokemonData: Pokemon[]) {
         await this.initBackground();
         let grid: StorageRow[] = [];
         let row = 0;
@@ -42,7 +42,7 @@ export class BoxPage extends ContainerObject {
                 if (pokemon) {
                     const icon = new PokemonIcon({ position: { x, y } });
                     await icon.setPokemon(pokemon.name, this);
-                    slot.pokemon = { icon, set: pokemon };
+                    slot.pokemon = { icon, data: pokemon };
                 }
                 gridRow.push(slot);
             }

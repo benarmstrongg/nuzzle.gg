@@ -1,6 +1,6 @@
-import { PokemonSet } from '../../../../pokemon-showdown/sim/teams';
-import type { Coordinate } from '../../engine/types';
-import type { PokemonIcon } from '../../objects/pokemon-icon.obj';
+import { Pokemon } from '../../../../pokemon-showdown/sim';
+import type { PokemonIcon } from '../../objects';
+import type { Coordinate } from '../../engine';
 
 type StorageGridCoordinate = { row: number; col: number } | 'header';
 
@@ -13,7 +13,7 @@ export type StorageSlot = Omit<BoxSlot, 'gridLocation'> & {
     // position: Coordinate;
     pokemon: {
         icon: PokemonIcon;
-        set: PokemonSet;
+        data: Pokemon;
     } | null;
     gridLocation: Exclude<StorageGridCoordinate, 'header'>;
 };
