@@ -70,8 +70,8 @@ export class BoxPreview extends ContainerObject {
             type: TypeIcon;
             pp: TextObject;
         }>
-    >({
-        children: [0, 1, 2, 3].map(
+    >(
+        [0, 1, 2, 3].map(
             (i) =>
                 new ContainerObject({
                     sections: {
@@ -106,8 +106,8 @@ export class BoxPreview extends ContainerObject {
                         }),
                     },
                 })
-        ),
-    });
+        )
+    );
 
     init() {
         this.addChild(

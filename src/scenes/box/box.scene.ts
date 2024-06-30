@@ -49,12 +49,10 @@ export class Box extends Scene implements OnInit {
     }
 
     async render(): Promise<ContainerObject> {
-        const scene = new ContainerObject({
-            children: [
-                Sprite.from(ASSETS.BG),
-                Sprite.from(ASSETS.MAIN_OVERLAY),
-            ],
-        });
+        const scene = new ContainerObject([
+            Sprite.from(ASSETS.BG),
+            Sprite.from(ASSETS.MAIN_OVERLAY),
+        ]);
 
         let pageNum = 0;
         while (

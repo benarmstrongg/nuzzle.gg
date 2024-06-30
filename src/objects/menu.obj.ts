@@ -43,8 +43,8 @@ export class Menu<TItems extends readonly string[]> extends ContainerObject {
             }),
             menu
         );
-        menu.$items = new ContainerObject({
-            children: opts.items.map(
+        menu.$items = new ContainerObject(
+            opts.items.map(
                 (item, i) =>
                     new TextObject({
                         style: font('medium'),
@@ -52,8 +52,8 @@ export class Menu<TItems extends readonly string[]> extends ContainerObject {
                         x: 15,
                         y: 20 * scaleY + i * 20,
                     })
-            ),
-        });
+            )
+        );
         menu.$cursor = new SpriteObject({
             height: 0.65,
             width: 0.4,
