@@ -97,8 +97,10 @@ export class Menu<TItems extends readonly string[]> extends ContainerObject {
             );
             nextIndex = selectedIndex + distance;
         }
-        this.$cursor.position.y =
-            this.$items.children[nextIndex].position.y - 3;
+        this.$cursor.moveTo({
+            x: this.$cursor.position.x,
+            y: this.$items.children[nextIndex].position.y - 3,
+        });
         this.$cursor.data.selectedItem = this.items[nextIndex];
     }
 
