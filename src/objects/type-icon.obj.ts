@@ -3,33 +3,37 @@ import { toID } from '../../../pokemon-showdown/sim/dex-data';
 import { ContainerObject, SpriteObject } from '../engine';
 
 const ASSET = 'assets/sprites/ui/types/types.png';
-
-const ICON_HEIGHT = 28;
+const SPRITESHEET_HEIGHT = 532;
+const w = 64;
+const h = 28;
 
 const FRAMES = {
-    normal: { frame: { x: 0, y: 0, w: 64, h: 28 } },
-    fighting: { frame: { x: 0, y: ICON_HEIGHT, w: 64, h: 28 } },
-    flying: { frame: { x: 0, y: ICON_HEIGHT * 2, w: 64, h: 28 } },
-    poison: { frame: { x: 0, y: ICON_HEIGHT * 3, w: 64, h: 28 } },
-    ground: { frame: { x: 0, y: ICON_HEIGHT * 4, w: 64, h: 28 } },
-    rock: { frame: { x: 0, y: ICON_HEIGHT * 5, w: 64, h: 28 } },
-    bug: { frame: { x: 0, y: ICON_HEIGHT * 6, w: 64, h: 28 } },
-    ghost: { frame: { x: 0, y: ICON_HEIGHT * 7, w: 64, h: 28 } },
-    steel: { frame: { x: 0, y: ICON_HEIGHT * 8, w: 64, h: 28 } },
-    '???': { frame: { x: 0, y: ICON_HEIGHT * 9, w: 64, h: 28 } },
-    fire: { frame: { x: 0, y: ICON_HEIGHT * 10, w: 64, h: 28 } },
-    water: { frame: { x: 0, y: ICON_HEIGHT * 11, w: 64, h: 28 } },
-    grass: { frame: { x: 0, y: ICON_HEIGHT * 12, w: 64, h: 28 } },
-    electric: { frame: { x: 0, y: ICON_HEIGHT * 13, w: 64, h: 28 } },
-    psychic: { frame: { x: 0, y: ICON_HEIGHT * 14, w: 64, h: 28 } },
-    ice: { frame: { x: 0, y: ICON_HEIGHT * 15, w: 64, h: 28 } },
-    dragon: { frame: { x: 0, y: ICON_HEIGHT * 16, w: 64, h: 28 } },
-    dark: { frame: { x: 0, y: ICON_HEIGHT * 17, w: 64, h: 28 } },
-    fairy: { frame: { x: 0, y: ICON_HEIGHT * 18, w: 64, h: 28 } },
+    normal: { frame: { x: 0, y: 0, w, h } },
+    fighting: { frame: { x: 0, y: h, w, h } },
+    flying: { frame: { x: 0, y: h * 2, w, h } },
+    poison: { frame: { x: 0, y: h * 3, w, h } },
+    ground: { frame: { x: 0, y: h * 4, w, h } },
+    rock: { frame: { x: 0, y: h * 5, w, h } },
+    bug: { frame: { x: 0, y: h * 6, w, h } },
+    ghost: { frame: { x: 0, y: h * 7, w, h } },
+    steel: { frame: { x: 0, y: h * 8, w, h } },
+    '???': { frame: { x: 0, y: h * 9, w, h } },
+    fire: { frame: { x: 0, y: h * 10, w, h } },
+    water: { frame: { x: 0, y: h * 11, w, h } },
+    grass: { frame: { x: 0, y: h * 12, w, h } },
+    electric: { frame: { x: 0, y: h * 13, w, h } },
+    psychic: { frame: { x: 0, y: h * 14, w, h } },
+    ice: { frame: { x: 0, y: h * 15, w, h } },
+    dragon: { frame: { x: 0, y: h * 16, w, h } },
+    dark: { frame: { x: 0, y: h * 17, w, h } },
+    fairy: { frame: { x: 0, y: h * 18, w, h } },
 };
 
 export class TypeIcon extends SpriteObject {
     private static spritesheet: Spritesheet;
+    static width = w;
+    static height = h;
+
     static async loadSpritesheet() {
         if (TypeIcon.spritesheet) {
             return;
@@ -39,7 +43,7 @@ export class TypeIcon extends SpriteObject {
             frames: FRAMES,
             meta: {
                 image: ASSET,
-                size: { w: 64, h: 532 },
+                size: { w, h: SPRITESHEET_HEIGHT },
                 scale: 1,
             },
         };
