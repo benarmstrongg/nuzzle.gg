@@ -1,4 +1,3 @@
-import { Controls } from './controls';
 import { ContainerObject } from './container-object';
 
 export interface OnInit {
@@ -20,7 +19,6 @@ export abstract class Scene {
 
     async destroy() {
         await this.runLifecycleMethod<OnDestroy>('onDestroy');
-        Controls.wasd.clear();
     }
 
     private async runLifecycleMethod<T>(methodName: keyof T) {

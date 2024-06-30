@@ -14,6 +14,7 @@ class ControlsInstance {
             a: () => {},
             b: () => {},
         };
+    private isActive = true;
 
     constructor(private readonly keys: Record<ControlsAction, string>) {}
 
@@ -28,7 +29,16 @@ class ControlsInstance {
 
     off(action: ControlsAction) {
         console.log(`controls ${action} deregistered`);
+        delete this.eventListeners[action];
         document.removeEventListener('keydown', this.eventListeners[action]);
+    }
+
+    pause() {
+        this.isActive = false;
+    }
+
+    resume() {
+        this.isActive = true;
     }
 
     clear() {
@@ -42,6 +52,9 @@ class ControlsInstance {
         callback: () => void
     ): (e: KeyboardEvent) => void {
         return (e: KeyboardEvent) => {
+            if (!this.isActive) {
+                return;
+            }
             if (e.key.toLowerCase() === key.toLowerCase()) {
                 callback();
             }
@@ -50,23 +63,27 @@ class ControlsInstance {
 }
 
 export const Controls = {
-    wasd: new ControlsInstance({
-        up: 'w',
-        down: 's',
-        left: 'a',
-        right: 'd',
-        a: 'k',
-        b: 'l',
-    }),
-    arrowkeys: new ControlsInstance({
-        up: 'ArrowUp',
-        down: 'ArrowDown',
-        left: 'ArrowLeft',
-        right: 'ArrowRight',
-        a: ' ',
-        b: 'Shift',
-    }),
-    get selected() {
-        return this[App.settings.controlScheme];
+    wasd: () =>
+        new ControlsInstance({
+            up: 'w',
+            down: 's',
+            left: 'a',
+            right: 'd',
+            a: 'k',
+            b: 'l',
+        }),
+    arrowkeys: () =>
+        new ControlsInstance({
+            up: 'ArrowUp',
+            down: 'ArrowDown',
+            left: 'ArrowLeft',
+            right: 'ArrowRight',
+            a: ' ',
+            b: 'Shift',
+        }),
+    selected() {
+        return this[App.settings.controlScheme]();
     },
 };
+
+export type Controls = ControlsInstance;

@@ -1,6 +1,13 @@
 import { Assets, Sprite, Text } from 'pixi.js';
 import { Pokemon } from '../../../../pokemon-showdown/sim';
-import { OnInit, Scene, ContainerObject, Controls, App } from '../../engine';
+import {
+    OnInit,
+    OnDestroy,
+    Scene,
+    ContainerObject,
+    Controls,
+    App,
+} from '../../engine';
 import { font } from '../../util/font.util';
 import { Menu } from '../../objects';
 
@@ -17,7 +24,7 @@ import {
 import { StorageSlot } from './box.types';
 import { Summary } from '../summary/summary.scene';
 
-export class Box extends Scene implements OnInit {
+export class Box extends Scene implements OnInit, OnDestroy {
     private $boxCursor: BoxCursor;
     private pages: BoxPage[] = [];
     private activePageIndex = 0;
@@ -34,6 +41,7 @@ export class Box extends Scene implements OnInit {
     });
     private $pokemonMenu: Menu<typeof MENU_ITEMS.POKEMON, { pokemon: Pokemon }>;
     private $itemMenu: Menu<typeof MENU_ITEMS.ITEM>;
+    private controls: Controls;
 
     constructor(private readonly pokemonData: Pokemon[]) {
         super();
@@ -41,12 +49,17 @@ export class Box extends Scene implements OnInit {
 
     async onInit(): Promise<void> {
         await Assets.load(REQUIRED_ASSETS);
-        Controls.selected.on('up', () => this.moveCursor('y', -1));
-        Controls.selected.on('down', () => this.moveCursor('y', 1));
-        Controls.selected.on('left', () => this.moveCursor('x', -1));
-        Controls.selected.on('right', () => this.moveCursor('x', 1));
-        Controls.selected.on('a', () => this.select());
-        Controls.selected.on('b', () => this.cancel());
+        this.controls = Controls.selected();
+        this.controls.on('up', () => this.moveCursor('y', -1));
+        this.controls.on('down', () => this.moveCursor('y', 1));
+        this.controls.on('left', () => this.moveCursor('x', -1));
+        this.controls.on('right', () => this.moveCursor('x', 1));
+        this.controls.on('a', () => this.select());
+        this.controls.on('b', () => this.cancel());
+    }
+
+    onDestroy() {
+        this.controls.clear();
     }
 
     async render(): Promise<ContainerObject> {
@@ -151,13 +164,17 @@ export class Box extends Scene implements OnInit {
             case 'SUMMARY':
                 const summary = new Summary();
                 await App.loadScene(summary);
-                return summary.setData(this.$pokemonMenu.data.pokemon);
+                this.controls.pause();
+                summary.load({
+                    pokemon: this.$pokemonMenu.data.pokemon,
+                    onClose: () => this.controls.resume(),
+                });
+                break;
             case 'ITEM':
                 this.$itemMenu.open(this.$pokemonMenu.position, this.container);
-                return this.$pokemonMenu.close();
-            case 'BACK':
-                return this.$pokemonMenu.close();
+                break;
         }
+        this.$pokemonMenu.close();
     }
 
     private onItemMenuSelect(action: (typeof MENU_ITEMS.ITEM)[number]) {

@@ -4,6 +4,7 @@ import {
     App,
     ContainerObject,
     Controls,
+    OnDestroy,
     OnInit,
     Scene,
     SpriteObject,
@@ -18,7 +19,12 @@ import { StatsPage } from './objects/stats-page.obj';
 import { InfoPage } from './objects/info-page.obj';
 import { MovesPage } from './objects/moves-page.obj';
 
-export class Summary extends Scene implements OnInit {
+type SummaryOptions = {
+    pokemon: Pokemon;
+    onClose: () => void;
+};
+
+export class Summary extends Scene implements OnInit, OnDestroy {
     private $bg: SpriteObject = new SpriteObject();
     private $preview = new ContainerObject({
         sections: {
@@ -61,12 +67,20 @@ export class Summary extends Scene implements OnInit {
         new ContainerObject(),
     ];
     private selectedIndex = 0;
+    private onClose: () => void = () => {};
+    private controls: Controls;
 
     async onInit(): Promise<void> {
         await Assets.load(ASSETS.BG);
-        Controls.selected.on('left', () => this.changePage(-1));
-        Controls.selected.on('right', () => this.changePage(1));
-        Controls.selected.on('b', () => App.unloadScene(this));
+        this.controls = Controls.selected();
+        this.controls.on('left', () => this.changePage(-1));
+        this.controls.on('right', () => this.changePage(1));
+        this.controls.on('b', () => App.unloadScene(this));
+    }
+
+    onDestroy() {
+        this.controls.clear();
+        this.onClose();
     }
 
     async render(): Promise<ContainerObject> {
@@ -77,7 +91,12 @@ export class Summary extends Scene implements OnInit {
         return scene;
     }
 
-    setData(pokemon: Pokemon) {
+    load(opts: SummaryOptions) {
+        this.setData(opts.pokemon);
+        this.onClose = opts.onClose;
+    }
+
+    private setData(pokemon: Pokemon) {
         this.$pages.forEach(($page) =>
             $page.setData?.(pokemon, this.container)
         );
