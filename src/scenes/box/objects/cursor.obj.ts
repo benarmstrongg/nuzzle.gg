@@ -1,5 +1,5 @@
-import { Assets, Container, Texture } from 'pixi.js';
-import { SpriteObject } from '../../../engine';
+import { Assets, Texture } from 'pixi.js';
+import { ContainerObject, SpriteObject } from '../../../engine';
 import { BoxSlot, StorageSlot } from '../box.types';
 import { ASSETS, STORAGE } from '../box.const';
 import { BoxPage } from './page.obj';
@@ -9,7 +9,7 @@ type ChangePageListener = (direction: 'next' | 'prev') => BoxPage;
 type BoxCursorInitOptions = {
     onPageChange: ChangePageListener;
     activePage: BoxPage;
-    container: Container;
+    container: ContainerObject;
 };
 
 export class BoxCursor extends SpriteObject {

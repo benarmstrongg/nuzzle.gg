@@ -1,5 +1,5 @@
-import { Assets, Container, Texture } from 'pixi.js';
-import { SpriteObject } from '../engine';
+import { Assets, Texture } from 'pixi.js';
+import { ContainerObject, SpriteObject } from '../engine';
 
 const ICON_MAP: Record<string, number> = {
     normal: 1,
@@ -23,7 +23,7 @@ const ICON_MAP: Record<string, number> = {
 };
 
 export class TypeIcon extends SpriteObject {
-    async setType(type: string, container: Container) {
+    async setType(type: string, container: ContainerObject) {
         const asset = await Assets.load(
             `assets/sprites/types/generation-viii/brilliant-diamond-and-shining-pearl/${
                 ICON_MAP[type.toLowerCase()]

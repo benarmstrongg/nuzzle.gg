@@ -1,4 +1,4 @@
-import { Assets, Container, PointData, Rectangle, Texture } from 'pixi.js';
+import { Assets, PointData, Rectangle, Texture } from 'pixi.js';
 import { ContainerObject, SpriteObject, TextObject } from '../engine';
 import { font } from '../util/font.util';
 
@@ -12,7 +12,10 @@ type MenuOptions<TItems extends readonly string[]> = {
     onSelect: (action: TItems[number]) => void;
 };
 
-export class Menu<TItems extends readonly string[]> extends ContainerObject {
+export class Menu<
+    TItems extends readonly string[],
+    TData extends Record<PropertyKey, any> = any
+> extends ContainerObject<{}, ContainerObject, TData> {
     private $bg: SpriteObject;
     private $cursor: SpriteObject<{ selectedItem: TItems[number] }>;
     private $items: ContainerObject<{}, TextObject>;
@@ -47,7 +50,7 @@ export class Menu<TItems extends readonly string[]> extends ContainerObject {
             opts.items.map(
                 (item, i) =>
                     new TextObject({
-                        style: font('medium'),
+                        style: font({ size: 'medium' }),
                         text: item,
                         x: 15,
                         y: 20 * scaleY + i * 20,
@@ -66,7 +69,10 @@ export class Menu<TItems extends readonly string[]> extends ContainerObject {
         return menu;
     }
 
-    open(position: PointData, container: Container) {
+    open(position: PointData, container: ContainerObject, data?: TData) {
+        if (data) {
+            this.data = data;
+        }
         this.position = position;
         this.render(container);
         this.isOpen = true;

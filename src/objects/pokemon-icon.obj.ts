@@ -1,9 +1,9 @@
-import { Assets, Container, Texture, TextureSource } from 'pixi.js';
-import { SpriteObject } from '../engine';
+import { Assets, Texture, TextureSource } from 'pixi.js';
+import { ContainerObject, SpriteObject } from '../engine';
 import { getPokemonAssetPath } from '../util/assets.util';
 
 export class PokemonIcon extends SpriteObject {
-    async setPokemon(pokemon: string, container: Container) {
+    async setPokemon(pokemon: string, container: ContainerObject) {
         let asset: TextureSource;
         try {
             asset = await Assets.load(getPokemonAssetPath(pokemon, 'icon'));

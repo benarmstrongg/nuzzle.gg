@@ -1,4 +1,3 @@
-import { Container } from 'pixi.js';
 import { Controls } from './controls';
 import { ContainerObject } from './container-object';
 
@@ -12,7 +11,7 @@ export interface OnDestroy {
 
 export abstract class Scene {
     abstract render(): Promise<ContainerObject>;
-    container: Container;
+    container: ContainerObject;
 
     async init() {
         await this.runLifecycleMethod<OnInit>('onInit');

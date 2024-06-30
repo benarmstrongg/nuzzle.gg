@@ -1,12 +1,7 @@
-import {
-    Container,
-    Sprite,
-    SpriteOptions,
-    Texture,
-    TextureSourceLike,
-} from 'pixi.js';
+import { Sprite, SpriteOptions, Texture, TextureSourceLike } from 'pixi.js';
 import { MoveOptions } from './types';
 import { App } from './app';
+import { ContainerObject } from './container-object';
 
 const DEFAULT_SPEED_PPT = 10;
 
@@ -65,12 +60,12 @@ export class SpriteObject<
         });
     }
 
-    setTexture(texture: Texture, container: Container) {
+    setTexture(texture: Texture, container: ContainerObject) {
         this.texture = texture;
         this.render(container);
     }
 
-    render(container: Container): this {
+    render(container: ContainerObject): this {
         container.addChild(this);
         return this;
     }
