@@ -11,10 +11,12 @@ type ContainerObjectOptions<
 
 export class ContainerObject<
     TSections extends Record<PropertyKey, any> = {},
-    TChildren extends Container = Container
+    TChildren extends Container = Container,
+    TData extends Record<PropertyKey, any> = any
 > extends Container {
     sections: TSections;
     children: TChildren[];
+    data: TData;
 
     constructor(props: ContainerObjectOptions<TSections, TChildren> = {}) {
         const children = Array.isArray(props)
@@ -29,6 +31,9 @@ export class ContainerObject<
     }
 
     render(container: Container): this {
+        Object.values(this.sections).forEach((section) =>
+            section.render?.(this)
+        );
         container.addChild(this);
         return this;
     }
