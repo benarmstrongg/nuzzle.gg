@@ -1,34 +1,64 @@
-import { Assets, Texture } from 'pixi.js';
+import { Assets, Spritesheet, Texture } from 'pixi.js';
 import { ContainerObject, SpriteObject } from '../engine';
 
-const ICON_MAP: Record<string, number> = {
-    normal: 1,
-    fighting: 2,
-    flying: 3,
-    poison: 4,
-    ground: 5,
-    rock: 6,
-    bug: 7,
-    ghost: 8,
-    steel: 9,
-    fire: 10,
-    water: 11,
-    grass: 12,
-    electric: 13,
-    psychic: 14,
-    ice: 15,
-    dragon: 16,
-    dark: 17,
-    fairy: 18,
+const SPRITESHEET_ASSET = 'assets/sprites/ui/types/types.png';
+
+const ICON_HEIGHT = 28;
+
+const FRAMES = {
+    normal: { frame: { x: 0, y: 0, w: 64, h: 28 } },
+    fighting: { frame: { x: 0, y: ICON_HEIGHT, w: 64, h: 28 } },
+    flying: { frame: { x: 0, y: ICON_HEIGHT * 2, w: 64, h: 28 } },
+    poison: { frame: { x: 0, y: ICON_HEIGHT * 3, w: 64, h: 28 } },
+    ground: { frame: { x: 0, y: ICON_HEIGHT * 4, w: 64, h: 28 } },
+    rock: { frame: { x: 0, y: ICON_HEIGHT * 5, w: 64, h: 28 } },
+    bug: { frame: { x: 0, y: ICON_HEIGHT * 6, w: 64, h: 28 } },
+    ghost: { frame: { x: 0, y: ICON_HEIGHT * 7, w: 64, h: 28 } },
+    steel: { frame: { x: 0, y: ICON_HEIGHT * 8, w: 64, h: 28 } },
+    '???': { frame: { x: 0, y: ICON_HEIGHT * 9, w: 64, h: 28 } },
+    fire: { frame: { x: 0, y: ICON_HEIGHT * 10, w: 64, h: 28 } },
+    water: { frame: { x: 0, y: ICON_HEIGHT * 11, w: 64, h: 28 } },
+    grass: { frame: { x: 0, y: ICON_HEIGHT * 12, w: 64, h: 28 } },
+    electric: { frame: { x: 0, y: ICON_HEIGHT * 13, w: 64, h: 28 } },
+    psychic: { frame: { x: 0, y: ICON_HEIGHT * 14, w: 64, h: 28 } },
+    ice: { frame: { x: 0, y: ICON_HEIGHT * 15, w: 64, h: 28 } },
+    dragon: { frame: { x: 0, y: ICON_HEIGHT * 16, w: 64, h: 28 } },
+    dark: { frame: { x: 0, y: ICON_HEIGHT * 17, w: 64, h: 28 } },
+    fairy: { frame: { x: 0, y: ICON_HEIGHT * 18, w: 64, h: 28 } },
 };
 
 export class TypeIcon extends SpriteObject {
-    async setType(type: string, container: ContainerObject) {
-        const asset = await Assets.load(
-            `assets/sprites/types/generation-viii/brilliant-diamond-and-shining-pearl/${
-                ICON_MAP[type.toLowerCase()]
-            }.png`
+    private static spritesheet: Spritesheet;
+    static async loadSpritesheet() {
+        if (TypeIcon.spritesheet) {
+            return;
+        }
+        await Assets.load(SPRITESHEET_ASSET);
+        const atlasData = {
+            frames: FRAMES,
+            meta: {
+                image: SPRITESHEET_ASSET,
+                size: { w: 64, h: 532 },
+                scale: 1,
+            },
+            animations: {
+                go:
+                    // prettier-ignore
+                    // ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '♂', '♀', '!', '?', '/'],
+                    Object.keys(frames),
+            },
+        };
+        TypeIcon.spritesheet = new Spritesheet(
+            Texture.from(atlasData.meta.image),
+            atlasData
         );
-        this.setTexture(new Texture(asset), container);
+        await TypeIcon.spritesheet.parse();
+    }
+
+    setType(type: string, container: ContainerObject) {
+        this.setTexture(
+            new Texture(TypeIcon.spritesheet.textures[type]),
+            container
+        );
     }
 }
