@@ -130,12 +130,9 @@ export class BoxPreview extends ContainerObject {
         const speciesData = Dex.species.get(set.name);
         this.$name.setText(speciesData.baseSpecies, this);
         this.$level.setText(`lvl ${set.level}`, this);
-        await this.$types.sections.type1.setType(speciesData.types[0], this);
+        this.$types.sections.type1.setType(speciesData.types[0], this);
         if (speciesData.types[1]) {
-            await this.$types.sections.type2.setType(
-                speciesData.types[1],
-                this
-            );
+            this.$types.sections.type2.setType(speciesData.types[1], this);
         } else {
             this.$types.sections.type2.removeFromParent();
         }
@@ -164,7 +161,7 @@ export class BoxPreview extends ContainerObject {
             const move = this.$moves.children[i];
             move.sections.name.setText(moveData.name, this);
             move.sections.pp.setText(`${moveData.pp}/${moveData.pp}`, this);
-            await move.sections.type.setType(moveData.type, this);
+            move.sections.type.setType(moveData.type, this);
         }
         container.addChild(this);
     }

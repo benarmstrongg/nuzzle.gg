@@ -1,7 +1,8 @@
 import { Assets, Spritesheet, Texture } from 'pixi.js';
+import { toID } from '../../../pokemon-showdown/sim/dex-data';
 import { ContainerObject, SpriteObject } from '../engine';
 
-const SPRITESHEET_ASSET = 'assets/sprites/ui/types/types.png';
+const ASSET = 'assets/sprites/ui/types/types.png';
 
 const ICON_HEIGHT = 28;
 
@@ -33,32 +34,20 @@ export class TypeIcon extends SpriteObject {
         if (TypeIcon.spritesheet) {
             return;
         }
-        await Assets.load(SPRITESHEET_ASSET);
+        await Assets.load(ASSET);
         const atlasData = {
             frames: FRAMES,
             meta: {
-                image: SPRITESHEET_ASSET,
+                image: ASSET,
                 size: { w: 64, h: 532 },
                 scale: 1,
             },
-            animations: {
-                go:
-                    // prettier-ignore
-                    // ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '♂', '♀', '!', '?', '/'],
-                    Object.keys(frames),
-            },
         };
-        TypeIcon.spritesheet = new Spritesheet(
-            Texture.from(atlasData.meta.image),
-            atlasData
-        );
+        TypeIcon.spritesheet = new Spritesheet(Texture.from(ASSET), atlasData);
         await TypeIcon.spritesheet.parse();
     }
 
     setType(type: string, container: ContainerObject) {
-        this.setTexture(
-            new Texture(TypeIcon.spritesheet.textures[type]),
-            container
-        );
+        this.setTexture(TypeIcon.spritesheet.textures[toID(type)], container);
     }
 }

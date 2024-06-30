@@ -74,9 +74,9 @@ export const PREVIEW_PANEL = {
     NAME_POSITION: { x: 5, y: 4 },
     LEVEL_POSITION: { x: 5, y: 24 },
     TYPE_ANCHOR: { x: 1, y: 0 },
-    TYPE_SCALE: 0.37,
-    TYPE_1_POSITION: { x: 168, y: 10 },
-    TYPE_2_POSITION: { x: 168, y: 24 },
+    TYPE_SCALE: 0.55,
+    TYPE_1_POSITION: { x: 168, y: 7 },
+    TYPE_2_POSITION: { x: 168, y: 23 },
     ABILITY_POSITION: { x: 12, y: 54 },
     NATURE_PLUS_POSITION: { x: 138, y: 54 },
     NATURE_MINUS_POSITION: { x: 138, y: 67 },
@@ -88,11 +88,11 @@ export const PREVIEW_PANEL = {
     ITEM_NAME_POSITION: { x: 37, y: 215 },
     MOVE_NAME_POSITION_X: 9,
     MOVE_TYPE_PP_ANCHOR: { x: 1, y: 0 },
-    MOVE_TYPE_PP_POSITION_X: 165,
+    MOVE_TYPE_PP_POSITION_X: 166,
     MOVE_GAP_Y: 36,
     MOVE_1_NAME_POSITION_Y: 240,
-    MOVE_1_TYPE_POSITION_Y: 236,
-    MOVE_1_PP_POSITION_Y: 248,
+    MOVE_1_TYPE_POSITION_Y: 234,
+    MOVE_1_PP_POSITION_Y: 250,
 } as const;
 
 export const PARTY_BUTTON = {
