@@ -9,7 +9,6 @@ type AppSettings = {
 let pixi: PixiApplication;
 
 export class App {
-    private static activeScene?: Scene;
     static settings: AppSettings = {
         controlScheme: 'wasd',
     };
@@ -30,17 +29,15 @@ export class App {
     }
 
     static async loadScene(scene: Scene) {
-        if (this.activeScene) {
-            await this.activeScene.destroy();
-            pixi.stage.removeChildren();
-        }
         await scene.init();
-
         scene.container.eventMode = 'static';
         scene.container.on('click', (e) => console.log(e.x, e.y));
-
-        this.activeScene = scene;
         pixi.stage.addChild(scene.container);
+    }
+
+    static async unloadScene(scene: Scene) {
+        await scene.destroy();
+        pixi.stage.removeChild(scene.container);
     }
 
     static tick(fn: (done: () => void) => void) {

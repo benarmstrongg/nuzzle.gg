@@ -1,7 +1,12 @@
 import { Assets, Sprite, Text } from 'pixi.js';
-import { OnInit, Scene, ContainerObject, Controls } from '../../engine';
-import { PokemonSet } from '../../../../pokemon-showdown/sim/teams';
+import { Pokemon } from '../../../../pokemon-showdown/sim';
+import { OnInit, Scene, ContainerObject, Controls, App } from '../../engine';
 import { font } from '../../util/font.util';
+import { Menu } from '../../objects';
+
+import { BoxCursor } from './objects/cursor.obj';
+import { BoxPage } from './objects/page.obj';
+import { BoxPreview } from './objects/preview.obj';
 import {
     ASSETS,
     STORAGE,
@@ -10,11 +15,7 @@ import {
     MENU_ITEMS,
 } from './box.const';
 import { StorageSlot } from './box.types';
-
-import { Menu } from '../../objects';
-import { BoxCursor } from './objects/cursor.obj';
-import { BoxPage } from './objects/page.obj';
-import { BoxPreview } from './objects/preview.obj';
+import { Summary } from '../summary/summary.scene';
 
 export class Box extends Scene implements OnInit {
     private $boxCursor: BoxCursor;
@@ -23,18 +24,18 @@ export class Box extends Scene implements OnInit {
     private $preview = new BoxPreview();
     private $partyButton = new Text({
         text: BUTTONS.PARTY.TEXT,
-        style: font('heading', 'bold'),
+        style: font({ size: 'heading', weight: 'bold' }),
         position: BUTTONS.PARTY.POSITION,
     });
     private $startButton = new Text({
         text: BUTTONS.START.TEXT,
-        style: font('heading', 'bold'),
+        style: font({ size: 'heading', weight: 'bold' }),
         position: BUTTONS.START.POSITION,
     });
-    private $pokemonMenu: Menu<typeof MENU_ITEMS.POKEMON>;
+    private $pokemonMenu: Menu<typeof MENU_ITEMS.POKEMON, { pokemon: Pokemon }>;
     private $itemMenu: Menu<typeof MENU_ITEMS.ITEM>;
 
-    constructor(private readonly pokemonData: PokemonSet[]) {
+    constructor(private readonly pokemonData: Pokemon[]) {
         super();
     }
 
@@ -91,7 +92,6 @@ export class Box extends Scene implements OnInit {
             this.$partyButton,
             this.$startButton
         );
-        scene.scale.set(1.5);
         return scene;
     }
 
@@ -128,7 +128,8 @@ export class Box extends Scene implements OnInit {
             const { x, y } = slot.position;
             this.$pokemonMenu.open(
                 { x: x + STORAGE.ICON_WIDTH, y },
-                this.container
+                this.container,
+                { pokemon: slot.pokemon.data }
             );
         }
     }
@@ -137,16 +138,20 @@ export class Box extends Scene implements OnInit {
         this.$preview.clear();
         const slot = this.$boxCursor.move(axis, distance) as StorageSlot;
         if (slot.pokemon) {
-            await this.$preview.update(slot.pokemon.set, this.container);
+            await this.$preview.update(slot.pokemon.data.set, this.container);
         }
     }
 
-    private onPokemonMenuSelect(action: (typeof MENU_ITEMS.POKEMON)[number]) {
+    private async onPokemonMenuSelect(
+        action: (typeof MENU_ITEMS.POKEMON)[number]
+    ) {
         switch (action) {
             case 'MOVE':
                 break;
             case 'SUMMARY':
-                break;
+                const summary = new Summary();
+                await App.loadScene(summary);
+                return summary.setData(this.$pokemonMenu.data.pokemon);
             case 'ITEM':
                 this.$itemMenu.open(this.$pokemonMenu.position, this.container);
                 return this.$pokemonMenu.close();
