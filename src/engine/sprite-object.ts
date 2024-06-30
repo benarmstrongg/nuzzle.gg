@@ -10,7 +10,7 @@ import { App } from './app';
 
 const DEFAULT_SPEED_PPT = 10;
 
-export type GameObjectOptions<TData extends Record<PropertyKey, any> = any> =
+export type SpriteObjectOptions<TData extends Record<PropertyKey, any> = any> =
     SpriteOptions & { data?: TData };
 
 export class SpriteObject<
@@ -26,7 +26,7 @@ export class SpriteObject<
     private isMoving: boolean = false;
     data: TData;
 
-    constructor(props: GameObjectOptions<TData> = {}) {
+    constructor(props: SpriteObjectOptions<TData> = {}) {
         super(props);
         this.data = props.data || ({} as TData);
     }
