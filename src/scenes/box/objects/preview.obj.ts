@@ -1,4 +1,3 @@
-import { Container } from 'pixi.js';
 import { ContainerObject, TextObject } from '../../../engine';
 import { ItemIcon, PokemonSprite, TypeIcon } from '../../../objects';
 import { font } from '../../../util/font.util';
@@ -8,11 +7,11 @@ import { Dex } from '../../../../../pokemon-showdown/sim';
 
 export class BoxPreview extends ContainerObject {
     private $name = new TextObject({
-        style: font('xlarge'),
+        style: font({ size: 'xlarge' }),
         position: PREVIEW_PANEL.NAME_POSITION,
     });
     private $level = new TextObject({
-        style: font('small'),
+        style: font({ size: 'small' }),
         position: PREVIEW_PANEL.LEVEL_POSITION,
     });
     private $types = new ContainerObject({
@@ -30,17 +29,17 @@ export class BoxPreview extends ContainerObject {
         },
     });
     private $ability = new TextObject({
-        style: font('medium'),
+        style: font({ size: 'medium' }),
         position: PREVIEW_PANEL.ABILITY_POSITION,
     });
     private $nature = new ContainerObject({
         sections: {
             plus: new TextObject({
-                style: font('medium', 'regular', 'red'),
+                style: font({ size: 'medium', color: 'red' }),
                 position: PREVIEW_PANEL.NATURE_PLUS_POSITION,
             }),
             minus: new TextObject({
-                style: font('medium', 'regular', 'blue'),
+                style: font({ size: 'medium', color: 'blue' }),
                 position: PREVIEW_PANEL.NATURE_MINUS_POSITION,
             }),
         },
@@ -55,9 +54,10 @@ export class BoxPreview extends ContainerObject {
             icon: new ItemIcon({
                 anchor: PREVIEW_PANEL.ITEM_ANCHOR,
                 position: PREVIEW_PANEL.ITEM_ICON_POSITION,
+                scale: 0.8,
             }),
             name: new TextObject({
-                style: font('medium'),
+                style: font({ size: 'medium' }),
                 anchor: PREVIEW_PANEL.ITEM_ANCHOR,
                 position: PREVIEW_PANEL.ITEM_NAME_POSITION,
             }),
@@ -82,7 +82,7 @@ export class BoxPreview extends ContainerObject {
                                     PREVIEW_PANEL.MOVE_1_NAME_POSITION_Y +
                                     i * PREVIEW_PANEL.MOVE_GAP_Y,
                             },
-                            style: font('large'),
+                            style: font({ size: 'large' }),
                         }),
                         type: new TypeIcon({
                             anchor: PREVIEW_PANEL.MOVE_TYPE_PP_ANCHOR,
@@ -102,7 +102,7 @@ export class BoxPreview extends ContainerObject {
                                     PREVIEW_PANEL.MOVE_1_PP_POSITION_Y +
                                     i * PREVIEW_PANEL.MOVE_GAP_Y,
                             },
-                            style: font('small'),
+                            style: font({ size: 'small' }),
                         }),
                     },
                 })
@@ -126,7 +126,7 @@ export class BoxPreview extends ContainerObject {
         this.removeChildren();
     }
 
-    async update(set: PokemonSet, container: Container) {
+    async update(set: PokemonSet, container: ContainerObject) {
         const speciesData = Dex.species.get(set.name);
         this.$name.setText(speciesData.baseSpecies, this);
         this.$level.setText(`lvl ${set.level}`, this);

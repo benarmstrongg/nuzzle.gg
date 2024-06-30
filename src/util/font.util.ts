@@ -26,17 +26,36 @@ const FONT_MAP: Record<FontWeight, string> = {
     bold: 'PowerClearBold',
 };
 
-export function font(
-    size: FontSize,
-    weight: FontWeight = 'regular',
-    color?: FontColor
-): TextStyleOptions {
+type FontOptions = {
+    size: FontSize;
+    weight?: FontWeight;
+    color?: FontColor;
+    wrap?: boolean;
+    wrapWidth?: number;
+    lineHeight?: number;
+};
+
+export function font({
+    size,
+    weight = 'regular',
+    color,
+    wrap = false,
+    wrapWidth,
+    lineHeight,
+}: FontOptions): TextStyleOptions {
     const options: TextStyleOptions = {
         fontSize: SIZE_MAP[size],
         fontFamily: FONT_MAP[weight],
+        wordWrap: wrap,
     };
     if (color) {
         options.fill = color;
+    }
+    if (wrapWidth) {
+        options.wordWrapWidth = wrapWidth;
+    }
+    if (lineHeight) {
+        options.lineHeight = lineHeight;
     }
     return options;
 }
