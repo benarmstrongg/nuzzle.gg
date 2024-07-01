@@ -90,7 +90,6 @@ export class Box extends Scene implements OnInit, OnDestroy {
             onPageChange: (direction) => this.onPageChange(direction),
             container: scene,
         });
-        this.$preview.init();
         this.$pokemonMenu = await Menu.init({
             onSelect: (action) => this.onPokemonMenuSelect(action),
             items: MENU_ITEMS.POKEMON,
@@ -151,7 +150,7 @@ export class Box extends Scene implements OnInit, OnDestroy {
         this.$preview.clear();
         const slot = this.$boxCursor.move(axis, distance) as StorageSlot;
         if (slot.pokemon) {
-            await this.$preview.update(slot.pokemon.data.set, this.container);
+            await this.$preview.update(slot.pokemon.data, this.container);
         }
     }
 

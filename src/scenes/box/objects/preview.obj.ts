@@ -2,8 +2,7 @@ import { ContainerObject, TextObject } from '../../../engine';
 import { ItemIcon, PokemonSprite, TypeIcon } from '../../../objects';
 import { font } from '../../../util/font.util';
 import { PREVIEW_PANEL } from '../box.const';
-import { PokemonSet } from '../../../../../pokemon-showdown/sim/teams';
-import { Dex } from '../../../../../pokemon-showdown/sim';
+import { Dex, Pokemon } from '../../../../../pokemon-showdown/sim';
 
 export class BoxPreview extends ContainerObject {
     private $name = new TextObject({
@@ -109,7 +108,8 @@ export class BoxPreview extends ContainerObject {
         )
     );
 
-    init() {
+    constructor() {
+        super();
         this.addChild(
             this.$name,
             this.$level,
@@ -126,18 +126,19 @@ export class BoxPreview extends ContainerObject {
         this.removeChildren();
     }
 
-    async update(set: PokemonSet, container: ContainerObject) {
-        const speciesData = Dex.species.get(set.name);
+    async update(pokemon: Pokemon, container: ContainerObject) {
+        const speciesData = Dex.species.get(pokemon.name);
         this.$name.setText(speciesData.baseSpecies, this);
-        this.$level.setText(`lvl ${set.level}`, this);
+        this.$level.setText(`lvl ${pokemon.level}`, this);
         this.$types.sections.type1.setType(speciesData.types[0], this);
         if (speciesData.types[1]) {
             this.$types.sections.type2.setType(speciesData.types[1], this);
         } else {
             this.$types.sections.type2.removeFromParent();
         }
-        this.$ability.setText(set.ability, this);
-        const natureData = Dex.natures.get(set.nature);
+        const abilityData = Dex.abilities.get(pokemon.ability);
+        this.$ability.setText(abilityData.name, this);
+        const natureData = Dex.natures.get(pokemon.set.nature);
         if (natureData.plus) {
             this.$nature.sections.plus.setText(
                 `+${natureData.plus}`.toUpperCase(),
@@ -150,19 +151,22 @@ export class BoxPreview extends ContainerObject {
                 this
             );
         }
-        await this.$sprite.setPokemon(set.name, this);
-        if (set.item) {
-            await this.$item.sections.icon.setItem(set.item, this);
+        await this.$sprite.setPokemon(pokemon.species, this);
+        if (pokemon.item) {
+            const itemData = Dex.items.get(pokemon.item);
+            await this.$item.sections.icon.setItem(pokemon.item, this);
+            this.$item.sections.name.setText(itemData.name, this);
         }
-        this.$item.sections.name.setText(set.item, this);
-        for (let i = 0; i < set.moves.length; i++) {
-            const moveName = set.moves[i];
-            const moveData = Dex.moves.get(moveName);
-            const move = this.$moves.children[i];
-            move.sections.name.setText(moveData.name, this);
-            move.sections.pp.setText(`${moveData.pp}/${moveData.pp}`, this);
-            move.sections.type.setType(moveData.type, this);
-        }
+        pokemon.moveSlots.forEach((moveSlot, i) => {
+            const moveData = Dex.moves.get(moveSlot.id);
+            const moveObj = this.$moves.children[i];
+            moveObj.sections.name.setText(moveData.name, this);
+            moveObj.sections.pp.setText(
+                `${moveSlot.pp}/${moveSlot.maxpp}`,
+                this
+            );
+            moveObj.sections.type.setType(moveData.type, this);
+        });
         container.addChild(this);
     }
 }
