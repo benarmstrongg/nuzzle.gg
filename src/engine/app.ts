@@ -13,6 +13,14 @@ export class App {
         controlScheme: 'wasd',
     };
 
+    static get stage(): PixiApplication['stage'] {
+        return pixi.stage;
+    }
+
+    static get screen(): PixiApplication['screen'] {
+        return pixi.screen;
+    }
+
     static async init() {
         pixi = new PixiApplication();
         await pixi.init({
