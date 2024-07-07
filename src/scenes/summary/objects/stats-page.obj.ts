@@ -100,13 +100,14 @@ export class StatsPage extends ContainerObject implements SummaryPage {
             }),
             name: new TextObject({
                 style: font({ size: 'xxlarge' }),
-                position: { x: 396, y: 288 },
+                anchor: { x: 0.5, y: 0 },
+                position: { x: 418, y: 288 },
             }),
             description: new TextObject({
                 style: font({
                     size: 'medium',
                     wrap: true,
-                    wrapWidth: 290,
+                    wrapWidth: 292,
                     lineHeight: 30,
                 }),
                 position: { x: 224, y: 318 },

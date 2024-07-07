@@ -1,41 +1,38 @@
 import { Pokemon } from '../../../../../pokemon-showdown/sim';
 import { ContainerObject, TextObject } from '../../../engine';
 import { TypeIcon } from '../../../objects';
-import { debugObject } from '../../../util/debug.util';
 import { font } from '../../../util/font.util';
 import { SummaryPage } from '../summary.types';
 
 export class InfoPage extends ContainerObject implements SummaryPage {
-    private $headerCol = debugObject(
-        new ContainerObject({
-            sections: {
-                dexNo: new TextObject({
-                    text: 'Pokedex No.',
-                    style: font({ size: 'xxlarge', color: 'white' }),
-                    position: { x: 295, y: 85 },
-                    anchor: { x: 0.5, y: 0 },
-                }),
-                name: new TextObject({
-                    text: 'Name',
-                    style: font({ size: 'xxlarge', color: 'white' }),
-                    position: { x: 290, y: 117 },
-                    anchor: { x: 0.5, y: 0 },
-                }),
-                types: new TextObject({
-                    text: 'Type',
-                    style: font({ size: 'xxlarge', color: 'white' }),
-                    position: { x: 290, y: 149 },
-                    anchor: { x: 0.5, y: 0 },
-                }),
-                ot: new TextObject({
-                    text: 'OT',
-                    style: font({ size: 'xxlarge', color: 'white' }),
-                    position: { x: 290, y: 181 },
-                    anchor: { x: 0.5, y: 0 },
-                }),
-            },
-        })
-    );
+    private $headerCol = new ContainerObject({
+        sections: {
+            dexNo: new TextObject({
+                text: 'Pokedex No.',
+                style: font({ size: 'xxlarge', color: 'white' }),
+                position: { x: 295, y: 85 },
+                anchor: { x: 0.5, y: 0 },
+            }),
+            name: new TextObject({
+                text: 'Name',
+                style: font({ size: 'xxlarge', color: 'white' }),
+                position: { x: 290, y: 117 },
+                anchor: { x: 0.5, y: 0 },
+            }),
+            types: new TextObject({
+                text: 'Type',
+                style: font({ size: 'xxlarge', color: 'white' }),
+                position: { x: 290, y: 149 },
+                anchor: { x: 0.5, y: 0 },
+            }),
+            ot: new TextObject({
+                text: 'OT',
+                style: font({ size: 'xxlarge', color: 'white' }),
+                position: { x: 290, y: 181 },
+                anchor: { x: 0.5, y: 0 },
+            }),
+        },
+    });
     private $dataCol = new ContainerObject({
         sections: {
             dexNo: new TextObject({
