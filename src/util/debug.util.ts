@@ -9,7 +9,7 @@ export class Debug {
 
     private static isDragInitialized = false;
     private static dragTarget: Container | null;
-    static drag<T extends Container>(obj: T): T {
+    static draggable<T extends Container>(obj: T): T {
         if (!Debug.isDragInitialized) {
             App.stage.eventMode = 'static';
             App.stage.hitArea = App.screen;
@@ -36,7 +36,10 @@ export class Debug {
             dragTarget.position.x += e.movement.x;
             dragTarget.position.y += e.movement.y;
             const { x, y } = dragTarget.getGlobalPosition();
-            console.log({ x, y });
+            console.log({
+                global: { x, y },
+                local: { x: dragTarget.x, y: dragTarget.y },
+            });
         }
     }
 
