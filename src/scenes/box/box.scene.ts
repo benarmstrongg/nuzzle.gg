@@ -21,8 +21,9 @@ import {
     BUTTONS,
     MENU_ITEMS,
 } from './box.const';
-import { StorageSlot } from './box.types';
 import { Summary } from '../summary/summary.scene';
+import { BoxPartyTray } from './objects/party-tray.obj';
+import { Debug } from '../../util/debug.util';
 
 export class Box extends Scene implements OnInit, OnDestroy {
     private $boxCursor: BoxCursor;
@@ -39,8 +40,12 @@ export class Box extends Scene implements OnInit, OnDestroy {
         style: font({ size: 'heading', weight: 'bold' }),
         position: BUTTONS.START.POSITION,
     });
-    private $pokemonMenu: Menu<typeof MENU_ITEMS.POKEMON, { pokemon: Pokemon }>;
+    private $pokemonStorageMenu: Menu<
+        typeof MENU_ITEMS.POKEMON_STORAGE,
+        { pokemon: Pokemon }
+    >;
     private $itemMenu: Menu<typeof MENU_ITEMS.ITEM>;
+    private $partyTray = new BoxPartyTray();
     private controls: Controls;
 
     constructor(private readonly pokemonData: Pokemon[]) {
@@ -67,7 +72,6 @@ export class Box extends Scene implements OnInit, OnDestroy {
             Sprite.from(ASSETS.BG),
             Sprite.from(ASSETS.MAIN_OVERLAY),
         ]);
-
         let pageNum = 0;
         while (
             pageNum <
@@ -85,60 +89,82 @@ export class Box extends Scene implements OnInit, OnDestroy {
             scene.addChild(page);
             pageNum++;
         }
+        this.$partyTray.init();
         this.$boxCursor = await BoxCursor.init({
             activePage: this.pages[0],
             onPageChange: (direction) => this.onPageChange(direction),
             container: scene,
         });
-        this.$pokemonMenu = await Menu.init({
+        this.$pokemonStorageMenu = await Menu.init({
             onSelect: (action) => this.onPokemonMenuSelect(action),
-            items: MENU_ITEMS.POKEMON,
+            items: MENU_ITEMS.POKEMON_STORAGE,
         });
         this.$itemMenu = await Menu.init({
             onSelect: (action) => this.onItemMenuSelect(action),
             items: MENU_ITEMS.ITEM,
         });
         scene.addChild(
-            this.$boxCursor,
+            Debug.draggable(this.$boxCursor),
             this.$preview,
             this.$partyButton,
-            this.$startButton
+            this.$startButton,
+            this.$partyTray
         );
         return scene;
     }
 
     private moveCursor(axis: 'x' | 'y', distance: 1 | -1) {
-        if (this.$pokemonMenu.isOpen && axis === 'y') {
-            return this.$pokemonMenu.moveCursor(distance);
-        } else if (this.$itemMenu.isOpen && axis === 'y') {
+        if (this.$pokemonStorageMenu.isOpen) {
+            if (axis === 'x') {
+                return;
+            }
+            return this.$pokemonStorageMenu.moveCursor(distance);
+        } else if (this.$itemMenu.isOpen) {
+            if (axis === 'x') {
+                return;
+            }
             return this.$itemMenu.moveCursor(distance);
         }
         return this.moveBoxCursor(axis, distance);
     }
 
     private select() {
-        if (this.$pokemonMenu.isOpen) {
-            return this.$pokemonMenu.select();
+        if (this.$pokemonStorageMenu.isOpen) {
+            return this.$pokemonStorageMenu.select();
         } else if (this.$itemMenu.isOpen) {
             return this.$itemMenu.select();
         }
-        return this.selectPokemon();
+        return this.selectSlot();
     }
 
     private cancel() {
-        if (this.$pokemonMenu.isOpen) {
-            return this.$pokemonMenu.close();
+        if (this.$pokemonStorageMenu.isOpen) {
+            return this.$pokemonStorageMenu.close();
         } else if (this.$itemMenu.isOpen) {
-            this.$pokemonMenu.open(this.$pokemonMenu.position, this.container);
+            this.$pokemonStorageMenu.open(
+                this.$pokemonStorageMenu.position,
+                this.container
+            );
             return this.$itemMenu.close();
+        } else if (this.$partyTray.isOpen) {
+            return this.$partyTray.close();
         }
     }
 
-    private selectPokemon() {
+    private async selectSlot() {
+        if (this.$boxCursor.hoveredSlot.gridLocation === 'party') {
+            await this.$partyTray.open({
+                onClose: () =>
+                    this.$boxCursor.moveToSlot(
+                        this.pages[this.activePageIndex].party
+                    ),
+            });
+            return this.$boxCursor.moveToSlot(this.$partyTray.firstSlot);
+        }
         const slot = this.$boxCursor.getHoveredStorageSlot();
         if (slot?.pokemon) {
             const { x, y } = slot.position;
-            this.$pokemonMenu.open(
+            this.$pokemonStorageMenu.open(
                 { x: x + STORAGE.ICON_WIDTH, y },
                 this.container,
                 { pokemon: slot.pokemon.data }
@@ -147,33 +173,35 @@ export class Box extends Scene implements OnInit, OnDestroy {
     }
 
     private async moveBoxCursor(axis: 'x' | 'y', distance: 1 | -1) {
+        this.$boxCursor.moveCursor(axis, distance);
         this.$preview.clear();
-        const slot = this.$boxCursor.move(axis, distance) as StorageSlot;
-        if (slot.pokemon) {
+        const slot = this.$boxCursor.getHoveredStorageSlot();
+        if (slot?.pokemon) {
             await this.$preview.update(slot.pokemon.data, this.container);
         }
     }
 
     private async onPokemonMenuSelect(
-        action: (typeof MENU_ITEMS.POKEMON)[number]
+        action: (typeof MENU_ITEMS.POKEMON_STORAGE)[number]
     ) {
+        this.$pokemonStorageMenu.close();
         switch (action) {
-            case 'MOVE':
-                break;
+            case 'WITHDRAW':
+                return this.withdrawPokemon();
             case 'SUMMARY':
                 const summary = new Summary();
                 await App.loadScene(summary);
                 this.controls.pause();
-                summary.load({
-                    pokemon: this.$pokemonMenu.data.pokemon,
+                return summary.load({
+                    pokemon: this.$pokemonStorageMenu.data.pokemon,
                     onClose: () => this.controls.resume(),
                 });
-                break;
             case 'ITEM':
-                this.$itemMenu.open(this.$pokemonMenu.position, this.container);
-                break;
+                return this.$itemMenu.open(
+                    this.$pokemonStorageMenu.position,
+                    this.container
+                );
         }
-        this.$pokemonMenu.close();
     }
 
     private onItemMenuSelect(action: (typeof MENU_ITEMS.ITEM)[number]) {
@@ -183,12 +211,13 @@ export class Box extends Scene implements OnInit, OnDestroy {
             case 'GIVE':
                 break;
             case 'BACK':
-                this.$pokemonMenu.open(
-                    this.$pokemonMenu.position,
+                this.$pokemonStorageMenu.open(
+                    this.$pokemonStorageMenu.position,
                     this.container
                 );
-                return this.$itemMenu.close();
+                break;
         }
+        this.$itemMenu.close();
     }
 
     private onPageChange(direction: 'next' | 'prev'): BoxPage {
@@ -208,5 +237,13 @@ export class Box extends Scene implements OnInit, OnDestroy {
         nextPage.slide(direction === 'next' ? 'right' : 'left');
         this.activePageIndex = nextPageNum;
         return nextPage;
+    }
+
+    private async withdrawPokemon() {
+        if (this.$partyTray.isPartyFull) {
+            return;
+        }
+        await this.$partyTray.addPokemon(this.$boxCursor, this.container);
+        return this.$preview.clear();
     }
 }

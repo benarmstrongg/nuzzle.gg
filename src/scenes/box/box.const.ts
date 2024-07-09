@@ -111,6 +111,16 @@ export const BUTTONS = {
 };
 
 export const MENU_ITEMS = {
-    POKEMON: ['MOVE', 'SUMMARY', 'ITEM', 'BACK'] as const,
+    POKEMON_STORAGE: ['WITHDRAW', 'SUMMARY', 'ITEM', 'BACK'] as const,
     ITEM: ['TAKE', 'GIVE', 'BACK'] as const,
+} as const;
+
+export const PARTY_TRAY = {
+    OPEN_POSITION: { x: 338, y: 32 },
+    CLOSED_POSITION: { x: 338, y: 388 },
+    FIRST_SLOT_GLOBAL_POSITION: { x: 355, y: 45 },
+    FIRST_SLOT_LOCAL_POSITION: { x: 15, y: 5 },
+    ROW_GAP: 65,
+    COL_GAP: 70,
+    START_BUTTON_POSITION: { x: 45, y: 215 },
 } as const;

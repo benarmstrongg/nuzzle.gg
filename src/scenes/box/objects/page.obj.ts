@@ -2,8 +2,17 @@ import { Assets, Sprite, Texture } from 'pixi.js';
 import { ContainerObject, Random } from '../../../engine';
 import { Pokemon } from '../../../../../pokemon-showdown/sim';
 import { PokemonIcon } from '../../../objects';
-import { BoxSlot, StorageGrid, StorageRow, StorageSlot } from '../box.types';
-import { ASSETS, STORAGE } from '../box.const';
+import { BoxSlot, StorageSlot } from '../box.types';
+import { ASSETS, BUTTONS, STORAGE } from '../box.const';
+
+type StorageRow = [
+    StorageSlot,
+    StorageSlot,
+    StorageSlot,
+    StorageSlot,
+    StorageSlot,
+    StorageSlot
+];
 
 export class BoxPage extends ContainerObject {
     header: BoxSlot = {
@@ -13,11 +22,25 @@ export class BoxPage extends ContainerObject {
             y: 0, // STORAGE.PAGE_Y - STORAGE.ICON_HEIGHT / 2,
         },
     };
-    grid: StorageGrid;
+    party: BoxSlot = {
+        gridLocation: 'party',
+        position: {
+            x: BUTTONS.PARTY.POSITION.x,
+            y: BUTTONS.PARTY.POSITION.y - STORAGE.ICON_HEIGHT / 2,
+        },
+    };
+    start: BoxSlot = {
+        gridLocation: 'start',
+        position: {
+            x: BUTTONS.START.POSITION.x,
+            y: BUTTONS.START.POSITION.y - STORAGE.ICON_HEIGHT / 2,
+        },
+    };
+    storage: [StorageRow, StorageRow, StorageRow, StorageRow, StorageRow];
 
     async init(pokemonData: Pokemon[]) {
         await this.initBackground();
-        let grid: StorageRow[] = [];
+        let storage: StorageRow[] = [];
         let row = 0;
         while (row < STORAGE.NUM_ROWS) {
             let gridRow: StorageSlot[] = [];
@@ -40,16 +63,19 @@ export class BoxPage extends ContainerObject {
                     pokemon: null,
                 };
                 if (pokemon) {
-                    const icon = new PokemonIcon({ position: { x, y } });
+                    const icon = new PokemonIcon({
+                        position: { x, y },
+                        zIndex: 3,
+                    });
                     await icon.setPokemon(pokemon.name, this);
                     slot.pokemon = { icon, data: pokemon };
                 }
                 gridRow.push(slot);
             }
-            grid.push(gridRow as StorageRow);
+            storage.push(gridRow as StorageRow);
             row++;
         }
-        this.grid = grid as StorageGrid;
+        this.storage = storage as this['storage'];
     }
 
     private async initBackground() {
