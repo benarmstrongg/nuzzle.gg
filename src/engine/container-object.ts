@@ -1,4 +1,5 @@
 import { Container, ContainerOptions } from 'pixi.js';
+import { Transform } from './transform';
 
 type ContainerObjectOptions<
     TSections extends Record<PropertyKey, any>,
@@ -14,6 +15,7 @@ export class ContainerObject<
     TChildren extends Container = Container,
     TData extends Record<PropertyKey, any> = any
 > extends Container {
+    transform = new Transform(this);
     sections: TSections;
     children: TChildren[];
     data: TData;

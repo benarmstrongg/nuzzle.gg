@@ -103,7 +103,7 @@ export class Menu<
             );
             nextIndex = selectedIndex + distance;
         }
-        this.$cursor.moveTo({
+        this.$cursor.transform.moveTo({
             x: this.$cursor.position.x,
             y: this.$items.children[nextIndex].position.y - 3,
         });
