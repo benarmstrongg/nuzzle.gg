@@ -51,4 +51,16 @@ export class App {
         const callback = () => fn(() => pixi.ticker.remove<void>(callback));
         pixi.ticker.add(callback);
     }
+
+    static async wait(ms: number): Promise<void> {
+        const now = Date.now();
+        return new Promise((res) =>
+            App.tick((done) => {
+                if (Date.now() - now >= ms) {
+                    done();
+                    res();
+                }
+            })
+        );
+    }
 }
