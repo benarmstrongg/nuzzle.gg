@@ -3,17 +3,20 @@ import { ContainerObject, SpriteObject } from '../../../engine';
 import { BoxSlot, StorageSlot } from '../box.types';
 import { ASSETS, STORAGE } from '../box.const';
 import { BoxPage } from './page.obj';
+import { BoxPartyTray } from './party-tray.obj';
 
 type ChangePageListener = (direction: 'next' | 'prev') => BoxPage;
 
 type BoxCursorInitOptions = {
     onPageChange: ChangePageListener;
     activePage: BoxPage;
+    partyTray: BoxPartyTray;
     container: ContainerObject;
 };
 
 export class BoxCursor extends SpriteObject {
     private activePage: BoxPage;
+    private partyTray: BoxPartyTray;
     private onPageChange: ChangePageListener;
     hoveredSlot: BoxSlot;
 
@@ -27,13 +30,14 @@ export class BoxCursor extends SpriteObject {
         cursor.width = 64;
         cursor.height = 64;
         cursor.activePage = options.activePage;
+        cursor.partyTray = options.partyTray;
         cursor.position = cursor.activePage.header.position;
         cursor.hoveredSlot = cursor.activePage.header;
         cursor.onPageChange = options.onPageChange;
         return cursor;
     }
 
-    moveCursor(axis: 'x' | 'y', distance: 1 | -1) {
+    moveInBox(axis: 'x' | 'y', distance: 1 | -1) {
         const CENTER_INDEX = 2;
         if (this.hoveredSlot.gridLocation === 'header') {
             if (axis === 'x') {
@@ -85,6 +89,46 @@ export class BoxCursor extends SpriteObject {
         return this.moveToSlot(nextSlot);
     }
 
+    moveInParty(axis: 'x' | 'y', distance: 1 | -1) {
+        if (
+            this.hoveredSlot.gridLocation === 'header' ||
+            this.hoveredSlot.gridLocation === 'party' ||
+            this.hoveredSlot.gridLocation === 'start'
+        ) {
+            return;
+        }
+        const [FIRST_ROW, LAST_ROW] = [1, 3];
+        const [FIRST_COL, LAST_COL] = [1, 2];
+        const { row, col } = this.hoveredSlot.gridLocation;
+        const [rowIndex, colIndex] = [row - 1, col - 1];
+        if (axis === 'x') {
+            if (col === FIRST_COL && distance === -1) {
+                const nextSlot = this.partyTray.storage[rowIndex][1];
+                return this.moveToSlot(nextSlot);
+            }
+            if (col === LAST_COL && distance === 1) {
+                const nextSlot = this.partyTray.storage[rowIndex][0];
+                return this.moveToSlot(nextSlot);
+            }
+            const nextSlot =
+                this.partyTray.storage[rowIndex][colIndex + distance];
+            return this.moveToSlot(nextSlot);
+        }
+        if (axis === 'y') {
+            if (row === FIRST_ROW && distance === -1) {
+                const nextSlot = this.partyTray.storage[2][colIndex];
+                return this.moveToSlot(nextSlot);
+            }
+            if (row === LAST_ROW && distance === 1) {
+                const nextSlot = this.partyTray.storage[0][colIndex];
+                return this.moveToSlot(nextSlot);
+            }
+            const nextSlot =
+                this.partyTray.storage[rowIndex + distance][colIndex];
+            return this.moveToSlot(nextSlot);
+        }
+    }
+
     getHoveredStorageSlot(): StorageSlot | null {
         if (this.hoveredSlot.gridLocation === 'header') {
             return null;
@@ -129,7 +173,7 @@ export class BoxCursor extends SpriteObject {
         }
     }
 
-    releasePokemon(container: ContainerObject) {
+    dropPokemon(container: ContainerObject) {
         this.changeSprite('grab', container);
     }
 }

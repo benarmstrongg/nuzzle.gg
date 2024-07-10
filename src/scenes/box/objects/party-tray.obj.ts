@@ -15,17 +15,11 @@ type OpenOpts = {
     onClose: () => void;
 };
 
+type StorageRow = [StorageSlot, StorageSlot];
+
 export class BoxPartyTray extends ContainerObject {
     private $tray = new SpriteObject({
         zIndex: 2,
-    });
-    private slots: StorageSlot[] = [1, 2, 3, 4, 5, 6].map((n) => {
-        const gridLocation = { row: Math.ceil(n / 2), col: ((n + 1) % 2) + 1 };
-        return {
-            gridLocation,
-            position: this.getSlotPosition('global', gridLocation),
-            pokemon: null,
-        };
     });
     private $startButton = new TextObject({
         text: 'START',
@@ -33,9 +27,11 @@ export class BoxPartyTray extends ContainerObject {
         position: PARTY_TRAY.START_BUTTON_POSITION,
     });
     private onClose: () => void = () => {};
+    storage: [StorageRow, StorageRow, StorageRow];
 
     constructor() {
         super({ position: PARTY_TRAY.CLOSED_POSITION, visible: false });
+        this.addChild(this.$tray, this.$startButton);
     }
 
     get isOpen(): boolean {
@@ -43,16 +39,26 @@ export class BoxPartyTray extends ContainerObject {
     }
 
     get isPartyFull(): boolean {
-        return this.slots.every((slot) => slot.pokemon);
+        return this.storage.flat().every((slot) => slot.pokemon);
     }
 
     get firstSlot(): StorageSlot {
-        return this.slots[0];
+        return this.storage[0][0];
     }
 
     init() {
         this.$tray.setTexture(Texture.from(ASSETS.PARTY_OVERLAY), this);
-        this.addChild(this.$tray, this.$startButton);
+        this.storage = [[], [], []] as unknown as this['storage'];
+        for (const row of [1, 2, 3]) {
+            for (const col of [1, 2]) {
+                const gridLocation = { row, col };
+                this.storage[row - 1][col - 1] = {
+                    gridLocation,
+                    position: this.getSlotPosition('global', gridLocation),
+                    pokemon: null,
+                };
+            }
+        }
     }
 
     async open(opts: OpenOpts) {
@@ -105,7 +111,7 @@ export class BoxPartyTray extends ContainerObject {
     }
 
     async addPokemon(cursor: BoxCursor, container: ContainerObject) {
-        const firstOpenSlot = this.slots.find((slot) => !slot.pokemon);
+        const firstOpenSlot = this.storage.flat().find((slot) => !slot.pokemon);
         const storageSlot = cursor.getHoveredStorageSlot();
         if (!firstOpenSlot || !storageSlot?.pokemon) {
             return;
@@ -128,7 +134,7 @@ export class BoxPartyTray extends ContainerObject {
         );
         await App.wait(100);
         await Promise.all([this.close(), cursor.moveToSlot(storageSlot, 2)]);
-        cursor.releasePokemon(container);
+        cursor.dropPokemon(container);
         storageSlot.pokemon = null;
     }
 }

@@ -92,6 +92,7 @@ export class Box extends Scene implements OnInit, OnDestroy {
         this.$partyTray.init();
         this.$boxCursor = await BoxCursor.init({
             activePage: this.pages[0],
+            partyTray: this.$partyTray,
             onPageChange: (direction) => this.onPageChange(direction),
             container: scene,
         });
@@ -124,6 +125,8 @@ export class Box extends Scene implements OnInit, OnDestroy {
                 return;
             }
             return this.$itemMenu.moveCursor(distance);
+        } else if (this.$partyTray.isOpen) {
+            return this.movePartyCursor(axis, distance);
         }
         return this.moveBoxCursor(axis, distance);
     }
@@ -159,6 +162,10 @@ export class Box extends Scene implements OnInit, OnDestroy {
                         this.pages[this.activePageIndex].party
                     ),
             });
+            const slot = this.$partyTray.firstSlot;
+            if (slot.pokemon) {
+                await this.$preview.update(slot.pokemon.data, this.container);
+            }
             return this.$boxCursor.moveToSlot(this.$partyTray.firstSlot);
         }
         const slot = this.$boxCursor.getHoveredStorageSlot();
@@ -173,7 +180,7 @@ export class Box extends Scene implements OnInit, OnDestroy {
     }
 
     private async moveBoxCursor(axis: 'x' | 'y', distance: 1 | -1) {
-        this.$boxCursor.moveCursor(axis, distance);
+        this.$boxCursor.moveInBox(axis, distance);
         this.$preview.clear();
         const slot = this.$boxCursor.getHoveredStorageSlot();
         if (slot?.pokemon) {
@@ -245,5 +252,15 @@ export class Box extends Scene implements OnInit, OnDestroy {
         }
         await this.$partyTray.addPokemon(this.$boxCursor, this.container);
         return this.$preview.clear();
+    }
+
+    private async movePartyCursor(axis: 'x' | 'y', distance: 1 | -1) {
+        this.$boxCursor.moveInParty(axis, distance);
+        this.$preview.clear();
+        const slot = this.$boxCursor.getHoveredStorageSlot();
+        console.log(slot);
+        if (slot?.pokemon) {
+            await this.$preview.update(slot.pokemon.data, this.container);
+        }
     }
 }
