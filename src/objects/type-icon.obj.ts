@@ -2,7 +2,7 @@ import { Assets, Spritesheet, Texture } from 'pixi.js';
 import { toID } from '../../../pokemon-showdown/sim/dex-data';
 import { ContainerObject, SpriteObject } from '../engine';
 
-const ASSET = 'assets/sprites/ui/types/types.png';
+const ASSET = 'assets/sprites/ui/icons/types.png';
 const SPRITESHEET_HEIGHT = 532;
 const w = 64;
 const h = 28;

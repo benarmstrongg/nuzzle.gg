@@ -4,6 +4,7 @@ import TeamGenerator from '../../pokemon-showdown/data/mods/base/cg-teams';
 import { Battle, PRNG, toID } from '../../pokemon-showdown/sim';
 import { TypeIcon } from './objects';
 import { Assets } from 'pixi.js';
+import { CategoryIcon } from './objects/category-icon.obj';
 
 async function main() {
     await loadFonts();
@@ -35,6 +36,7 @@ async function loadFonts() {
 
 async function loadAssets() {
     await TypeIcon.loadSpritesheet();
+    await CategoryIcon.loadSpritesheet();
 }
 
 main();

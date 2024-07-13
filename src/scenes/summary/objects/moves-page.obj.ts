@@ -1,6 +1,8 @@
 import { Dex, Pokemon } from '../../../../../pokemon-showdown/sim';
 import { ContainerObject, TextObject } from '../../../engine';
 import { TypeIcon } from '../../../objects';
+import { CategoryIcon } from '../../../objects/category-icon.obj';
+import { Debug } from '../../../util/debug.util';
 import { font } from '../../../util/font.util';
 
 import { SummaryPage } from '../summary.types';
@@ -16,28 +18,47 @@ export class MovesPage extends ContainerObject implements SummaryPage {
         this.$moves.removeChildren();
         pokemon.moveSlots.forEach((moveSlot, i) => {
             const moveData = Dex.moves.get(moveSlot.id);
+            const firstRowPosY = 113 + 64 * i;
+            const secondRowPosY = 145 + 64 * i;
+            const anchor = { x: 0, y: 0.5 };
             const typeIcon = new TypeIcon({
-                position: { x: 248, y: 99 + 64 * i },
+                position: { x: 248, y: firstRowPosY },
+                anchor,
             });
             typeIcon.setType(moveData.type, this);
+            const categoryIcon = Debug.draggable(
+                new CategoryIcon({
+                    position: { x: 420, y: secondRowPosY },
+                    anchor,
+                })
+            );
+            categoryIcon.setCategory(moveData.category, this);
             const moveObj = new ContainerObject({
                 sections: {
                     type: typeIcon,
                     name: new TextObject({
                         style: font({ size: 'xlarge' }),
-                        position: { x: 318, y: 103 + 64 * i },
+                        position: { x: 318, y: firstRowPosY },
                         text: moveData.name,
+                        anchor,
                     }),
-                    ppLabel: new TextObject({
-                        style: font({ size: 'xlarge' }),
-                        position: { x: 348, y: 135 + 64 * i },
-                        text: 'PP',
-                    }),
-                    ppValue: new TextObject({
-                        style: font({ size: 'xlarge' }),
-                        position: { x: 408, y: 135 + 64 * i },
-                        text: `${moveSlot.pp}/${moveSlot.maxpp}`,
-                    }),
+                    category: categoryIcon,
+                    ppLabel: Debug.draggable(
+                        new TextObject({
+                            style: font({ size: 'xlarge' }),
+                            position: { x: 316, y: secondRowPosY },
+                            text: 'PP',
+                            anchor,
+                        })
+                    ),
+                    ppValue: Debug.draggable(
+                        new TextObject({
+                            style: font({ size: 'xlarge' }),
+                            position: { x: 338, y: secondRowPosY },
+                            text: `${moveSlot.pp}/${moveSlot.maxpp}`,
+                            anchor,
+                        })
+                    ),
                 },
             });
             this.$moves.addChild(moveObj);
