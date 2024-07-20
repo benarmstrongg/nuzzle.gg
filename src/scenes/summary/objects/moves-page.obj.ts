@@ -2,7 +2,6 @@ import { Dex, Pokemon } from '../../../../../pokemon-showdown/sim';
 import { ContainerObject, TextObject } from '../../../engine';
 import { TypeIcon } from '../../../objects';
 import { CategoryIcon } from '../../../objects/category-icon.obj';
-import { Debug } from '../../../util/debug.util';
 import { font } from '../../../util/font.util';
 
 import { SummaryPage } from '../summary.types';
@@ -26,12 +25,10 @@ export class MovesPage extends ContainerObject implements SummaryPage {
                 anchor,
             });
             typeIcon.setType(moveData.type, this);
-            const categoryIcon = Debug.draggable(
-                new CategoryIcon({
-                    position: { x: 420, y: secondRowPosY },
-                    anchor,
-                })
-            );
+            const categoryIcon = new CategoryIcon({
+                position: { x: 420, y: secondRowPosY },
+                anchor,
+            });
             categoryIcon.setCategory(moveData.category, this);
             const moveObj = new ContainerObject({
                 sections: {
@@ -43,22 +40,18 @@ export class MovesPage extends ContainerObject implements SummaryPage {
                         anchor,
                     }),
                     category: categoryIcon,
-                    ppLabel: Debug.draggable(
-                        new TextObject({
-                            style: font({ size: 'xlarge' }),
-                            position: { x: 316, y: secondRowPosY },
-                            text: 'PP',
-                            anchor,
-                        })
-                    ),
-                    ppValue: Debug.draggable(
-                        new TextObject({
-                            style: font({ size: 'xlarge' }),
-                            position: { x: 338, y: secondRowPosY },
-                            text: `${moveSlot.pp}/${moveSlot.maxpp}`,
-                            anchor,
-                        })
-                    ),
+                    ppLabel: new TextObject({
+                        style: font({ size: 'xlarge' }),
+                        position: { x: 316, y: secondRowPosY },
+                        text: 'PP',
+                        anchor,
+                    }),
+                    ppValue: new TextObject({
+                        style: font({ size: 'xlarge' }),
+                        position: { x: 338, y: secondRowPosY },
+                        text: `${moveSlot.pp}/${moveSlot.maxpp}`,
+                        anchor,
+                    }),
                 },
             });
             this.$moves.addChild(moveObj);
