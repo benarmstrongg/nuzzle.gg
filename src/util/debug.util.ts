@@ -32,10 +32,10 @@ function onDragMove(e: FederatedPointerEvent) {
         dragTarget.position.x += e.movement.x;
         dragTarget.position.y += e.movement.y;
         const { x, y } = dragTarget.getGlobalPosition();
-        console.log({
-            global: { x, y },
-            local: { x: dragTarget.x, y: dragTarget.y },
-        });
+        console.log(
+            `global: ${x}, ${y}`,
+            `local: ${dragTarget.x}, ${dragTarget.y}`
+        );
     }
 }
 function onDragEnd() {
