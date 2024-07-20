@@ -10,7 +10,7 @@ import {
     SpriteObject,
     TextObject,
 } from '../../engine';
-import { ItemIcon, PokemonSprite } from '../../objects';
+import { ItemIcon, PokemonSprite, TypeIcon } from '../../objects';
 import { font } from '../../util/font.util';
 
 import { ASSETS } from './summary.const';
@@ -18,13 +18,14 @@ import { SummaryPage } from './summary.types';
 import { StatsPage } from './objects/stats-page.obj';
 import { InfoPage } from './objects/info-page.obj';
 import { MovesPage } from './objects/moves-page.obj';
+import { CategoryIcon } from '../../objects/category-icon.obj';
 
 type SummaryOptions = {
     pokemon: Pokemon;
     onClose: () => void;
 };
 
-export class Summary extends Scene implements OnInit, OnDestroy {
+export class SummaryScene extends Scene implements OnInit, OnDestroy {
     private $bg: SpriteObject = new SpriteObject();
     private $preview = new ContainerObject({
         sections: {
@@ -72,6 +73,8 @@ export class Summary extends Scene implements OnInit, OnDestroy {
 
     async onInit(): Promise<void> {
         await Assets.load(ASSETS.BG);
+        await TypeIcon.loadSpritesheet();
+        await CategoryIcon.loadSpritesheet();
         this.controls = Controls.selected();
         this.controls.on('left', () => this.changePage(-1));
         this.controls.on('right', () => this.changePage(1));

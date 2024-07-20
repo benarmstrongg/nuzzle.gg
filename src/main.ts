@@ -1,24 +1,18 @@
-import { Box } from './scenes/box/box.scene';
 import { App } from './engine/app';
 import TeamGenerator from '../../pokemon-showdown/data/mods/base/cg-teams';
 import { Battle, PRNG, toID } from '../../pokemon-showdown/sim';
-import { TypeIcon } from './objects';
 import { Assets } from 'pixi.js';
-import { CategoryIcon } from './objects/category-icon.obj';
+import { BoxScene } from './scenes/box/box.scene';
 
 async function main() {
     await loadFonts();
-    await loadAssets();
-    const teamGen = new TeamGenerator(
-        toID('gen9randombattle'),
-        PRNG.generateSeed()
-    );
+    const teamGen = new TeamGenerator(toID('gen9ubers'), PRNG.generateSeed());
     teamGen.teamSize = 10;
     const battle = new Battle({
-        formatid: toID('gen9randombattle'),
+        formatid: toID('gen9ubers'),
         p1: { name: 'ben', team: teamGen.getTeam() },
     });
-    const box = new Box([...battle.p1.pokemon]);
+    const box = new BoxScene(battle.p1.pokemon);
     await App.init();
     await App.loadScene(box);
 }
@@ -32,11 +26,6 @@ async function loadFonts() {
         },
     ]);
     await Assets.loadBundle('fonts');
-}
-
-async function loadAssets() {
-    await TypeIcon.loadSpritesheet();
-    await CategoryIcon.loadSpritesheet();
 }
 
 main();

@@ -9,7 +9,7 @@ import {
     App,
 } from '../../engine';
 import { font } from '../../util/font.util';
-import { Menu } from '../../objects';
+import { Menu, TypeIcon } from '../../objects';
 
 import { BoxCursor } from './objects/cursor.obj';
 import { BoxPage } from './objects/page.obj';
@@ -21,11 +21,10 @@ import {
     BUTTONS,
     MENU_ITEMS,
 } from './box.const';
-import { Summary } from '../summary/summary.scene';
+import { SummaryScene } from '../summary/summary.scene';
 import { BoxPartyTray } from './objects/party-tray.obj';
-import { Debug } from '../../util/debug.util';
 
-export class Box extends Scene implements OnInit, OnDestroy {
+export class BoxScene extends Scene implements OnInit, OnDestroy {
     private $boxCursor: BoxCursor;
     private pages: BoxPage[] = [];
     private activePageIndex = 0;
@@ -54,6 +53,7 @@ export class Box extends Scene implements OnInit, OnDestroy {
 
     async onInit(): Promise<void> {
         await Assets.load(REQUIRED_ASSETS);
+        await TypeIcon.loadSpritesheet();
         this.controls = Controls.selected();
         this.controls.on('up', () => this.moveCursor('y', -1));
         this.controls.on('down', () => this.moveCursor('y', 1));
@@ -105,7 +105,7 @@ export class Box extends Scene implements OnInit, OnDestroy {
             items: MENU_ITEMS.ITEM,
         });
         scene.addChild(
-            Debug.draggable(this.$boxCursor),
+            this.$boxCursor,
             this.$preview,
             this.$partyButton,
             this.$startButton,
@@ -196,7 +196,7 @@ export class Box extends Scene implements OnInit, OnDestroy {
             case 'WITHDRAW':
                 return this.withdrawPokemon();
             case 'SUMMARY':
-                const summary = new Summary();
+                const summary = new SummaryScene();
                 await App.loadScene(summary);
                 this.controls.pause();
                 return summary.load({
