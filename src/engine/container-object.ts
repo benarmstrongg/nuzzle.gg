@@ -3,10 +3,12 @@ import { Transform } from './transform';
 
 type ContainerObjectOptions<
     TSections extends Record<PropertyKey, any>,
-    TChildren extends Container
+    TChildren extends Container,
+    TData extends Record<PropertyKey, any> = any
 > =
     | (ContainerOptions & {
           sections?: TSections;
+          data?: TData;
       })
     | TChildren[];
 
@@ -20,16 +22,19 @@ export class ContainerObject<
     children: TChildren[];
     data: TData;
 
-    constructor(props: ContainerObjectOptions<TSections, TChildren> = {}) {
-        const children = Array.isArray(props)
-            ? props
-            : (props.children || []).concat(
-                  Object.values(props.sections || {})
-              );
-        super({ ...props, children });
+    constructor(opts: ContainerObjectOptions<TSections, TChildren> = {}) {
+        const isOpts = !Array.isArray(opts);
+        const children = isOpts
+            ? (opts.children || []).concat(Object.values(opts.sections || {}))
+            : opts;
+        const sortableChildren =
+            isOpts && opts.sortableChildren !== undefined
+                ? opts.sortableChildren
+                : true;
+        super({ ...opts, children, sortableChildren });
         this.children = children as TChildren[];
-        this.sections =
-            (!Array.isArray(props) && props.sections) || ({} as TSections);
+        this.sections = (isOpts && opts.sections) || ({} as TSections);
+        this.data = (isOpts && opts.data) || ({} as TData);
     }
 
     render(container: Container): this {
