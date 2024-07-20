@@ -20,10 +20,14 @@ export class SpriteObject<
 
     constructor(props: SpriteObjectOptions<TData> = {}) {
         super(props);
+        if (props.texture) {
+            props.texture.source.scaleMode = 'nearest';
+        }
         this.data = props.data || ({} as TData);
     }
 
     setTexture(texture: Texture, container: ContainerObject) {
+        texture.source.scaleMode = 'nearest';
         this.texture = texture;
         this.render(container);
     }
