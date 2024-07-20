@@ -1,6 +1,7 @@
-import { Assets, Spritesheet, Texture } from 'pixi.js';
+import { Spritesheet } from 'pixi.js';
 import { ContainerObject, SpriteObject } from '../engine';
 import { toID } from '../../../pokemon-showdown/sim';
+import { loadSpritesheet } from '../util/assets.util';
 
 const ASSET = 'spritesheets/status.png';
 const SPRITESHEET_HEIGHT = 96;
@@ -25,20 +26,12 @@ export class StatusIcon extends SpriteObject {
         if (StatusIcon.spritesheet) {
             return;
         }
-        await Assets.load(ASSET);
-        const atlasData = {
-            frames: FRAMES,
-            meta: {
-                image: ASSET,
-                size: { w, h: SPRITESHEET_HEIGHT },
-                scale: 1,
-            },
-        };
-        StatusIcon.spritesheet = new Spritesheet(
-            Texture.from(ASSET),
-            atlasData
+        StatusIcon.spritesheet = await loadSpritesheet(
+            ASSET,
+            FRAMES,
+            w,
+            SPRITESHEET_HEIGHT
         );
-        await StatusIcon.spritesheet.parse();
     }
 
     setStatus(status: string, container: ContainerObject) {

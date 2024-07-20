@@ -1,3 +1,4 @@
+import { Assets, Spritesheet, SpritesheetFrameData, Texture } from 'pixi.js';
 import { Dex } from '../../../pokemon-showdown/sim';
 
 export function getPokemonSpritePath(
@@ -12,4 +13,24 @@ export function getPokemonSpritePath(
     return type === 'back'
         ? `sprites/pokemon/back/${slug}.png`
         : `sprites/pokemon/${slug}.png`;
+}
+
+export async function loadSpritesheet(
+    image: string,
+    frames: Record<string, SpritesheetFrameData>,
+    width: number,
+    height: number
+): Promise<Spritesheet> {
+    await Assets.load(image);
+    const atlasData = {
+        frames,
+        meta: {
+            image,
+            size: { w: width, h: height },
+            scale: 1,
+        },
+    };
+    const spritesheet = new Spritesheet(Texture.from(image), atlasData);
+    await spritesheet.parse();
+    return spritesheet;
 }

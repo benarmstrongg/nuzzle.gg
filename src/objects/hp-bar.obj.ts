@@ -1,5 +1,6 @@
-import { Assets, Spritesheet, Texture } from 'pixi.js';
+import { Spritesheet } from 'pixi.js';
 import { App, ContainerObject, SpriteObject } from '../engine';
+import { loadSpritesheet } from '../util/assets.util';
 
 const ASSET = 'spritesheets/hp_bar.png';
 const SPRITESHEET_HEIGHT = 18;
@@ -19,17 +20,12 @@ export class HpBar extends SpriteObject {
         if (HpBar.spritesheet) {
             return;
         }
-        await Assets.load(ASSET);
-        const atlasData = {
-            frames: FRAMES,
-            meta: {
-                image: ASSET,
-                size: { w, h: SPRITESHEET_HEIGHT },
-                scale: 1,
-            },
-        };
-        HpBar.spritesheet = new Spritesheet(Texture.from(ASSET), atlasData);
-        await HpBar.spritesheet.parse();
+        HpBar.spritesheet = await loadSpritesheet(
+            ASSET,
+            FRAMES,
+            w,
+            SPRITESHEET_HEIGHT
+        );
     }
 
     setHp(targetPercent: number, animate: boolean, container: ContainerObject) {
@@ -58,7 +54,7 @@ export class HpBar extends SpriteObject {
     }
 
     private setBarTexture(hpPercent: number, container: ContainerObject) {
-        let texture =
+        const texture =
             hpPercent > 0.5
                 ? HpBar.spritesheet.textures.green
                 : hpPercent > 0.25

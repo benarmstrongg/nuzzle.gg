@@ -1,6 +1,7 @@
-import { Assets, Spritesheet, Texture } from 'pixi.js';
+import { Spritesheet } from 'pixi.js';
 import { toID } from '../../../pokemon-showdown/sim/dex-data';
 import { ContainerObject, SpriteObject } from '../engine';
+import { loadSpritesheet } from '../util/assets.util';
 
 const ASSET = 'spritesheets/type.png';
 const SPRITESHEET_HEIGHT = 532;
@@ -38,17 +39,12 @@ export class TypeIcon extends SpriteObject {
         if (TypeIcon.spritesheet) {
             return;
         }
-        await Assets.load(ASSET);
-        const atlasData = {
-            frames: FRAMES,
-            meta: {
-                image: ASSET,
-                size: { w, h: SPRITESHEET_HEIGHT },
-                scale: 1,
-            },
-        };
-        TypeIcon.spritesheet = new Spritesheet(Texture.from(ASSET), atlasData);
-        await TypeIcon.spritesheet.parse();
+        TypeIcon.spritesheet = await loadSpritesheet(
+            ASSET,
+            FRAMES,
+            w,
+            SPRITESHEET_HEIGHT
+        );
     }
 
     setType(type: string, container: ContainerObject) {

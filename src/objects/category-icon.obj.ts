@@ -1,6 +1,7 @@
-import { Assets, Spritesheet, Texture } from 'pixi.js';
+import { Spritesheet } from 'pixi.js';
 import { ContainerObject, SpriteObject } from '../engine';
 import { toID } from '../../../pokemon-showdown/sim';
+import { loadSpritesheet } from '../util/assets.util';
 
 const ASSET = 'spritesheets/category.png';
 const SPRITESHEET_HEIGHT = 532;
@@ -22,20 +23,12 @@ export class CategoryIcon extends SpriteObject {
         if (CategoryIcon.spritesheet) {
             return;
         }
-        await Assets.load(ASSET);
-        const atlasData = {
-            frames: FRAMES,
-            meta: {
-                image: ASSET,
-                size: { w, h: SPRITESHEET_HEIGHT },
-                scale: 1,
-            },
-        };
-        CategoryIcon.spritesheet = new Spritesheet(
-            Texture.from(ASSET),
-            atlasData
+        CategoryIcon.spritesheet = await loadSpritesheet(
+            ASSET,
+            FRAMES,
+            w,
+            SPRITESHEET_HEIGHT
         );
-        await CategoryIcon.spritesheet.parse();
     }
 
     setCategory(category: string, container: ContainerObject) {
