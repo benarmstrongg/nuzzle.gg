@@ -20,11 +20,10 @@ export class PokemonSprite extends SpriteObject {
     }
 
     private async loadTexture(species: string): Promise<TextureSource> {
-        this.scale = { y: 1, x: 1 };
+        this.scale.x = Math.abs(this.scale.x);
         this.anchor.x = 0;
         if (this.type === 'back') {
             let source: TextureSource;
-            this.scale = 1.5;
             try {
                 source = (await Assets.load(
                     getPokemonSpritePath(species, 'back')
@@ -33,7 +32,7 @@ export class PokemonSprite extends SpriteObject {
                 source = await Assets.load(
                     getPokemonSpritePath(species, 'front')
                 );
-                this.scale.x = -1.5;
+                this.scale.x = -1 * Math.abs(this.scale.x);
                 this.anchor.x = 1;
             }
             return source;
