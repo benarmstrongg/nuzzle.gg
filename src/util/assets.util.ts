@@ -1,6 +1,6 @@
 import { Dex } from '../../../pokemon-showdown/sim';
 
-export function getPokemonAssetPath(
+export function getPokemonSpritePath(
     pokemon: string,
     type: 'front' | 'back' | 'icon'
 ): string {
