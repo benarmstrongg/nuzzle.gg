@@ -8,7 +8,6 @@ import {
 import { ASSETS, PARTY_TRAY } from '../box.const';
 import { StorageSlot } from '../box.types';
 import { BoxCursor } from './cursor.obj';
-import { Debug } from '../../../util/debug.util';
 import { font } from '../../../util/font.util';
 
 type OpenOpts = {
@@ -118,9 +117,6 @@ export class BoxPartyTray extends ContainerObject {
         }
         await cursor.grabPokemon(container);
         firstOpenSlot.pokemon = storageSlot.pokemon;
-        firstOpenSlot.pokemon.icon = Debug.draggable(
-            firstOpenSlot.pokemon.icon
-        );
         await this.open({ onClose: () => {} });
         await App.wait(50);
         await Promise.all([
