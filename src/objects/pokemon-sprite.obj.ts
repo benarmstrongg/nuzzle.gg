@@ -1,4 +1,4 @@
-import { Assets, SpriteOptions, Texture } from 'pixi.js';
+import { Assets, SpriteOptions, Texture, TextureSource } from 'pixi.js';
 import { ContainerObject, SpriteObject } from '../engine';
 import { getPokemonSpritePath } from '../util/assets.util';
 
@@ -14,10 +14,30 @@ export class PokemonSprite extends SpriteObject {
         this.type = opts.type || 'front';
     }
 
-    async setPokemon(pokemon: string, container: ContainerObject) {
-        const source = await Assets.load(
-            getPokemonSpritePath(pokemon, this.type)
-        );
+    async setPokemon(species: string, container: ContainerObject) {
+        const source = await this.loadTexture(species);
         this.setTexture(new Texture(source), container);
+    }
+
+    private async loadTexture(species: string): Promise<TextureSource> {
+        this.scale = { y: 1, x: 1 };
+        this.anchor.x = 0;
+        if (this.type === 'back') {
+            let source: TextureSource;
+            this.scale = 1.5;
+            try {
+                source = (await Assets.load(
+                    getPokemonSpritePath(species, 'back')
+                )) as TextureSource;
+            } catch {
+                source = await Assets.load(
+                    getPokemonSpritePath(species, 'front')
+                );
+                this.scale.x = -1.5;
+                this.anchor.x = 1;
+            }
+            return source;
+        }
+        return Assets.load(getPokemonSpritePath(species, this.type));
     }
 }
