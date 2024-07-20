@@ -13,9 +13,7 @@ export class PokemonIcon extends SpriteObject {
                     getPokemonSpritePath(pokemon, 'front')
                 );
             } catch {
-                asset = await Assets.load(
-                    'assets/sprites/pokemon/201-question.png'
-                );
+                asset = await Assets.load('sprites/pokemon/201-question.png');
             }
             this.scale = 0.5;
             this.anchor = -0.25;

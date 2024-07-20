@@ -19,10 +19,10 @@ async function main() {
 
 async function loadFonts() {
     Assets.addBundle('fonts', [
-        { alias: 'PowerGreen', src: 'assets/fonts/power-green.ttf' },
+        { alias: 'PowerGreen', src: 'fonts/power-green.ttf' },
         {
             alias: 'PowerClearBold',
-            src: 'assets/fonts/power-clear-bold.ttf',
+            src: 'fonts/power-clear-bold.ttf',
         },
     ]);
     await Assets.loadBundle('fonts');

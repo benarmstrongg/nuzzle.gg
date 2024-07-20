@@ -3,8 +3,8 @@ import { ContainerObject, SpriteObject, TextObject } from '../engine';
 import { font } from '../util/font.util';
 
 const ASSETS = {
-    BG: 'assets/sprites/ui/menu/bg.png',
-    CURSOR: 'assets/sprites/ui/menu/cursor.png',
+    BG: 'sprites/ui/menu/bg.png',
+    CURSOR: 'sprites/ui/menu/cursor.png',
 };
 
 type MenuOptions<TItems extends readonly string[]> = {
