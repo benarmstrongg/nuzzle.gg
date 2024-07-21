@@ -22,7 +22,7 @@ export class StatusIcon extends SpriteObject {
     static width = w;
     static height = h;
 
-    static async loadSpritesheet() {
+    static async load() {
         if (StatusIcon.spritesheet) {
             return;
         }

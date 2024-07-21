@@ -66,7 +66,7 @@ export class MoveButton extends BattleButton {
     static height = h;
     moveData: Move;
 
-    static async loadSpritesheet() {
+    static async load() {
         if (MoveButton.spritesheet) {
             return;
         }

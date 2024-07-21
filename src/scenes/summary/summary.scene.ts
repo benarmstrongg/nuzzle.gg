@@ -73,8 +73,8 @@ export class SummaryScene extends Scene implements OnInit, OnDestroy {
 
     async onInit(): Promise<void> {
         await Assets.load(ASSETS.BG);
-        await TypeIcon.loadSpritesheet();
-        await CategoryIcon.loadSpritesheet();
+        await TypeIcon.load();
+        await CategoryIcon.load();
         this.controls = Controls.selected();
         this.controls.on('left', () => this.changePage(-1));
         this.controls.on('right', () => this.changePage(1));

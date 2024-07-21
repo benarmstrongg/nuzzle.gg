@@ -16,7 +16,7 @@ const FRAMES = {
 export class HpBar extends SpriteObject {
     private static spritesheet: Spritesheet;
 
-    static async loadSpritesheet() {
+    static async load() {
         if (HpBar.spritesheet) {
             return;
         }

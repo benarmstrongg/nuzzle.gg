@@ -35,7 +35,7 @@ export class CommandButton extends BattleButton {
     static width = w;
     static height = h;
 
-    static async loadSpritesheet() {
+    static async load() {
         if (CommandButton.spritesheet) {
             return;
         }

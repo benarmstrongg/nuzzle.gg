@@ -19,7 +19,7 @@ export class CategoryIcon extends SpriteObject {
     static width = w;
     static height = h;
 
-    static async loadSpritesheet() {
+    static async load() {
         if (CategoryIcon.spritesheet) {
             return;
         }

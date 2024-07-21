@@ -53,7 +53,7 @@ export class BoxScene extends Scene implements OnInit, OnDestroy {
 
     async onInit(): Promise<void> {
         await Assets.load(REQUIRED_ASSETS);
-        await TypeIcon.loadSpritesheet();
+        await TypeIcon.load();
         this.controls = Controls.selected();
         this.controls.on('up', () => this.moveCursor('y', -1));
         this.controls.on('down', () => this.moveCursor('y', 1));

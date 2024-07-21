@@ -35,7 +35,7 @@ export class TypeIcon extends SpriteObject {
     static width = w;
     static height = h;
 
-    static async loadSpritesheet() {
+    static async load() {
         if (TypeIcon.spritesheet) {
             return;
         }
