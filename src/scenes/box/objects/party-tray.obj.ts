@@ -10,10 +10,6 @@ import { StorageSlot } from '../box.types';
 import { BoxCursor } from './cursor.obj';
 import { font } from '../../../util/font.util';
 
-type OpenOpts = {
-    onClose: () => void;
-};
-
 type StorageRow = [StorageSlot, StorageSlot];
 
 export class BoxPartyTray extends ContainerObject {
@@ -29,7 +25,11 @@ export class BoxPartyTray extends ContainerObject {
     storage: [StorageRow, StorageRow, StorageRow];
 
     constructor() {
-        super({ position: PARTY_TRAY.CLOSED_POSITION, visible: false });
+        super({
+            position: PARTY_TRAY.CLOSED_POSITION,
+            zIndex: 3,
+            visible: false,
+        });
         this.addChild(this.$tray, this.$startButton);
     }
 
@@ -60,8 +60,8 @@ export class BoxPartyTray extends ContainerObject {
         }
     }
 
-    async open(opts: OpenOpts) {
-        this.onClose = opts.onClose;
+    async open(onClose: () => void) {
+        this.onClose = onClose;
         this.visible = true;
         await this.transform.moveTo({
             ...PARTY_TRAY.OPEN_POSITION,
@@ -117,7 +117,7 @@ export class BoxPartyTray extends ContainerObject {
         }
         await cursor.grabPokemon(container);
         firstOpenSlot.pokemon = storageSlot.pokemon;
-        await this.open({ onClose: () => {} });
+        await this.open(() => {});
         await App.wait(50);
         await Promise.all([
             storageSlot.pokemon.icon.transform.moveTo(firstOpenSlot.position),

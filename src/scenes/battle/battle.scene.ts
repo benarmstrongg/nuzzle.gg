@@ -4,12 +4,19 @@ import {
     Controls,
     OnDestroy,
     OnInit,
+    AfterRender,
     Scene,
     SpriteObject,
     TextObject,
 } from '../../engine';
 import { Battle, Dex, Pokemon, toID } from '../../../../pokemon-showdown/sim';
-import { HpBar, PokemonSprite, StatusIcon, TypeIcon } from '../../objects';
+import {
+    HpBar,
+    MessageBox,
+    PokemonSprite,
+    StatusIcon,
+    TypeIcon,
+} from '../../objects';
 import { PokemonSet } from '../../../../pokemon-showdown/sim/teams';
 import { draggable } from '../../util/debug.util';
 import { ASSETS, REQUIRED_ASSETS, Z_INDEX } from './battle.const';
@@ -28,16 +35,23 @@ type SideSections = {
     status: StatusIcon;
 };
 
+type SideData = { side: 'user' | 'foe' };
+
 type OverlayButtonsData<TButton extends BattleButton> = {
     hoveredButton: TButton;
 };
 
-export class BattleScene extends Scene implements OnInit, OnDestroy {
+export class BattleScene
+    extends Scene
+    implements OnInit, AfterRender, OnDestroy
+{
     private controls: Controls;
     private battle: Battle;
+    private logs: string[] = [];
     activeUserPokemon: Pokemon;
     private $userSide = new ContainerObject<SideSections>({
         zIndex: Z_INDEX.POKEMON,
+        data: { side: 'user' },
         sections: {
             pokemon: draggable(
                 new PokemonSprite({
@@ -70,15 +84,16 @@ export class BattleScene extends Scene implements OnInit, OnDestroy {
                     position: { x: 474, y: 114 },
                 })
             ),
-            status: draggable(new StatusIcon({ position: { x: 0, y: 0 } })),
+            status: draggable(new StatusIcon({ position: { x: 300, y: 150 } })),
         },
     });
-    private $foeSide = new ContainerObject<SideSections>({
+    private $foeSide = new ContainerObject<SideSections, Container, SideData>({
         zIndex: Z_INDEX.POKEMON,
+        data: { side: 'foe' },
         sections: {
             pokemon: draggable(
                 new PokemonSprite({
-                    position: { x: 340, y: 50 },
+                    position: { x: 340, y: 56 },
                     anchor: { x: 0, y: 0.5 },
                 })
             ),
@@ -106,7 +121,7 @@ export class BattleScene extends Scene implements OnInit, OnDestroy {
                     position: { x: 194, y: 43 },
                 })
             ),
-            status: draggable(new StatusIcon({ position: { x: 0, y: 0 } })),
+            status: draggable(new StatusIcon({ position: { x: 30, y: 66 } })),
         },
     });
     private $commandOverlay = new ContainerObject({
@@ -184,6 +199,7 @@ export class BattleScene extends Scene implements OnInit, OnDestroy {
             }),
         },
     });
+    private $messageBox = new MessageBox({});
 
     constructor(userPokemon: PokemonSet[], foePokemon: PokemonSet[]) {
         super();
@@ -192,15 +208,17 @@ export class BattleScene extends Scene implements OnInit, OnDestroy {
             p1: { name: 'ben', team: userPokemon },
             p2: { name: 'foe', team: foePokemon },
         });
+        this.logTurn();
     }
 
     async onInit() {
         await Assets.load(REQUIRED_ASSETS);
-        await CommandButton.loadSpritesheet();
-        await MoveButton.loadSpritesheet();
-        await StatusIcon.loadSpritesheet();
-        await HpBar.loadSpritesheet();
-        await TypeIcon.loadSpritesheet();
+        await CommandButton.load();
+        await MoveButton.load();
+        await StatusIcon.load();
+        await HpBar.load();
+        await TypeIcon.load();
+        await this.$messageBox.init();
         this.controls = Controls.selected();
         this.controls.on('up', () => this.moveCursor('y'));
         this.controls.on('down', () => this.moveCursor('y'));
@@ -214,7 +232,7 @@ export class BattleScene extends Scene implements OnInit, OnDestroy {
         this.controls.clear();
     }
 
-    async render(): Promise<ContainerObject<{}, Container, any>> {
+    render(): ContainerObject {
         const $bg = new SpriteObject({
             texture: Texture.from(ASSETS.BG),
             zIndex: Z_INDEX.BG,
@@ -276,8 +294,6 @@ export class BattleScene extends Scene implements OnInit, OnDestroy {
         this.$commandOverlay.sections.buttons.data.hoveredButton =
             this.$commandOverlay.sections.buttons.children[0];
         this.activeUserPokemon = this.battle.p1.pokemon[0];
-        await this.setPokemon(this.$userSide, this.activeUserPokemon, true);
-        await this.setPokemon(this.$foeSide, this.battle.p2.pokemon[0], false);
         this.$fightOverlay.sections.info.sections.box.setTexture(
             Texture.from(ASSETS.OVERLAY_FIGHT),
             this.$fightOverlay.sections.info
@@ -296,28 +312,34 @@ export class BattleScene extends Scene implements OnInit, OnDestroy {
         ]);
     }
 
-    private async setPokemon(
-        $side: ContainerObject<SideSections>,
-        pokemonData: Pokemon,
-        isUser: boolean
+    async afterRender() {
+        await this.switchPokemon(this.$userSide, this.battle.p1.pokemon[0]);
+        await this.switchPokemon(this.$foeSide, this.battle.p2.pokemon[0]);
+    }
+
+    private async switchPokemon(
+        $side: ContainerObject<SideSections, Container, SideData>,
+        pokemonData: Pokemon
     ) {
-        const { pokemon, nickname, hp, hpLabel, levelLabel, level } =
+        const isUserSide = $side.data.side === 'user';
+        const { pokemon, nickname, hp, hpLabel, levelLabel, level, status } =
             $side.sections;
         await pokemon.setPokemon(pokemonData.species, $side);
         nickname.setText(pokemonData.name, $side);
         hp.setHp(pokemonData.hp / pokemonData.maxhp, false, $side);
-        const hpLabelText = isUser
+        const hpLabelText = isUserSide
             ? `${pokemonData.hp}/${pokemonData.maxhp}`
-            : `${(pokemonData.hp / pokemonData.maxhp) * 100}%`;
+            : `${Math.round((pokemonData.hp / pokemonData.maxhp) * 100)}%`;
         hpLabel.setText(hpLabelText, $side);
-        await levelLabel.setTexture(Texture.from(ASSETS.LEVEL_LABEL), $side);
+        levelLabel.setTexture(Texture.from(ASSETS.LEVEL_LABEL), $side);
         level.setText(pokemonData.level.toString(), $side);
-        if (isUser) {
-            this.setUserPokemon(pokemonData);
+        status.setStatus(toID(pokemonData.status), $side);
+        if (isUserSide) {
+            this.switchUserPokemon(pokemonData);
         }
     }
 
-    private setUserPokemon(pokemonData: Pokemon) {
+    private switchUserPokemon(pokemonData: Pokemon) {
         this.$commandOverlay.sections.message.sections.text.setText(
             `What will ${pokemonData.name} do?`,
             this.$commandOverlay
@@ -432,6 +454,9 @@ export class BattleScene extends Scene implements OnInit, OnDestroy {
             this.battle.p1.chooseMove(moveData.id);
             this.battle.p2.chooseMove(0);
             this.battle.commitDecisions();
+            this.logTurn();
+            this.$fightOverlay.visible = false;
+            this.$commandOverlay.visible = true;
             return;
         }
         switch (
@@ -486,5 +511,15 @@ export class BattleScene extends Scene implements OnInit, OnDestroy {
         );
     }
 
-    // private log() {}
+    private logTurn(): string[] {
+        const newLogs = this.battle.log.slice(this.logs.length);
+        newLogs.forEach((log) => {
+            this.logs.push(log);
+            const isDisplayLog = true;
+            if (isDisplayLog) {
+                console.log(log);
+            }
+        });
+        return newLogs;
+    }
 }

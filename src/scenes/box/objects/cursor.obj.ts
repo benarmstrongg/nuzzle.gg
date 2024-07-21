@@ -1,5 +1,9 @@
 import { Assets, Texture } from 'pixi.js';
-import { ContainerObject, SpriteObject } from '../../../engine';
+import {
+    ContainerObject,
+    SpriteObject,
+    SpriteObjectOptions,
+} from '../../../engine';
 import { BoxSlot, StorageSlot } from '../box.types';
 import { ASSETS, STORAGE } from '../box.const';
 import { BoxPage } from './page.obj';
@@ -7,11 +11,9 @@ import { BoxPartyTray } from './party-tray.obj';
 
 type ChangePageListener = (direction: 'next' | 'prev') => BoxPage;
 
-type BoxCursorInitOptions = {
+type BoxCursorOptions = SpriteObjectOptions & {
     onPageChange: ChangePageListener;
-    activePage: BoxPage;
     partyTray: BoxPartyTray;
-    container: ContainerObject;
 };
 
 export class BoxCursor extends SpriteObject {
@@ -20,21 +22,21 @@ export class BoxCursor extends SpriteObject {
     private onPageChange: ChangePageListener;
     hoveredSlot: BoxSlot;
 
-    private constructor() {
-        super({ texture: Texture.from(ASSETS.CURSOR_GRAB) });
+    constructor(opts: BoxCursorOptions) {
+        super({
+            ...opts,
+            zIndex: 100,
+        });
+        this.partyTray = opts.partyTray;
+        this.onPageChange = opts.onPageChange;
     }
 
-    static async init(options: BoxCursorInitOptions): Promise<BoxCursor> {
+    async init(activePage: BoxPage, container: ContainerObject) {
         await Assets.load([ASSETS.CURSOR_GRAB, ASSETS.CURSOR_FIST]);
-        const cursor = new BoxCursor();
-        cursor.width = 64;
-        cursor.height = 64;
-        cursor.activePage = options.activePage;
-        cursor.partyTray = options.partyTray;
-        cursor.position = cursor.activePage.header.position;
-        cursor.hoveredSlot = cursor.activePage.header;
-        cursor.onPageChange = options.onPageChange;
-        return cursor;
+        this.activePage = activePage;
+        this.hoveredSlot = activePage.header;
+        this.position = activePage.header.position;
+        this.changeSprite('grab', container);
     }
 
     moveInBox(axis: 'x' | 'y', distance: 1 | -1) {

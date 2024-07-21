@@ -1,4 +1,4 @@
-import { Assets, Sprite, Text } from 'pixi.js';
+import { Assets, Sprite, Text, Texture } from 'pixi.js';
 import { Pokemon } from '../../../../pokemon-showdown/sim';
 import {
     OnInit,
@@ -7,6 +7,7 @@ import {
     ContainerObject,
     Controls,
     App,
+    AfterRender,
 } from '../../engine';
 import { font } from '../../util/font.util';
 import { Menu, TypeIcon } from '../../objects';
@@ -24,7 +25,7 @@ import {
 import { SummaryScene } from '../summary/summary.scene';
 import { BoxPartyTray } from './objects/party-tray.obj';
 
-export class BoxScene extends Scene implements OnInit, OnDestroy {
+export class BoxScene extends Scene implements OnInit, AfterRender, OnDestroy {
     private $boxCursor: BoxCursor;
     private pages: BoxPage[] = [];
     private activePageIndex = 0;
@@ -54,6 +55,14 @@ export class BoxScene extends Scene implements OnInit, OnDestroy {
     async onInit(): Promise<void> {
         await Assets.load(REQUIRED_ASSETS);
         await TypeIcon.load();
+        this.$pokemonStorageMenu = await Menu.init({
+            onSelect: (action) => this.onPokemonMenuSelect(action),
+            items: MENU_ITEMS.POKEMON_STORAGE,
+        });
+        this.$itemMenu = await Menu.init({
+            onSelect: (action) => this.onItemMenuSelect(action),
+            items: MENU_ITEMS.ITEM,
+        });
         this.controls = Controls.selected();
         this.controls.on('up', () => this.moveCursor('y', -1));
         this.controls.on('down', () => this.moveCursor('y', 1));
@@ -67,11 +76,27 @@ export class BoxScene extends Scene implements OnInit, OnDestroy {
         this.controls.clear();
     }
 
-    async render(): Promise<ContainerObject> {
+    render(): ContainerObject {
         const scene = new ContainerObject([
             Sprite.from(ASSETS.BG),
             Sprite.from(ASSETS.MAIN_OVERLAY),
         ]);
+        this.$boxCursor = new BoxCursor({
+            partyTray: this.$partyTray,
+            onPageChange: (direction) => this.onPageChange(direction),
+        });
+        this.$partyTray.init();
+        scene.addChild(
+            this.$boxCursor,
+            this.$preview,
+            this.$partyButton,
+            this.$startButton,
+            this.$partyTray
+        );
+        return scene;
+    }
+
+    async afterRender() {
         let pageNum = 0;
         while (
             pageNum <
@@ -86,32 +111,14 @@ export class BoxScene extends Scene implements OnInit, OnDestroy {
             const page = new BoxPage();
             await page.init(pagePokemonData);
             this.pages.push(page);
-            scene.addChild(page);
+            page.render(this.container);
             pageNum++;
         }
-        this.$partyTray.init();
-        this.$boxCursor = await BoxCursor.init({
-            activePage: this.pages[0],
-            partyTray: this.$partyTray,
-            onPageChange: (direction) => this.onPageChange(direction),
-            container: scene,
-        });
-        this.$pokemonStorageMenu = await Menu.init({
-            onSelect: (action) => this.onPokemonMenuSelect(action),
-            items: MENU_ITEMS.POKEMON_STORAGE,
-        });
-        this.$itemMenu = await Menu.init({
-            onSelect: (action) => this.onItemMenuSelect(action),
-            items: MENU_ITEMS.ITEM,
-        });
-        scene.addChild(
-            this.$boxCursor,
-            this.$preview,
-            this.$partyButton,
-            this.$startButton,
-            this.$partyTray
+        await this.$boxCursor.init(this.pages[0], this.container);
+        this.$boxCursor.setTexture(
+            Texture.from(ASSETS.CURSOR_GRAB),
+            this.container
         );
-        return scene;
     }
 
     private moveCursor(axis: 'x' | 'y', distance: 1 | -1) {
@@ -156,12 +163,11 @@ export class BoxScene extends Scene implements OnInit, OnDestroy {
 
     private async selectSlot() {
         if (this.$boxCursor.hoveredSlot.gridLocation === 'party') {
-            await this.$partyTray.open({
-                onClose: () =>
-                    this.$boxCursor.moveToSlot(
-                        this.pages[this.activePageIndex].party
-                    ),
-            });
+            await this.$partyTray.open(() =>
+                this.$boxCursor.moveToSlot(
+                    this.pages[this.activePageIndex].party
+                )
+            );
             const slot = this.$partyTray.firstSlot;
             if (slot.pokemon) {
                 await this.$preview.update(slot.pokemon.data, this.container);

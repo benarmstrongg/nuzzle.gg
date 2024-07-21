@@ -20,7 +20,7 @@ import { InfoPage } from './objects/info-page.obj';
 import { MovesPage } from './objects/moves-page.obj';
 import { CategoryIcon } from '../../objects/category-icon.obj';
 
-type SummaryOptions = {
+type SummaryLoadOptions = {
     pokemon: Pokemon;
     onClose: () => void;
 };
@@ -65,7 +65,7 @@ export class SummaryScene extends Scene implements OnInit, OnDestroy {
         new ContainerObject() as any,
         new StatsPage(),
         new MovesPage(),
-        new ContainerObject(),
+        new ContainerObject() as any,
     ];
     private selectedIndex = 0;
     private onClose: () => void = () => {};
@@ -86,7 +86,7 @@ export class SummaryScene extends Scene implements OnInit, OnDestroy {
         this.onClose();
     }
 
-    async render(): Promise<ContainerObject> {
+    render(): ContainerObject {
         const scene = new ContainerObject();
         this.$bg.setTexture(Texture.from(ASSETS.BG[0]), scene);
         scene.addChild(this.$bg, this.$preview);
@@ -94,7 +94,7 @@ export class SummaryScene extends Scene implements OnInit, OnDestroy {
         return scene;
     }
 
-    load(opts: SummaryOptions) {
+    load(opts: SummaryLoadOptions) {
         this.setData(opts.pokemon);
         this.onClose = opts.onClose;
     }
