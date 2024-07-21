@@ -17,7 +17,6 @@ export function draggable<T extends Container>(obj: T): T {
     }
     obj.eventMode = 'static';
     obj.cursor = 'pointer';
-    obj.zIndex = 1000;
     obj.on('pointerdown', onDragStart, obj);
     isDragInitialized = true;
     return obj;
