@@ -3,6 +3,10 @@ import TeamGenerator from '../../pokemon-showdown/data/mods/base/cg-teams';
 import { Battle, PRNG, toID } from '../../pokemon-showdown/sim';
 import { Assets } from 'pixi.js';
 import { BoxScene } from './scenes/box/box.scene';
+import { BattleScene } from './scenes/battle/battle.scene';
+
+BoxScene;
+BattleScene;
 
 async function main() {
     await loadFonts();
@@ -12,9 +16,10 @@ async function main() {
         formatid: toID('gen9ubers'),
         p1: { name: 'ben', team: teamGen.getTeam() },
     });
-    const box = new BoxScene(battle.p1.pokemon);
     await App.init();
-    await App.loadScene(box);
+    const sets = battle.p1.pokemon.map((p) => p.set);
+    await App.loadScene(new BattleScene(sets, teamGen.getTeam()));
+    // await App.loadScene(new BoxScene(battle.p1.pokemon));
 }
 
 async function loadFonts() {

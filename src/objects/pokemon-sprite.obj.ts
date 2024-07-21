@@ -21,7 +21,6 @@ export class PokemonSprite extends SpriteObject {
 
     private async loadTexture(species: string): Promise<TextureSource> {
         this.scale.x = Math.abs(this.scale.x);
-        this.anchor.x = 0;
         if (this.type === 'back') {
             let source: TextureSource;
             try {
