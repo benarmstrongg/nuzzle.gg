@@ -258,7 +258,6 @@ export class BoxScene extends Scene implements OnInit, OnDestroy {
         this.$boxCursor.moveInParty(axis, distance);
         this.$preview.clear();
         const slot = this.$boxCursor.getHoveredStorageSlot();
-        console.log(slot);
         if (slot?.pokemon) {
             await this.$preview.update(slot.pokemon.data, this.container);
         }
