@@ -17,6 +17,8 @@ const FRAMES = {
     tox: { frame: { x: 0, y: h * 5, w, h } },
 };
 
+type Status = keyof typeof FRAMES | 'fnt';
+
 export class StatusIcon extends SpriteObject {
     private static spritesheet: Spritesheet;
     static width = w;
@@ -34,7 +36,15 @@ export class StatusIcon extends SpriteObject {
         );
     }
 
-    setStatus(status: string, container: ContainerObject) {
+    setStatus(status?: Status, container?: ContainerObject) {
+        if (!status || status === 'fnt') {
+            this.visible = false;
+            return;
+        }
+        if (!container) {
+            return;
+        }
+        this.visible = true;
         this.setTexture(
             StatusIcon.spritesheet.textures[toID(status)],
             container
