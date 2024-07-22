@@ -5,7 +5,7 @@ import {
     SpriteObjectOptions,
 } from '../../../engine';
 import { BoxSlot, StorageSlot } from '../box.types';
-import { ASSETS, STORAGE } from '../box.const';
+import { ASSETS, STORAGE, Z_INDEX } from '../box.const';
 import { BoxPage } from './page.obj';
 import { BoxPartyTray } from './party-tray.obj';
 
@@ -25,7 +25,7 @@ export class BoxCursor extends SpriteObject {
     constructor(opts: BoxCursorOptions) {
         super({
             ...opts,
-            zIndex: 100,
+            zIndex: Z_INDEX.CURSOR,
         });
         this.partyTray = opts.partyTray;
         this.onPageChange = opts.onPageChange;

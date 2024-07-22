@@ -1,9 +1,9 @@
-import { Assets, Sprite, Texture } from 'pixi.js';
+import { Assets, ContainerOptions, Sprite, Texture } from 'pixi.js';
 import { ContainerObject, Random } from '../../../engine';
 import { Pokemon } from '../../../../../pokemon-showdown/sim';
 import { PokemonIcon } from '../../../objects';
 import { BoxSlot, StorageSlot } from '../box.types';
-import { ASSETS, BUTTONS, STORAGE } from '../box.const';
+import { ASSETS, BUTTONS, STORAGE, Z_INDEX } from '../box.const';
 
 type StorageRow = [
     StorageSlot,
@@ -38,6 +38,10 @@ export class BoxPage extends ContainerObject {
     };
     storage: [StorageRow, StorageRow, StorageRow, StorageRow, StorageRow];
 
+    constructor(opts: ContainerOptions = {}) {
+        super({ ...opts, zIndex: Z_INDEX.PAGE });
+    }
+
     async init(pokemonData: Pokemon[]) {
         await this.initBackground();
         let storage: StorageRow[] = [];
@@ -65,7 +69,7 @@ export class BoxPage extends ContainerObject {
                 if (pokemon) {
                     const icon = new PokemonIcon({
                         position: { x, y },
-                        zIndex: 3,
+                        zIndex: Z_INDEX.DATA,
                     });
                     await icon.setPokemon(pokemon.name, this);
                     slot.pokemon = { icon, data: pokemon };

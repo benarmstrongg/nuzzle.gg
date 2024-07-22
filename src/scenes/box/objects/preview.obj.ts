@@ -1,7 +1,8 @@
+import { ContainerOptions } from 'pixi.js';
 import { ContainerObject, TextObject } from '../../../engine';
 import { ItemIcon, PokemonSprite, TypeIcon } from '../../../objects';
 import { font } from '../../../util/font.util';
-import { PREVIEW_PANEL } from '../box.const';
+import { PREVIEW_PANEL, Z_INDEX } from '../box.const';
 import { Dex, Pokemon } from '../../../../../pokemon-showdown/sim';
 
 export class BoxPreview extends ContainerObject {
@@ -108,8 +109,8 @@ export class BoxPreview extends ContainerObject {
         )
     );
 
-    constructor() {
-        super();
+    constructor(opts: ContainerOptions = {}) {
+        super({ ...opts, zIndex: Z_INDEX.DATA });
         this.addChild(
             this.$name,
             this.$level,

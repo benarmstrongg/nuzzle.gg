@@ -124,3 +124,10 @@ export const PARTY_TRAY = {
     COL_GAP: 70,
     START_BUTTON_POSITION: { x: 45, y: 215 },
 } as const;
+
+export const Z_INDEX = {
+    OVERLAY: 0,
+    PAGE: 2,
+    DATA: 3,
+    CURSOR: 4,
+};

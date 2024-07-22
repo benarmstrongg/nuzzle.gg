@@ -1,4 +1,10 @@
-import { Assets, PointData, Rectangle, Texture } from 'pixi.js';
+import {
+    Assets,
+    ContainerOptions,
+    PointData,
+    Rectangle,
+    Texture,
+} from 'pixi.js';
 import { ContainerObject, SpriteObject, TextObject } from '../engine';
 import { font } from '../util/font.util';
 
@@ -7,7 +13,9 @@ const ASSETS = {
     CURSOR: 'sprites/ui/menu/cursor.png',
 };
 
-type MenuOptions<TItems extends readonly string[]> = {
+const Z_INDEX = 100;
+
+type MenuOptions<TItems extends readonly string[]> = ContainerOptions & {
     items: TItems;
     onSelect: (action: TItems[number]) => void;
 };
@@ -24,7 +32,7 @@ export class Menu<
     isOpen = false;
 
     private constructor(opts: MenuOptions<TItems>) {
-        super();
+        super({ ...opts, zIndex: Z_INDEX });
         this.items = opts.items;
         this.onSelect = opts.onSelect;
     }

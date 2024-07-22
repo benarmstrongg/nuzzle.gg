@@ -37,7 +37,7 @@ export class ContainerObject<
         this.data = (isOpts && opts.data) || ({} as TData);
     }
 
-    render(container: Container): this {
+    render(container: ContainerObject): this {
         Object.values(this.sections).forEach((section) =>
             section.render?.(this)
         );
