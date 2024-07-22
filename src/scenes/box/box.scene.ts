@@ -1,4 +1,4 @@
-import { Assets, Sprite, Text, Texture } from 'pixi.js';
+import { Assets, Sprite, Texture } from 'pixi.js';
 import { Pokemon } from '../../../../pokemon-showdown/sim';
 import {
     OnInit,
@@ -8,6 +8,7 @@ import {
     Controls,
     App,
     AfterRender,
+    TextObject,
 } from '../../engine';
 import { font } from '../../util/font.util';
 import { Menu, TypeIcon } from '../../objects';
@@ -30,12 +31,12 @@ export class BoxScene extends Scene implements OnInit, AfterRender, OnDestroy {
     private pages: BoxPage[] = [];
     private activePageIndex = 0;
     private $preview = new BoxPreview();
-    private $partyButton = new Text({
+    private $partyButton = new TextObject({
         text: BUTTONS.PARTY.TEXT,
         style: font({ size: 'heading', weight: 'bold' }),
         position: BUTTONS.PARTY.POSITION,
     });
-    private $startButton = new Text({
+    private $startButton = new TextObject({
         text: BUTTONS.START.TEXT,
         style: font({ size: 'heading', weight: 'bold' }),
         position: BUTTONS.START.POSITION,
