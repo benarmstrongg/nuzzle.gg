@@ -27,6 +27,13 @@ export class Signal<
     this.addListener('once', event, listener);
   }
 
+  off<E extends keyof TEvents>(
+    event: E,
+    listener: SignalListener<TEvents[E]>['fn']
+  ) {
+    this.listeners[event]?.delete(listener);
+  }
+
   emit<E extends keyof TEvents>(
     event: TEvents[E] extends never ? E : never
   ): void;
@@ -40,7 +47,7 @@ export class Signal<
       fn(data as TEvents[E]);
 
       if (type === 'once') {
-        this.listeners[event].delete(fn);
+        this.off(event, fn);
       }
     }
   }

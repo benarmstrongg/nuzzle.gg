@@ -1,5 +1,5 @@
 import { Entity } from '.';
-import { IState, State } from '../traits/meta/state';
+import { State } from '../traits/meta/state';
 
 export type Coordinate = {
   x: number;
@@ -27,8 +27,13 @@ type ScaleState = {
 
 // TODO move this out of traits?
 // it's on entities by default
-export class Transform implements IState {
-  state: State<TransformState> = new State({ x: 0, y: 0, width: 0, height: 0 });
+export class Transform {
+  private state = new State<TransformState>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
   scale: State<ScaleState> = new State({ x: 1, y: 1 });
 
   get x(): number {
@@ -84,6 +89,8 @@ export class Transform implements IState {
   }
 
   on = this.state.on.bind(this.state);
+  once = this.state.once.bind(this.state);
+  off = this.state.off.bind(this.state);
 
   set(state: Partial<TransformState>) {
     if (typeof state.x === 'number' && state.x !== this.x) this.x = state.x;

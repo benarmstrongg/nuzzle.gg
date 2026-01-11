@@ -1,7 +1,7 @@
-type StateListener<T> = (value: T) => void | Promise<void>;
+import { Signal } from './signal';
 
 class StateProxy<T extends Record<string, any> = any> {
-  private listeners: Partial<Record<keyof T, StateListener<T[any]>[]>> = {};
+  private signal = new Signal<T>();
 
   private constructor() {}
 
@@ -31,18 +31,14 @@ class StateProxy<T extends Record<string, any> = any> {
     this.setValue(value);
   }
 
-  on<K extends keyof T>(prop: K, listener: StateListener<T[K]>) {
-    this.listeners[prop] ??= [];
-    this.listeners[prop].push(listener);
-  }
+  on = this.signal.on.bind(this.signal);
+  once = this.signal.once.bind(this.signal);
+  off = this.signal.off.bind(this.signal);
 
   private setValue(value: Partial<T>) {
     for (const prop in value) {
       const propValue = value[prop]!;
-      const listeners = this.listeners[prop] ?? [];
-      for (const listener of listeners) {
-        listener(propValue);
-      }
+      this.signal.emit(prop, propValue);
       Object.assign(this, { [prop]: propValue });
     }
   }
