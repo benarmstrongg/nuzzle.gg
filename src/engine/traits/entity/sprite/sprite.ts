@@ -37,6 +37,10 @@ export class Sprite<TFrame extends string = string> implements IState {
   }
 
   constructor(private entity: Entity, private options: SpriteOptions<TFrame>) {
+    if (!options.assetUrl) {
+      throw new Error('Sprite asset URL is required');
+    }
+
     entity['inner'] = this.inner;
     this.initSprite(options);
     this.initTransform();
@@ -118,6 +122,11 @@ export class Sprite<TFrame extends string = string> implements IState {
   ): Promise<Texture> {
     try {
       const texture: Texture = await Assets.load(assetUrl);
+
+      if (!texture?.source) {
+        throw new Error(`Failed to load texture at ${assetUrl}`);
+      }
+
       texture.source.scaleMode = this.scaleMode;
       this.options.onLoad?.(assetUrl);
       return texture;
