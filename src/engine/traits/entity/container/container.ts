@@ -1,12 +1,8 @@
 import { ContainerLayout } from './utils/layout/layout';
 import { Box } from './utils/box';
 import { game, type Entity } from '../../../core';
-import { Signal, State } from '../../meta';
+import { Signal } from '../../meta';
 import { GameObject } from '../../../core/object';
-
-type ContainerState = {
-  children: Entity[];
-};
 
 type ContainerSignal = {
   childAdded: Entity;
@@ -19,16 +15,12 @@ export type MaybeEntity = Entity | undefined | null | false;
 export class Container {
   private inner = new GameObject();
   private box = new Box(0, 0);
-  private state = new State<ContainerState>({ children: [] });
+  children: Entity[] = [];
   private signal = new Signal<ContainerSignal>();
   layout: ContainerLayout;
 
   private _height?: number;
   private _width?: number;
-
-  get children(): Entity[] {
-    return this.state.children;
-  }
 
   constructor(private entity: Entity, ...children: MaybeEntity[]) {
     entity['inner'] = this.inner;
@@ -86,7 +78,7 @@ export class Container {
   clear() {
     this.inner.removeChildren();
     this.inner.addChild(this.box['inner']);
-    this.state.set({ children: [] });
+    this.children = [];
     this.entity.ready = true;
     this.signal.emit('cleared');
   }
