@@ -25,10 +25,8 @@ type ScaleState = {
 //   height?: number;
 // };
 
-// TODO move this out of traits?
-// it's on entities by default
 export class Transform {
-  private state = new State<TransformState>({
+  private position = new State<TransformState>({
     x: 0,
     y: 0,
     width: 0,
@@ -37,34 +35,34 @@ export class Transform {
   scale: State<ScaleState> = new State({ x: 1, y: 1 });
 
   get x(): number {
-    return this.state.x;
+    return this.position.x;
   }
   set x(x: number) {
-    this.state.x = x;
+    this.position.x = x;
     this.entity['inner'].position.set(x, this.y);
   }
 
   get y(): number {
-    return this.state.y;
+    return this.position.y;
   }
   set y(y: number) {
-    this.state.y = y;
+    this.position.y = y;
     this.entity['inner'].position.set(this.x, y);
   }
 
   get width(): number {
-    return this.state.width;
+    return this.position.width;
   }
   set width(width: number) {
-    this.state.width = width;
+    this.position.width = width;
     // this.entity['inner'].width = width;
   }
 
   get height(): number {
-    return this.state.height;
+    return this.position.height;
   }
   set height(height: number) {
-    this.state.height = height;
+    this.position.height = height;
     // this.entity['inner'].height = height;
   }
 
@@ -77,7 +75,7 @@ export class Transform {
 
   constructor(private entity: Entity) {
     const { x, y, width, height } = entity['inner'];
-    this.state.set({ x, y, width, height });
+    this.position.set({ x, y, width, height });
     // this.scale.on('x', (scaleX) => {
     //   this.entity['inner'].scale.x = scaleX;
     //   this.width = this.entity['inner'].width;
@@ -88,9 +86,9 @@ export class Transform {
     // });
   }
 
-  on = this.state.on.bind(this.state);
-  once = this.state.once.bind(this.state);
-  off = this.state.off.bind(this.state);
+  on = this.position.on.bind(this.position);
+  once = this.position.once.bind(this.position);
+  off = this.position.off.bind(this.position);
 
   set(state: Partial<TransformState>) {
     if (typeof state.x === 'number' && state.x !== this.x) this.x = state.x;
