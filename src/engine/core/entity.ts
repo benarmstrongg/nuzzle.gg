@@ -61,9 +61,11 @@ export class Entity {
     return containerFactory;
   }
 
-  static sprite<T extends string>(options: SpriteOptions<T>): Entity & ISprite {
+  static sprite<TFrame extends string, TAnimation extends string>(
+    options: SpriteOptions<TFrame, TAnimation>
+  ): Entity & ISprite {
     return new (class extends Entity implements ISprite {
-      sprite = new Sprite<T>(this, options);
+      sprite = new Sprite<TFrame, TAnimation>(this, options);
     })();
   }
 }
