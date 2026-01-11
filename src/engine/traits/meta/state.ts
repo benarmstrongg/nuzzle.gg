@@ -1,7 +1,8 @@
 import { Signal } from './signal';
 
 class StateProxy<T extends Record<string, any> = any> {
-  private signal = new Signal<T>();
+  private propSignal = new Signal<T>();
+  private stateSignal = new Signal<{ change: T }>();
 
   private constructor() {}
 
@@ -31,14 +32,28 @@ class StateProxy<T extends Record<string, any> = any> {
     this.setValue(value);
   }
 
-  on = this.signal.on.bind(this.signal);
-  once = this.signal.once.bind(this.signal);
-  off = this.signal.off.bind(this.signal);
+  onChange(listener: (change: T) => void) {
+    this.stateSignal.on('change', listener);
+  }
+
+  on(prop: keyof T, listener: (value: T[typeof prop]) => void) {
+    this.propSignal.on(prop, listener);
+  }
+
+  once(prop: keyof T, listener: (value: T[typeof prop]) => void) {
+    this.propSignal.once(prop, listener);
+  }
+
+  off(prop: keyof T, listener: (value: T[typeof prop]) => void) {
+    this.propSignal.off(prop, listener);
+  }
 
   private setValue(value: Partial<T>) {
+    this.stateSignal.emit('change', { ...this, ...value } as T);
+
     for (const prop in value) {
       const propValue = value[prop]!;
-      this.signal.emit(prop, propValue);
+      this.propSignal.emit(prop, propValue);
       Object.assign(this, { [prop]: propValue });
     }
   }

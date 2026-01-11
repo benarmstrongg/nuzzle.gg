@@ -1,2 +1,7 @@
 export * from './sprite';
-export type { SpritesheetFrame, SpritesheetOptions } from './types';
+export type {
+  SpritesheetFrame,
+  SpritesheetOptions,
+  SpriteAnimationOptions,
+  SpriteAnimationFrame,
+} from './types';

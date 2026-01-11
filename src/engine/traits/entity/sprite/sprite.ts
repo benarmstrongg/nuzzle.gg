@@ -1,57 +1,73 @@
-import {
-  Assets,
-  Sprite as PixiSprite,
-  Spritesheet as PixiSpritesheet,
-  Texture,
-} from 'pixi.js';
+import { Sprite as PixiSprite } from 'pixi.js';
 import { Entity } from '../../../core';
-import { IState, State } from '../../meta/state';
+import { State } from '../../meta/state';
 import { SpriteScaleMode, SpritesheetOptions } from './types';
-import { TransformState } from '../../../core/transform';
+import { Coordinate, TransformState } from '../../../core/transform';
+import { SpriteLoader } from './utils/loader';
+import { SpriteAnimations } from './utils/animations';
 
-export type SpriteOptions<TFrame extends string> = {
+export type SpriteOptions<TFrame extends string, TAnimation extends string> = {
   assetUrl: string;
   fallbackAssetUrls?: string[];
   onLoad?: (fallback: string) => void;
-  spritesheet?: SpritesheetOptions<TFrame>;
-  anchor?: Partial<SpriteState<TFrame>['anchor']>;
+  spritesheet?: SpritesheetOptions<TFrame, TAnimation>;
+  anchor?: Partial<Coordinate>;
   scaleMode?: SpriteScaleMode;
   transform?: Partial<TransformState>;
 };
 
-type SpriteState<TFrame extends string> = {
-  frame: TFrame | (string & {});
-  anchor: { x: number; y: number };
-};
-
-export class Sprite<TFrame extends string = string> implements IState {
+export class Sprite<
+  TFrame extends string = string,
+  TAnimation extends string = string
+> {
   private inner = new PixiSprite({ interactive: true });
-  private textures?: Record<TFrame | (string & {}), Texture>;
-  state = new State<SpriteState<TFrame>>({
-    frame: 'default',
-    anchor: { x: 0, y: 0 },
-  });
 
-  private get scaleMode(): SpriteScaleMode {
-    return this.options.scaleMode ?? 'nearest';
+  private loader: SpriteLoader<TFrame, TAnimation>;
+  animation: SpriteAnimations<TFrame, TAnimation>;
+
+  frame: TFrame | null = null;
+  anchor = new State<Coordinate>({ x: 0, y: 0 });
+
+  get ready(): boolean {
+    return this.entity.ready;
+  }
+  set ready(ready: boolean) {
+    this.entity.ready = ready;
   }
 
-  constructor(private entity: Entity, private options: SpriteOptions<TFrame>) {
+  constructor(
+    private entity: Entity,
+    private options: SpriteOptions<TFrame, TAnimation>
+  ) {
     if (!options.assetUrl) {
       throw new Error('Sprite asset URL is required');
     }
 
     entity['inner'] = this.inner;
+
+    this.loader = new SpriteLoader(this, options);
+
     this.initSprite(options);
     this.initTransform();
   }
 
-  private initSprite(options: SpriteOptions<TFrame>) {
-    if (options.spritesheet) {
-      return this.loadSpritesheet(options.assetUrl, options.spritesheet);
+  set(frame: TFrame) {
+    if (!this.loader.textures?.[frame]) {
+      throw new Error(
+        `Sprite frame ${frame} not found. If you're not using a spritesheet, create a new static sprite instead.`
+      );
     }
 
-    this.set(options.assetUrl);
+    this.frame = frame;
+    this.loader.updateTexture(this.loader.textures[frame]);
+  }
+
+  private initSprite(options: SpriteOptions<TFrame, TAnimation>) {
+    if (options.spritesheet) {
+      return this.loader.loadSpritesheet(options.assetUrl, options.spritesheet);
+    }
+
+    this.loader.loadSprite();
   }
 
   private initTransform() {
@@ -70,7 +86,7 @@ export class Sprite<TFrame extends string = string> implements IState {
       this.entity.transform.height = this.entity['inner'].height;
     });
 
-    this.state.on('anchor', ({ x, y }) => {
+    this.anchor.onChange(({ x, y }) => {
       this.inner.anchor.x = x;
       this.inner.anchor.y = y;
     });
@@ -79,86 +95,6 @@ export class Sprite<TFrame extends string = string> implements IState {
       if (this.options.transform)
         this.entity.transform.set(this.options.transform);
     });
-  }
-
-  private async loadSpritesheet(
-    assetUrl: string,
-    options: SpritesheetOptions<TFrame>
-  ) {
-    const texture = await this.load(assetUrl);
-
-    const frames = Object.entries(options.frames).reduce(
-      (acc, [key, frame]) => Object.assign(acc, { [key]: { frame } }),
-      {}
-    );
-    const spritesheet = new PixiSpritesheet(texture, {
-      frames,
-      meta: {
-        image: texture.source.resource,
-        size: { w: 0, h: 0 },
-        scale: 1,
-      },
-    });
-    this.textures = await spritesheet.parse();
-    this.entity.ready = true;
-
-    if (options.initialFrame) {
-      this.set(options.initialFrame);
-    }
-  }
-
-  private async loadSprite() {
-    const texture = await this.load(
-      this.options.assetUrl,
-      this.options.fallbackAssetUrls
-    );
-
-    this.updateTexture(texture);
-  }
-
-  private async load(
-    assetUrl: string,
-    fallbackAssetUrls?: string[]
-  ): Promise<Texture> {
-    try {
-      const texture: Texture = await Assets.load(assetUrl);
-
-      if (!texture?.source) {
-        throw new Error(`Failed to load texture at ${assetUrl}`);
-      }
-
-      texture.source.scaleMode = this.scaleMode;
-      this.options.onLoad?.(assetUrl);
-      return texture;
-    } catch (err) {
-      if (!fallbackAssetUrls?.length) {
-        throw err;
-      }
-
-      console.log('onFallback', { assetUrl, fallbackAssetUrls });
-      const fallback = fallbackAssetUrls[0];
-      return this.load(fallback, fallbackAssetUrls.slice(1));
-    }
-  }
-
-  set(frame: TFrame | (string & {})) {
-    this.entity.ready = false;
-    this.state.frame = frame;
-    if (this.textures && this.textures[frame]) {
-      this.textures[frame].source.scaleMode = this.scaleMode;
-      this.updateTexture(this.textures[frame]);
-    } else {
-      this.loadSprite();
-    }
-  }
-
-  private updateTexture(texture: Texture) {
-    this.inner.texture = texture;
-    this.inner.texture.update();
-
-    const { width, height } = this.inner;
-    this.entity.transform.set({ width, height });
-    this.entity.ready = true;
   }
 }
 

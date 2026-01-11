@@ -7,10 +7,25 @@ export type SpritesheetFrame = {
   h: number;
 };
 
-export type SpritesheetOptions<TFrame extends string> = {
+export type SpriteAnimationFrame<TFrame extends string> = {
+  frame: TFrame;
+  duration: number;
+};
+
+export type SpriteAnimationOptions<TFrame extends string> = {
+  frames: SpriteAnimationFrame<TFrame>[];
+  repeat?: boolean;
+  returnToFrame?: TFrame;
+};
+
+export type SpritesheetOptions<
+  TFrame extends string,
+  TAnimation extends string
+> = {
   frames: Record<TFrame, SpritesheetFrame>;
-  initialFrame?: TFrame;
+  defaultFrame?: TFrame;
   w: number;
   h: number;
   scaleMode?: SpriteScaleMode;
+  animations?: Record<TAnimation, SpriteAnimationOptions<TFrame>>;
 };

@@ -43,6 +43,10 @@ class Game {
     const callback = () => fn(() => this.inner.ticker.remove<void>(callback));
     this.inner.ticker.add(callback);
   }
+
+  async wait(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 }
 
 export const game = new Game();
