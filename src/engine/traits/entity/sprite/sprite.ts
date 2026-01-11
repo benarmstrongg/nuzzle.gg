@@ -7,7 +7,7 @@ import {
 import { Entity } from '../../../core';
 import { IState, State } from '../../meta/state';
 import { SpriteScaleMode, SpritesheetOptions } from './types';
-import { TransformState } from '../../meta';
+import { TransformState } from '../../../core/transform';
 
 export type SpriteOptions<TFrame extends string> = {
   assetUrl: string;
