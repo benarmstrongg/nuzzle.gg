@@ -1,7 +1,7 @@
 import { Entity } from '../../../core/entity';
 import type { CenterOptions, FlexOptions, GridOptions } from './utils';
 import { Container, IContainer, MaybeEntity } from './container';
-import { TransformState } from '../../meta';
+import { TransformState } from '../../../core/transform';
 
 type ContainerFactory = ((
   ...children: MaybeEntity[]
