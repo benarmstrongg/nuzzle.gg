@@ -1,8 +1,8 @@
 import { Battle, toID } from 'pokemon-showdown/sim';
-import { Box } from './scenes/box/Box.scene';
+import { Box } from './game/scenes/box/Box.scene';
 import { game } from './engine';
-import { teamGenWorker } from './workers';
-import { Overworld } from './scenes/overworld/Overworld.scene';
+import { teamGenWorker } from './game/workers';
+import { Overworld } from './game/scenes/overworld/Overworld.scene';
 
 game.fonts.add([
   { alias: 'PowerGreen', src: 'fonts/power-green.ttf' },
