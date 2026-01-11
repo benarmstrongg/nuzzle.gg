@@ -1,27 +1,53 @@
-import { Entity, Scene } from '../../core';
+import { Entity } from '../../core';
 import { Array2d } from '../../types';
+import { IContainer } from '../entity';
 import { Collider, ICollider } from './collider';
 
 type ColliderEntity = Entity & ICollider;
 
 export class Collisions {
-  private colliders = new Set<ColliderEntity>();
+  private colliders = new Map<
+    ColliderEntity,
+    { x: (value: number) => void; y: (value: number) => void }
+  >();
   private grid: Array2d<Set<ColliderEntity>> = [];
 
-  constructor(private scene: Scene) {
-    const { width, height } = this.scene.transform;
+  constructor(entity: Entity & IContainer) {
+    const { width, height } = entity['inner'];
     this.grid = Array.from({ length: height }, () =>
       Array.from({ length: width }, () => new Set<ColliderEntity>())
     );
 
-    scene.container.onChildAdded((child) => {
-      if (child && Collider.isCollider(child) && !this.colliders.has(child)) {
-        this.colliders.add(child);
-        this.addEntityToGrid(child);
-
-        child.transform.on('x', (x) => this.onColliderMove(child, 'x', x));
-        child.transform.on('y', (y) => this.onColliderMove(child, 'y', y));
+    entity.container.onChildAdded((child) => {
+      if (!child || !Collider.isCollider(child) || this.colliders.has(child)) {
+        return;
       }
+
+      this.applyEntityToGrid(child, 'add');
+
+      const listeners = {
+        x: (x: number) => this.onColliderMove(child, 'x', x),
+        y: (y: number) => this.onColliderMove(child, 'y', y),
+      };
+      this.colliders.set(child, listeners);
+      child.transform.on('x', listeners.x);
+      child.transform.on('y', listeners.y);
+    });
+
+    entity.container.onChildRemoved((child) => {
+      if (!child || !Collider.isCollider(child) || !this.colliders.has(child)) {
+        return;
+      }
+      this.applyEntityToGrid(child, 'remove');
+
+      const listeners = this.colliders.get(child);
+      if (!listeners) {
+        return;
+      }
+
+      this.colliders.delete(child);
+      child.transform.off('x', listeners.x);
+      child.transform.off('y', listeners.y);
     });
   }
 
@@ -118,7 +144,7 @@ export class Collisions {
     }
   }
 
-  private addEntityToGrid(entity: ColliderEntity) {
+  private applyEntityToGrid(entity: ColliderEntity, action: 'add' | 'remove') {
     const { x, y, width, height } = entity.transform;
     const xStart = Math.floor(x);
     const xEnd = Math.floor(x + width - 1);
@@ -126,11 +152,18 @@ export class Collisions {
     const yEnd = Math.floor(y + height - 1);
 
     for (let gridY = yStart; gridY <= yEnd; gridY++) {
+      // Skip if the cell is out of bounds
       if (gridY < 0 || gridY >= this.grid.length) continue;
+
       for (let gridX = xStart; gridX <= xEnd; gridX++) {
+        // Skip if the cell is out of bounds
         if (gridX < 0 || gridX >= this.grid[gridY].length) continue;
 
-        this.grid[gridY][gridX].add(entity);
+        if (action === 'add') {
+          this.grid[gridY][gridX].add(entity);
+        } else {
+          this.grid[gridY][gridX].delete(entity);
+        }
       }
     }
   }
