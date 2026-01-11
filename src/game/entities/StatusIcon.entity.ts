@@ -1,13 +1,13 @@
 import { Entity, ISprite, Sprite } from '../../engine';
 import { SpritesheetFrame } from '../../engine/traits/entity/sprite/types';
-import { StatusType } from '../types';
+import { StatusId } from '../types';
 
 const assetUrl = 'spritesheets/status.png';
 const spritesheetHeight = 96;
 const w = 44;
 const h = 16;
 
-const frames: Record<Exclude<StatusType, 'fnt'>, SpritesheetFrame> = {
+const frames: Record<Exclude<StatusId, 'fnt'>, SpritesheetFrame> = {
   slp: { x: 0, y: 0, w, h },
   psn: { x: 0, y: h, w, h },
   brn: { x: 0, y: h * 2, w, h },
@@ -22,7 +22,7 @@ export class StatusIcon extends Entity implements ISprite {
     spritesheet: { frames, w, h: spritesheetHeight },
   });
 
-  constructor(status: StatusType) {
+  constructor(status: StatusId) {
     super();
     if (status === 'fnt') {
       return;

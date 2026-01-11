@@ -1,1 +1,1 @@
-export type StatusType = 'slp' | 'psn' | 'brn' | 'par' | 'frz' | 'tox' | 'fnt';
+export type StatusId = 'slp' | 'psn' | 'brn' | 'par' | 'frz' | 'tox' | 'fnt';
