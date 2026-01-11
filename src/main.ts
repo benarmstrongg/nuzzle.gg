@@ -2,6 +2,7 @@ import { Battle, toID } from 'pokemon-showdown/sim';
 import { Box } from './scenes/box/Box.scene';
 import { game } from './engine';
 import { teamGenWorker } from './workers';
+import { Overworld } from './scenes/overworld/Overworld.scene';
 
 game.fonts.add([
   { alias: 'PowerGreen', src: 'fonts/power-green.ttf' },
@@ -13,7 +14,7 @@ game.fonts.add([
 
 game.settings.set({ defaultFont: 'PowerGreen' });
 
-async function main() {
+async function box() {
   await game.init();
   // const sets = battle.p1.pokemon.map((p) => p.set);
   // await App.loadScene(new BattleScene(sets, teamGen.getTeam()));
@@ -32,4 +33,11 @@ async function main() {
   });
 }
 
-main();
+async function overworld() {
+  await game.init();
+  const overworld = new Overworld();
+  await game.loadScene(overworld);
+}
+
+overworld();
+// box();
