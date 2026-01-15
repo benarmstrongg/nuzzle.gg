@@ -1,6 +1,6 @@
-import { Container, IContainer } from '../traits/entity/container/container';
-import { ISprite } from '../traits/entity/sprite/sprite';
+import { Controls, Container, IContainer, ISprite } from '../traits';
 import { Entity } from './entity';
+import { game } from './game';
 
 type SceneOptions = {
   loadingFallback?: Entity;
@@ -14,6 +14,7 @@ export abstract class Scene extends Entity implements IContainer {
   private background?: Entity & ISprite;
 
   constructor(options?: SceneOptions) {
+    game.unloadScene();
     super();
     this.container = new Container(this);
     this.init(options);
@@ -44,6 +45,8 @@ export abstract class Scene extends Entity implements IContainer {
   }
 
   destroy() {
+    Controls.clear();
+
     this.background?.destroy();
     this.loadingFallback?.destroy();
     this.entity.destroy();

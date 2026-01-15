@@ -1,4 +1,4 @@
-import { Application as PixiApplication } from 'pixi.js';
+import { Application as PixiApplication, Ticker } from 'pixi.js';
 import { Scene } from './scene';
 import type { ControlScheme } from '../traits';
 import { State } from '../traits/meta/state';
@@ -13,6 +13,7 @@ class Game {
   private inner: PixiApplication;
   settings = new State<Settings>({ controlScheme: 'wasd' });
   fonts = new Fonts();
+  activeScene: Scene | null = null;
 
   async init() {
     if (this.inner) return;
@@ -36,11 +37,17 @@ class Game {
   loadScene(scene: Scene) {
     scene.load();
     this.inner.stage.addChild(scene.container['inner']);
+    this.activeScene = scene;
   }
 
-  unloadScene(scene: Scene) {
-    scene.destroy();
-    this.inner.stage.removeChild(scene.container['inner']);
+  unloadScene() {
+    if (!this.activeScene) return;
+
+    this.inner.stage.removeChild(this.activeScene.container['inner']);
+    this.activeScene.destroy();
+    this.activeScene = null;
+
+    this.clearTicker();
   }
 
   tick(fn: (done: () => void) => void) {
@@ -50,6 +57,13 @@ class Game {
 
   async wait(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  private clearTicker() {
+    const oldTicker = this.inner.ticker;
+    this.inner.ticker = new Ticker();
+    this.inner.ticker.autoStart = true;
+    oldTicker.destroy();
   }
 }
 

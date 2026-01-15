@@ -4,8 +4,12 @@ export type ControlScheme = 'wasd' | 'arrowkeys';
 
 type ControlsAction = 'up' | 'down' | 'left' | 'right' | 'a' | 'b';
 
+type ControlsCallback = (e: KeyboardEvent) => void;
+
 export class Controls {
-  private pressListeners: Record<ControlsAction, (e: KeyboardEvent) => void> = {
+  private static activeControls: Controls[] = [];
+
+  private pressListeners: Record<ControlsAction, ControlsCallback> = {
     up: () => {},
     down: () => {},
     left: () => {},
@@ -16,8 +20,8 @@ export class Controls {
   private holdListeners: Record<
     ControlsAction,
     {
-      down: (e: KeyboardEvent) => void;
-      up: (e: KeyboardEvent) => void;
+      down: ControlsCallback;
+      up: ControlsCallback;
     }
   > = {
     up: { down: () => {}, up: () => {} },
@@ -29,7 +33,9 @@ export class Controls {
   };
   private isActive = true;
 
-  constructor(private readonly keys: Record<ControlsAction, string>) {}
+  constructor(private readonly keys: Record<ControlsAction, string>) {
+    Controls.activeControls.push(this);
+  }
 
   press(action: ControlsAction, callback: () => void) {
     console.log(`press ${action} registered`);
@@ -37,6 +43,7 @@ export class Controls {
       this.keys[action],
       callback
     );
+
     document.addEventListener('keypress', this.pressListeners[action]);
   }
 
@@ -50,17 +57,21 @@ export class Controls {
       this.keys[action],
       up
     );
+
     document.addEventListener('keydown', this.holdListeners[action].down);
     document.addEventListener('keyup', this.holdListeners[action].up);
   }
 
   off(action: ControlsAction) {
     console.log(`controls ${action} deregistered`);
-    delete this.pressListeners[action];
-    delete this.holdListeners[action];
+
     document.removeEventListener('keypress', this.pressListeners[action]);
+    this.pressListeners[action] = () => {};
+
     document.removeEventListener('keydown', this.holdListeners[action].down);
+    this.holdListeners[action].down = () => {};
     document.removeEventListener('keyup', this.holdListeners[action].up);
+    this.holdListeners[action].up = () => {};
   }
 
   pause() {
@@ -72,12 +83,12 @@ export class Controls {
   }
 
   clear() {
-    for (const action in this.pressListeners) {
-      this.off(action as ControlsAction);
-    }
-    for (const action in this.holdListeners) {
-      this.off(action as ControlsAction);
-    }
+    this.off('up');
+    this.off('down');
+    this.off('left');
+    this.off('right');
+    this.off('a');
+    this.off('b');
   }
 
   private createKeybindingListener(
@@ -92,6 +103,13 @@ export class Controls {
         callback();
       }
     };
+  }
+
+  static clear() {
+    for (const control of this.activeControls) {
+      control.clear();
+    }
+    this.activeControls = [];
   }
 
   static wasd() {
