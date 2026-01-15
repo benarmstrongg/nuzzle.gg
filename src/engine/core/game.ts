@@ -10,11 +10,15 @@ type Settings = {
 };
 
 class Game {
-  private inner = new PixiApplication();
+  private inner: PixiApplication;
   settings = new State<Settings>({ controlScheme: 'wasd' });
   fonts = new Fonts();
 
   async init() {
+    if (this.inner) return;
+
+    this.inner = new PixiApplication();
+
     await this.inner.init({
       width: 500,
       height: 500,
