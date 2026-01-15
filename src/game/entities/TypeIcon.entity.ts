@@ -37,7 +37,7 @@ export class TypeIcon extends Entity implements ISprite {
 
     this.sprite = new Sprite(this, {
       assetUrl,
-      spritesheet: { frames, w, h: spritesheetHeight, initialFrame: type },
+      spritesheet: { frames, w, h: spritesheetHeight, defaultFrame: type },
     });
   }
 }

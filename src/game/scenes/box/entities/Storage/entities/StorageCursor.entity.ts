@@ -41,19 +41,19 @@ export class StorageCursor
   constructor() {
     super();
 
-    this.controls.on('up', () => {
+    this.controls.press('up', () => {
       this.signal.emit('move', { direction: 'y', magnitude: -1 });
     });
-    this.controls.on('down', () =>
+    this.controls.press('down', () =>
       this.signal.emit('move', { direction: 'y', magnitude: 1 })
     );
-    this.controls.on('left', () =>
+    this.controls.press('left', () =>
       this.signal.emit('move', { direction: 'x', magnitude: -1 })
     );
-    this.controls.on('right', () =>
+    this.controls.press('right', () =>
       this.signal.emit('move', { direction: 'x', magnitude: 1 })
     );
-    this.controls.on('a', () => {
+    this.controls.press('a', () => {
       if (!this.state.pokemon) return;
 
       this.signal.emit('select', this.state.pokemon);

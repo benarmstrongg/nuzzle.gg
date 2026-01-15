@@ -28,6 +28,6 @@ export class PokemonIcon extends Entity implements ISprite {
     this.transform.scale.set({ x: 1, y: 1 });
     this.transform.width *= 0.5;
     this.transform.height *= 0.5;
-    this.sprite.state.set({ anchor: { x: -0.25, y: -0.25 } });
+    this.sprite.anchor.set({ x: -0.25, y: -0.25 });
   };
 }
