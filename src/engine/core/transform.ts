@@ -1,4 +1,4 @@
-import { Entity } from '.';
+import { Entity, game } from '.';
 import { State } from '../traits/meta/state';
 
 export type Coordinate = {
@@ -18,15 +18,8 @@ type ScaleState = {
   y: number;
 };
 
-// type TransformOptions = {
-//   x?: number;
-//   y?: number;
-//   width?: number;
-//   height?: number;
-// };
-
 export class Transform {
-  private position = new State<TransformState>({
+  position = new State<TransformState>({
     x: 0,
     y: 0,
     width: 0,
@@ -97,6 +90,42 @@ export class Transform {
       this.width = state.width;
     if (typeof state.height === 'number' && state.height !== this.height)
       this.height = state.height;
+  }
+
+  moveBy(position: Partial<Coordinate>, duration: number) {
+    const x = this.x + (position.x ?? 0);
+    const y = this.y + (position.y ?? 0);
+    this.moveTo({ x, y }, duration);
+  }
+
+  moveTo(position: Partial<Coordinate>, duration: number) {
+    const toX = position.x ?? this.x;
+    const toY = position.y ?? this.y;
+    const stepX = (toX - this.x) / duration;
+    const stepY = (toY - this.y) / duration;
+    const directionX = toX > this.x ? 1 : -1;
+    const directionY = toY > this.y ? 1 : -1;
+
+    game.tick((done) => {
+      const isXDone =
+        (directionX === 1 && this.x >= toX) ||
+        (directionX === -1 && this.x <= toX);
+      const isYDone =
+        (directionY === 1 && this.y >= toY) ||
+        (directionY === -1 && this.y <= toY);
+
+      if (isXDone && isYDone) {
+        return done();
+      }
+
+      if (!isXDone) {
+        this.x += stepX;
+      }
+
+      if (!isYDone) {
+        this.y += stepY;
+      }
+    });
   }
 }
 
