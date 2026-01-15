@@ -23,7 +23,7 @@ export type SpritesheetOptions<
   TAnimation extends string
 > = {
   frames: Record<TFrame, SpritesheetFrame>;
-  defaultFrame?: TFrame;
+  defaultFrame: TFrame;
   w: number;
   h: number;
   scaleMode?: SpriteScaleMode;
