@@ -40,4 +40,8 @@ async function overworld() {
 }
 
 overworld();
-// box();
+
+document
+  .getElementById('debug-overworld')
+  ?.addEventListener('click', overworld);
+document.getElementById('debug-box')?.addEventListener('click', box);
