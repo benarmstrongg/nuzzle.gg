@@ -1,13 +1,9 @@
 import { Assets, Spritesheet as PixiSpritesheet, Texture } from 'pixi.js';
 import type { Sprite, SpriteOptions } from '../sprite';
-import { SpriteScaleMode, SpritesheetOptions } from '../types';
+import { SpritesheetOptions } from '../types';
 
 export class SpriteLoader<TFrame extends string, TAnimation extends string> {
-  textures?: Record<TFrame | (string & {}), Texture>;
-
-  private get scaleMode(): SpriteScaleMode {
-    return this.options.scaleMode ?? 'nearest';
-  }
+  textures?: Record<TFrame, Texture>;
 
   constructor(
     private sprite: Sprite<TFrame, TAnimation>,
@@ -19,6 +15,7 @@ export class SpriteLoader<TFrame extends string, TAnimation extends string> {
     options: SpritesheetOptions<TFrame, TAnimation>
   ) {
     this.sprite.ready = false;
+
     const texture = await this.loadAsset(assetUrl);
 
     const frames = Object.entries(options.frames).reduce(
@@ -36,9 +33,7 @@ export class SpriteLoader<TFrame extends string, TAnimation extends string> {
     this.textures = await spritesheet.parse();
     this.sprite.ready = true;
 
-    if (options.defaultFrame) {
-      this.sprite.set(options.defaultFrame);
-    }
+    return this.textures[options.defaultFrame];
   }
 
   async loadSprite() {
@@ -48,7 +43,7 @@ export class SpriteLoader<TFrame extends string, TAnimation extends string> {
       this.options.fallbackAssetUrls
     );
 
-    this.updateTexture(texture);
+    return texture;
   }
 
   private async loadAsset(
@@ -62,7 +57,7 @@ export class SpriteLoader<TFrame extends string, TAnimation extends string> {
         throw new Error(`Failed to load texture at ${assetUrl}`);
       }
 
-      texture.source.scaleMode = this.scaleMode;
+      texture.source.scaleMode = this.sprite.scaleMode;
       this.options.onLoad?.(assetUrl);
       return texture;
     } catch (err) {
@@ -74,15 +69,5 @@ export class SpriteLoader<TFrame extends string, TAnimation extends string> {
       console.log(`Sprite ${assetUrl} falling back to ${fallback}`);
       return this.loadAsset(fallback, fallbackAssetUrls.slice(1));
     }
-  }
-
-  updateTexture(texture: Texture) {
-    texture.source.scaleMode = this.scaleMode;
-    this.sprite['inner'].texture = texture;
-    this.sprite['inner'].texture.update();
-
-    const { width, height } = this.sprite['inner'];
-    this.sprite['entity'].transform.set({ width, height });
-    this.sprite.ready = true;
   }
 }

@@ -22,5 +22,8 @@ export class Map extends Entity implements IContainer, ICollisions {
     tiles.forEach((row) =>
       this.container.add(...row.map((row) => new Tile(row)))
     );
+
+    // TODO: fix this
+    this['ready'] = true;
   }
 }

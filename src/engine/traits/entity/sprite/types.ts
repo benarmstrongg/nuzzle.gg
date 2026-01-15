@@ -9,7 +9,7 @@ export type SpritesheetFrame = {
 
 export type SpriteAnimationFrame<TFrame extends string> = {
   frame: TFrame;
-  duration: number;
+  duration?: number;
 };
 
 export type SpriteAnimationOptions<TFrame extends string> = {

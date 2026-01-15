@@ -1,4 +1,4 @@
-import { Sprite as PixiSprite } from 'pixi.js';
+import { AnimatedSprite as PixiAnimatedSprite, Texture } from 'pixi.js';
 import { Entity } from '../../../core';
 import { State } from '../../meta/state';
 import { SpriteScaleMode, SpritesheetOptions } from './types';
@@ -20,7 +20,7 @@ export class Sprite<
   TFrame extends string = string,
   TAnimation extends string = string
 > {
-  private inner = new PixiSprite({ interactive: true });
+  private inner = new PixiAnimatedSprite([new Texture()], true);
 
   private loader: SpriteLoader<TFrame, TAnimation>;
   animation: SpriteAnimations<TFrame, TAnimation>;
@@ -35,6 +35,10 @@ export class Sprite<
     this.entity.ready = ready;
   }
 
+  get scaleMode(): SpriteScaleMode {
+    return this.options.scaleMode ?? 'nearest';
+  }
+
   constructor(
     private entity: Entity,
     private options: SpriteOptions<TFrame, TAnimation>
@@ -46,11 +50,18 @@ export class Sprite<
     entity['inner'] = this.inner;
 
     this.loader = new SpriteLoader(this, options);
+    this.animation = new SpriteAnimations(
+      this,
+      this.inner,
+      this.loader,
+      options.spritesheet
+    );
 
-    this.initSprite(options);
     this.initTransform();
+    this.initSprite(options);
   }
 
+  // TODO: should sheet stuff be move to a sheet class?
   set(frame: TFrame) {
     if (!this.loader.textures?.[frame]) {
       throw new Error(
@@ -59,15 +70,16 @@ export class Sprite<
     }
 
     this.frame = frame;
-    this.loader.updateTexture(this.loader.textures[frame]);
+    this.updateTexture(this.loader.textures[frame]);
   }
 
-  private initSprite(options: SpriteOptions<TFrame, TAnimation>) {
-    if (options.spritesheet) {
-      return this.loader.loadSpritesheet(options.assetUrl, options.spritesheet);
-    }
+  private async initSprite(options: SpriteOptions<TFrame, TAnimation>) {
+    const texture = options.spritesheet
+      ? await this.loader.loadSpritesheet(options.assetUrl, options.spritesheet)
+      : await this.loader.loadSprite();
 
-    this.loader.loadSprite();
+    this.inner.textures = [texture];
+    this.updateTexture(texture);
   }
 
   private initTransform() {
@@ -95,6 +107,19 @@ export class Sprite<
       if (this.options.transform)
         this.entity.transform.set(this.options.transform);
     });
+  }
+
+  private updateTexture(texture: Texture) {
+    texture.source.scaleMode = this.scaleMode;
+    this.inner.texture = texture;
+    this.inner.textures = [texture];
+    this.inner.texture.update();
+    this.inner.animationSpeed = 0.08;
+    this.inner.play();
+
+    const { width, height } = this.inner;
+    this.entity.transform.set({ width, height });
+    this.ready = true;
   }
 }
 

@@ -39,7 +39,7 @@ export class Entity {
   onReady(fn: () => void) {
     if (this.ready) fn();
 
-    this.meta.on('ready', (ready) => {
+    this.meta.once('ready', (ready) => {
       if (ready === false) return;
       fn();
     });
