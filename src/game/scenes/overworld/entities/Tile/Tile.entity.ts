@@ -1,6 +1,7 @@
 import { Entity, ISprite, Sprite } from '../../../../../engine';
 import { WorldTileMetadata } from '../World/types';
 import { Item } from '../World/Item.entity';
+import { toItemId } from '../../../../util';
 
 const w = 10;
 const h = 10;
@@ -24,6 +25,6 @@ export class Tile extends Entity implements ISprite {
         this.sprite.set(data.type);
         break;
     }
-    this.item = data.item && new Item(data.item.item);
+    this.item = data.item && new Item(toItemId(data.item.item));
   }
 }

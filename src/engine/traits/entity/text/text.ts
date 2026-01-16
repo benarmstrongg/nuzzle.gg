@@ -16,14 +16,14 @@ export class Text implements IState {
   state = new State({ value: '' });
 
   constructor(private entity: Entity, value: string, options?: TextOptions) {
-    this.entity.meta.ready = false;
+    this.entity.ready = false;
     const style = this.getStyles(options);
     this.inner = new PixiText({ text: value, style });
     entity['inner'] = this.inner;
     this.state.set({ value });
     this.entity.transform.width = this.inner.width;
     this.entity.transform.height = this.inner.height;
-    this.entity.meta.ready = true;
+    this.entity.ready = true;
   }
 
   private getStyles(options?: TextOptions) {

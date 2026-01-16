@@ -10,7 +10,7 @@ export const cover = <T extends Entity>(entity: T) => {
     cover.zIndex = 100000;
 
     game['inner'].stage.addChild(cover);
-    entity['inner'].parent.addChild(cover);
+    entity['inner'].parent?.addChild(cover);
   });
   return entity;
 };

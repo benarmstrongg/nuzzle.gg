@@ -72,7 +72,7 @@ export class Menu extends Entity implements IContainer {
   }
 
   private initItems(options: MenuOptions) {
-    const { items, rows, columns, width, height, fontSize } = options;
+    const { items, rows, columns, width, fontSize } = options;
 
     const menuItems = items.map((item) =>
       Entity.text(item.label, { size: fontSize ?? 'md' })

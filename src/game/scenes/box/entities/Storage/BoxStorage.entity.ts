@@ -227,7 +227,7 @@ type BoxStorageSignal = {
   withdraw: Pokemon;
 };
 
-const menu = { width: 145, height: 290, x: 180 };
+// const menu = { width: 145, height: 290, x: 180 };
 
 const x = 180;
 
@@ -268,22 +268,22 @@ export class BoxStorage extends Entity implements IContainer, ISignal {
     });
   }
 
-  private initMenu() {
-    const items = [
-      { label: 'Summary', action: () => this.openSummary() },
-      { label: 'Withdraw', action: () => this.withdrawPokemon() },
-    ];
+  // private initMenu() {
+  //   const items = [
+  //     { label: 'Summary', action: () => this.openSummary() },
+  //     { label: 'Withdraw', action: () => this.withdrawPokemon() },
+  //   ];
 
-    this.menu = new Menu({
-      rows: items.length,
-      columns: 1,
-      items,
-      pausedControls: [this.cursor],
-      ...menu,
-    });
-  }
+  //   this.menu = new Menu({
+  //     rows: items.length,
+  //     columns: 1,
+  //     items,
+  //     pausedControls: [this.cursor],
+  //     ...menu,
+  //   });
+  // }
 
-  private openSummary() {}
+  // private openSummary() {}
 
-  private withdrawPokemon() {}
+  // private withdrawPokemon() {}
 }

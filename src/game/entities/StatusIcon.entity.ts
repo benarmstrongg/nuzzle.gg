@@ -7,7 +7,7 @@ const spritesheetHeight = 96;
 const w = 44;
 const h = 16;
 
-const frames: Record<Exclude<StatusId, 'fnt'>, SpritesheetFrame> = {
+const frames: Record<StatusId, SpritesheetFrame> = {
   slp: { x: 0, y: 0, w, h },
   psn: { x: 0, y: h, w, h },
   brn: { x: 0, y: h * 2, w, h },
@@ -17,16 +17,14 @@ const frames: Record<Exclude<StatusId, 'fnt'>, SpritesheetFrame> = {
 };
 
 export class StatusIcon extends Entity implements ISprite {
-  sprite = new Sprite(this, {
-    assetUrl,
-    spritesheet: { frames, w, h: spritesheetHeight },
-  });
+  sprite: Sprite<StatusId>;
 
   constructor(status: StatusId) {
     super();
-    if (status === 'fnt') {
-      return;
-    }
-    this.sprite.set(status);
+
+    this.sprite = new Sprite(this, {
+      assetUrl,
+      spritesheet: { frames, w, h: spritesheetHeight, defaultFrame: status },
+    });
   }
 }

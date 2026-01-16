@@ -14,13 +14,13 @@ const frames: Record<MoveCategoryId, SpritesheetFrame> = {
 };
 
 export class CategoryIcon extends Entity implements ISprite {
-  sprite = new Sprite(this, {
-    assetUrl,
-    spritesheet: { frames, w, h: spritesheetHeight },
-  });
+  sprite: Sprite<MoveCategoryId>;
 
   constructor(category: MoveCategoryId) {
     super();
-    this.sprite.set(category);
+    this.sprite = new Sprite(this, {
+      assetUrl,
+      spritesheet: { frames, w, h: spritesheetHeight, defaultFrame: category },
+    });
   }
 }

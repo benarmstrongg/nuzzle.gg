@@ -5,7 +5,7 @@ export class Collider {
     return 'collider' in entity && entity.collider instanceof Collider;
   }
 
-  constructor(private entity: Entity) {}
+  constructor(_entity: Entity) {}
 }
 
 export interface ICollider {
