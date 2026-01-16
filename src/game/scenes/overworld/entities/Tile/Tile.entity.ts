@@ -1,6 +1,6 @@
 import { Entity, ISprite, Sprite } from '../../../../../engine';
-import { MapTileData } from './types';
-import { Item } from './Item.entity';
+import { WorldTileMetadata } from '../World/types';
+import { Item } from '../World/Item.entity';
 
 const w = 10;
 const h = 10;
@@ -11,11 +11,11 @@ const frames = {
 export class Tile extends Entity implements ISprite {
   sprite = new Sprite(this, {
     assetUrl: '',
-    spritesheet: { frames, w, h },
+    spritesheet: { frames, w, h, defaultFrame: 'grass' },
   });
   item?: Item;
 
-  constructor(data: MapTileData) {
+  constructor(data: WorldTileMetadata) {
     super();
     switch (data.type) {
       case 'none':

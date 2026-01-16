@@ -14,6 +14,8 @@ export abstract class Scene extends Entity implements IContainer {
   private background?: Entity & ISprite;
 
   constructor(options?: SceneOptions) {
+    // TODO: do we really wanna unload scenes when we load a new one?
+    // idk how we track tickers otherwise
     game.unloadScene();
     super();
     this.container = new Container(this);
