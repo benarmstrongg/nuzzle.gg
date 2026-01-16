@@ -1,4 +1,5 @@
-import { Dex, Pokemon } from 'pokemon-showdown/sim';
+import { Dex } from '@pkmn/dex';
+import { Pokemon } from '@pkmn/sim';
 import { Container, Entity, IContainer, TransformState } from '../../engine';
 
 export class NatureText extends Entity implements IContainer {
@@ -7,8 +8,7 @@ export class NatureText extends Entity implements IContainer {
   constructor(pokemon: Pokemon, transform?: Partial<TransformState>) {
     super();
 
-    const nature = Dex.natures.get(pokemon.set.nature);
-    const { name, plus, minus } = Dex.natures.get(nature);
+    const { name, plus, minus } = Dex.natures.get(pokemon.set.nature);
 
     const { width, height, x, y } = transform ?? {};
     this.transform.set({ width, height, x, y });

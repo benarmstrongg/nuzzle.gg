@@ -1,10 +1,8 @@
 import { expose } from 'comlink';
-import TeamGenerator from 'pokemon-showdown/data/mods/base/cg-teams';
-import { PRNG, toID } from 'pokemon-showdown/sim';
+import { TeamGenerators } from '@pkmn/randoms';
 
-export const generateTeam = (teamSize = 6) => {
-  const teamGen = new TeamGenerator(toID('gen9ubers'), PRNG.generateSeed());
-  teamGen.teamSize = teamSize;
+export const generateTeam = (_teamSize = 6) => {
+  const teamGen = TeamGenerators.getTeamGenerator('gen9randombattle');
 
   return teamGen.getTeam();
 };

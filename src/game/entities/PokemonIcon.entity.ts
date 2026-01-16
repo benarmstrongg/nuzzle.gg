@@ -1,6 +1,6 @@
+import { Pokemon } from '@pkmn/sim';
 import { Entity, ISprite, Sprite } from '../../engine';
 import { getPokemonIconPath, getPokemonSpritePaths } from '../util/assets.util';
-import { Pokemon } from 'pokemon-showdown/sim';
 
 export class PokemonIcon extends Entity implements ISprite {
   static width = 68;

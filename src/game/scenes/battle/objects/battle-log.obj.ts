@@ -1,8 +1,8 @@
 import { ContainerOptions } from 'pixi.js';
-import { MessageBox } from '../../../entities';
-import { Battle } from 'pokemon-showdown/sim';
-import { toID } from 'pokemon-showdown/sim/dex-data';
+import { Battle } from '@pkmn/sim';
 import { Side } from '../battle.types';
+
+class MessageBox {}
 
 type BattleLogOptions = ContainerOptions & {
   battle: Battle;
@@ -25,9 +25,9 @@ export class BattleLog extends MessageBox {
   private abilityText: Record<string, Record<string, string>>;
 
   constructor(opts: BattleLogOptions) {
-    super(opts);
+    super();
     this.battle = opts.battle;
-    const textData = opts.battle.dex.loadTextData();
+    const textData = opts.battle.dex.loadData();
     this.generalText = textData.Default;
     this.moveText = textData.Moves;
     this.itemText = textData.Items;

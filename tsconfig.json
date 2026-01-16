@@ -21,5 +21,5 @@
     "strictPropertyInitialization": false,
     "noImplicitAny": true
   },
-  "include": ["src", "assets/scripts"]
+  "include": ["src"]
 }

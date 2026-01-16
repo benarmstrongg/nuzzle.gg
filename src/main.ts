@@ -1,4 +1,4 @@
-import { Battle, toID } from 'pokemon-showdown/sim';
+import { Battle, toID } from '@pkmn/sim';
 import { Box } from './game/scenes/box/Box.scene';
 import { game } from './engine';
 import { teamGenWorker } from './game/workers';

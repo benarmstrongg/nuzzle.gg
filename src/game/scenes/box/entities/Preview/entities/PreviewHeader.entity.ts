@@ -1,4 +1,5 @@
-import { Dex, Pokemon } from 'pokemon-showdown/sim';
+import { Dex } from '@pkmn/dex';
+import { Pokemon } from '@pkmn/sim';
 import { Container, Entity, IContainer } from '../../../../../../engine';
 
 const width = 178;

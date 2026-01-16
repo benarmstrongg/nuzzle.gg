@@ -1,9 +1,9 @@
 import { Spritesheet } from 'pixi.js';
 import { loadSpritesheet } from '../../../util/assets.util';
 import { BattleButton } from './button.obj';
-import { SpriteObjectOptions } from '../../../../engine';
-import { toID } from 'pokemon-showdown/sim';
-import { Move } from 'pokemon-showdown/sim/dex-moves';
+import { Move } from '@pkmn/dex';
+
+type SpriteObjectOptions = any;
 
 const ASSET = 'spritesheets/battle_move_button.png';
 const SPRITESHEET_WIDTH = 260;
@@ -81,7 +81,7 @@ export class MoveButton extends BattleButton {
   constructor(opts: MoveButtonOptions) {
     super({
       ...opts,
-      textureId: toID(opts.moveData.type),
+      textureId: opts.moveData.type,
       spritesheet: MoveButton.spritesheet,
     });
     this.moveData = opts.moveData;

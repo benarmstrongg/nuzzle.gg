@@ -1,6 +1,6 @@
+import { Pokemon } from '@pkmn/sim';
 import { getPokemonSpritePaths } from '../util/assets.util';
 import { Entity, ISprite, Sprite } from '../../engine';
-import { Pokemon } from 'pokemon-showdown/sim';
 
 const anchor = { x: 0.5, y: 0.5 };
 

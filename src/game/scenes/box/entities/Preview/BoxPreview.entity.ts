@@ -1,4 +1,4 @@
-import { Pokemon } from 'pokemon-showdown/sim';
+import { Pokemon } from '@pkmn/sim';
 import { Container, Entity, IContainer } from '../../../../../engine';
 import { PreviewData, PreviewHeader, PreviewPokemon } from './entities';
 

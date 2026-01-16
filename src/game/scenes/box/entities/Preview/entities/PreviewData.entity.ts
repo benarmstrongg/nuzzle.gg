@@ -1,5 +1,5 @@
-import { Dex, Pokemon } from 'pokemon-showdown/sim';
-import { toID } from 'pokemon-showdown/sim/dex-data';
+import { Dex } from '@pkmn/dex';
+import { Pokemon } from '@pkmn/sim';
 import { Container, Entity, IContainer } from '../../../../../../engine';
 import { ItemIcon, TypeIcon } from '../../../../../entities';
 import { NatureText } from '../../../../../entities/NatureText.entity';
@@ -17,7 +17,9 @@ export class PreviewData extends Entity implements IContainer {
     this.transform.set({ width, height });
     this.container.layout.flex({ direction: 'column', gap: 2, gutterY: 5 });
 
-    const [type1, type2] = pokemon.types;
+    const [type1, type2] = pokemon.types.map(
+      (type) => Dex.types.get(type).name
+    );
     const { name: ability } = Dex.abilities.get(pokemon.ability);
     const { name: item } = Dex.items.get(pokemon.set.item);
 
@@ -40,8 +42,8 @@ export class PreviewData extends Entity implements IContainer {
           width,
           height: sectionHeight,
         },
-        new TypeIcon(toID(type1)),
-        !!type2 && new TypeIcon(toID(type2))
+        new TypeIcon(type1),
+        !!type2 && new TypeIcon(type2)
       ),
 
       Entity.container.center(
@@ -51,7 +53,7 @@ export class PreviewData extends Entity implements IContainer {
 
       Entity.container.center(
         { width, height: sectionHeight, gap: 2 },
-        !!item && new ItemIcon(toID(item)),
+        !!item && new ItemIcon(item),
         !!item && Entity.text.lg(item)
       )
     );

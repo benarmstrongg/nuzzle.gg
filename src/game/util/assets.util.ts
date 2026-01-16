@@ -1,5 +1,6 @@
+import { Dex } from '@pkmn/dex';
+import { Pokemon } from '@pkmn/sim';
 import { Assets, Spritesheet, SpritesheetFrameData, Texture } from 'pixi.js';
-import { Dex, Pokemon } from 'pokemon-showdown/sim';
 
 // export function getPokemonSpritePath(
 //   pokemon: string,
