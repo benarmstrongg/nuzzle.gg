@@ -1,7 +1,7 @@
-import { Pokemon } from '@pkmn/sim';
-import { getPokemonSpritePaths } from '../util/assets.util';
+import { Dex, Pokemon } from '@pkmn/sim';
 import { Entity, ISprite, Sprite } from '../../engine';
 
+// const transform = { width: 150, height: 150 };
 const anchor = { x: 0.5, y: 0.5 };
 
 export class PokemonSprite extends Entity implements ISprite {
@@ -10,13 +10,29 @@ export class PokemonSprite extends Entity implements ISprite {
   constructor(pokemon: Pokemon, type: 'front' | 'back' = 'front') {
     super();
 
-    const { front, back } = getPokemonSpritePaths(pokemon);
+    const { front, back } = PokemonSprite.getSpritePaths(pokemon);
+    console.log(front, back);
     const assetUrl = type === 'front' ? front : back;
     const fallbackAssetUrls = [
       type === 'front' ? back : front,
       'sprites/items/unknown.png',
     ];
-    this.sprite = new Sprite(this, { assetUrl, fallbackAssetUrls, anchor });
+    this.sprite = new Sprite(this, {
+      assetUrl,
+      fallbackAssetUrls,
+      anchor,
+      // transform,
+    });
+  }
+
+  static getSpritePaths(pokemon: Pokemon) {
+    const { num, forme } = Dex.species.get(pokemon.species.name);
+    const slug = forme ? `${num}-${forme.toLowerCase()}` : num.toString();
+
+    return {
+      front: `sprites/pokemon/${slug}.png`,
+      back: `sprites/pokemon/back/${slug}.png`,
+    };
   }
 
   // TODO: old logic for gen9 mons missing backsprites

@@ -1,7 +1,7 @@
-import { Dex } from '@pkmn/dex';
-import { Pokemon } from '@pkmn/sim';
+import { Dex, Pokemon } from '@pkmn/sim';
 import { Container, Entity, IContainer } from '../../../../../../engine';
 import { TypeIcon } from '../../../../../entities';
+import { toTypeId } from '../../../../../util';
 
 type MoveSlot = Pokemon['moveSlots'][number];
 
@@ -15,7 +15,7 @@ class PreviewMove extends Entity implements IContainer {
     this.container.add(
       Entity.text(move.name),
       Entity.text(`${moveSlot.pp}/${moveSlot.maxpp}`),
-      new TypeIcon(move.type)
+      new TypeIcon(toTypeId(move.type))
     );
   }
 }

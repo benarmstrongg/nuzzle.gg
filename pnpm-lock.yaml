@@ -11,12 +11,6 @@ importers:
       '@pixi/gif':
         specifier: ^3.0.0
         version: 3.0.1(pixi.js@8.15.0)
-      '@pkmn/data':
-        specifier: ^0.10.5
-        version: 0.10.5
-      '@pkmn/dex':
-        specifier: ^0.10.5
-        version: 0.10.5
       '@pkmn/randoms':
         specifier: ^0.10.5
         version: 0.10.5
@@ -187,15 +181,6 @@ packages:
     resolution: {integrity: sha512-oGl0nkbFAe1vaRLyIvGbJc3fcIrS8vF1E00cwjiV+9f1pYe072D+yijJxHsgYnXs6jdzERh+D0MqSrEag0jRzg==}
     peerDependencies:
       pixi.js: ^8.0.0
-
-  '@pkmn/data@0.10.5':
-    resolution: {integrity: sha512-8s3X9Q+jkJiyrhvdtzO4Uqd9cMWlYh2OSbbfvBRYO85PwmyDBO36QjqRDWbAoBwmH3MOMuLHmlIXv5EAICJqWw==}
-
-  '@pkmn/dex-types@0.10.5':
-    resolution: {integrity: sha512-saehdCTV/I1GL/VRGYknOt4cnUcf5Jeg73ZDalWsjG/DneIbAVUS1j7v9kelvVJ51UT0dymgUpqFdVvIIEJ9hA==}
-
-  '@pkmn/dex@0.10.5':
-    resolution: {integrity: sha512-id55qAIMekv1EMFgm761kVT2m+gcgrpgYYZWM7cX+1e8ufGmIALV7RCEZ+4tcOMI9jeAY6Bm3dNzMkgzKICImA==}
 
   '@pkmn/randoms@0.10.5':
     resolution: {integrity: sha512-+7Wm+dPyoU4WBz5JO1cZ54WmKunON9HkzI/6RVDamdp4tEUUekoVQc+JXxZv+M3ojTixPzlw3juhCZaoqdA16Q==}
@@ -527,18 +512,6 @@ snapshots:
   '@pixi/gif@3.0.1(pixi.js@8.15.0)':
     dependencies:
       pixi.js: 8.15.0
-
-  '@pkmn/data@0.10.5':
-    dependencies:
-      '@pkmn/dex-types': 0.10.5
-
-  '@pkmn/dex-types@0.10.5':
-    dependencies:
-      '@pkmn/types': 4.0.0
-
-  '@pkmn/dex@0.10.5':
-    dependencies:
-      '@pkmn/dex-types': 0.10.5
 
   '@pkmn/randoms@0.10.5':
     dependencies:

@@ -1,5 +1,4 @@
-import { Dex } from '@pkmn/dex';
-import { Pokemon } from '@pkmn/sim';
+import { Dex, Pokemon } from '@pkmn/sim';
 import { Container, Entity, IContainer } from '../../../../../../engine';
 
 const width = 178;

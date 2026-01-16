@@ -1,8 +1,8 @@
-import { Dex } from '@pkmn/dex';
-import { Pokemon } from '@pkmn/sim';
+import { Pokemon, Dex } from '@pkmn/sim';
 import { Container, Entity, IContainer } from '../../../../../../engine';
 import { ItemIcon, TypeIcon } from '../../../../../entities';
 import { NatureText } from '../../../../../entities/NatureText.entity';
+import { toItemId, toTypeId } from '../../../../../util';
 
 const width = 172;
 const height = 155;
@@ -17,8 +17,8 @@ export class PreviewData extends Entity implements IContainer {
     this.transform.set({ width, height });
     this.container.layout.flex({ direction: 'column', gap: 2, gutterY: 5 });
 
-    const [type1, type2] = pokemon.types.map(
-      (type) => Dex.types.get(type).name
+    const [type1, type2] = pokemon.types.map((type) =>
+      toTypeId(Dex.types.get(type).id)
     );
     const { name: ability } = Dex.abilities.get(pokemon.ability);
     const { name: item } = Dex.items.get(pokemon.set.item);
@@ -53,7 +53,7 @@ export class PreviewData extends Entity implements IContainer {
 
       Entity.container.center(
         { width, height: sectionHeight, gap: 2 },
-        !!item && new ItemIcon(item),
+        !!item && new ItemIcon(toItemId(item)),
         !!item && Entity.text.lg(item)
       )
     );

@@ -244,7 +244,7 @@ export class BoxStorage extends Entity implements IContainer, ISignal {
 
     this.initPage(pokemon);
     this.initCursor();
-    this.initMenu();
+    // this.initMenu();
 
     this.container.add(this.page, this.cursor, this.menu);
   }

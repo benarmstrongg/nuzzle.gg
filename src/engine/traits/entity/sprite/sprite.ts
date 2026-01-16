@@ -57,8 +57,7 @@ export class Sprite<
       options.spritesheet
     );
 
-    this.initTransform();
-    this.initSprite(options);
+    this.initSprite(options).then(() => this.initTransform());
   }
 
   // TODO: should sheet stuff be move to a sheet class?

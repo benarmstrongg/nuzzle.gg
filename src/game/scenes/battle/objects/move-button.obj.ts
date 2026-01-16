@@ -1,9 +1,9 @@
+import { Move } from '@pkmn/sim';
 import { Spritesheet } from 'pixi.js';
-import { loadSpritesheet } from '../../../util/assets.util';
 import { BattleButton } from './button.obj';
-import { Move } from '@pkmn/dex';
 
 type SpriteObjectOptions = any;
+const loadSpritesheet = (...args: any[]): any => {};
 
 const ASSET = 'spritesheets/battle_move_button.png';
 const SPRITESHEET_WIDTH = 260;

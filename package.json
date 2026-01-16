@@ -16,8 +16,6 @@
   },
   "dependencies": {
     "@pixi/gif": "^3.0.0",
-    "@pkmn/data": "^0.10.5",
-    "@pkmn/dex": "^0.10.5",
     "@pkmn/randoms": "^0.10.5",
     "@pkmn/sim": "^0.10.5",
     "comlink": "^4.4.2",

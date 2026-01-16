@@ -1,5 +1,4 @@
-import { Dex } from '@pkmn/dex';
-import { Pokemon } from '@pkmn/sim';
+import { Dex, Pokemon } from '@pkmn/sim';
 import { Container, Entity, IContainer, TransformState } from '../../engine';
 
 export class NatureText extends Entity implements IContainer {
@@ -20,7 +19,7 @@ export class NatureText extends Entity implements IContainer {
     });
 
     this.container.add(
-      Entity.text.lg(name),
+      Entity.text.lg(name || 'Serious'),
       (plus || minus) &&
         Entity.container.flex(
           { gap: 2 },
