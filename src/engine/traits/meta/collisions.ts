@@ -13,6 +13,12 @@ export class Collisions {
   private grid: Array2d<Set<ColliderEntity>> = [];
 
   constructor(entity: Entity & IContainer) {
+    if (!entity.container) {
+      throw new Error(
+        'Entity must have a container. Ensure container is initialized before collisions.'
+      );
+    }
+
     const { width, height } = entity['inner'];
     this.grid = Array.from({ length: height }, () =>
       Array.from({ length: width }, () => new Set<ColliderEntity>())

@@ -1,13 +1,15 @@
 import {
+  Array2d,
   Collisions,
   Container,
   Entity,
   ICollisions,
   IContainer,
 } from '../../../../../engine';
-import { BackgroundTile } from '../BackgroundTile/BackgroundTile';
+import { BackgroundTile, BackgroundTileMetadata } from '../BackgroundTile';
 import { Tile } from '../Tile';
-import { WorldData } from './types';
+import { WorldData, WorldTileMetadata } from './types';
+import { WorldBorder } from './WorldBorder.entity';
 
 export class World extends Entity implements IContainer, ICollisions {
   container: Container;
@@ -21,26 +23,51 @@ export class World extends Entity implements IContainer, ICollisions {
       tiles,
     } = data;
 
-    const width = BackgroundTile.width * columns;
-    const height = BackgroundTile.height * rows;
-
     this.container = new Container(
       this,
-      Entity.container.grid(
-        { rows, columns, width, height },
-        ...backgroundTiles.flatMap((row) =>
-          row.map(({ tile, frame }) => new BackgroundTile(tile, frame))
-        )
-      ),
-      Entity.container.grid(
-        { rows, columns, width, height },
-        ...tiles.flatMap((row) => row.map((metadata) => new Tile(metadata)))
-      )
+      new WorldBorder(rows, columns),
+      this.initBackgroundTileContainer(backgroundTiles, rows, columns),
+      this.initWorldTileContainer(tiles, rows, columns)
     );
 
     this.collisions = new Collisions(this);
 
     // TODO: fix this
     this['ready'] = true;
+  }
+
+  private initBackgroundTileContainer(
+    backgroundTiles: Array2d<BackgroundTileMetadata>,
+    rows: number,
+    columns: number
+  ) {
+    const x = WorldBorder.gutter;
+    const y = WorldBorder.gutter;
+    const width = BackgroundTile.width * columns;
+    const height = BackgroundTile.height * rows;
+
+    return Entity.container.grid(
+      { rows, columns, width, height, x, y },
+      ...backgroundTiles.flatMap((row) =>
+        row.map(({ tile, frame }) => new BackgroundTile(tile, frame))
+      )
+    );
+  }
+
+  private initWorldTileContainer(
+    tiles: Array2d<WorldTileMetadata>,
+    rows: number,
+    columns: number
+  ) {
+    const x = WorldBorder.gutter;
+    const y = WorldBorder.gutter;
+    // TODO: is this fine?
+    const width = BackgroundTile.width * columns;
+    const height = BackgroundTile.height * rows;
+
+    return Entity.container.grid(
+      { rows, columns, width, height, x, y },
+      ...tiles.flatMap((row) => row.map((metadata) => new Tile(metadata)))
+    );
   }
 }
