@@ -1,60 +1,64 @@
-import { Entity } from '../../core';
+import { Entity, Scene } from '../../core';
 import { Array2d } from '../../types';
-import { IContainer } from '../entity';
 import { Collider, ICollider } from './collider';
 
 type ColliderEntity = Entity & ICollider;
 
 export class Collisions {
-  private colliders = new Map<
+  private colliderListeners = new Map<
     ColliderEntity,
     { x: (value: number) => void; y: (value: number) => void }
   >();
   private grid: Array2d<Set<ColliderEntity>> = [];
 
-  constructor(entity: Entity & IContainer) {
-    if (!entity.container) {
+  constructor(scene: Scene) {
+    if (!scene.container) {
       throw new Error(
-        'Entity must have a container. Ensure container is initialized before collisions.'
+        'Entity must have a container. Ensure Container is initialized before Collisions.'
       );
     }
 
-    const { width, height } = entity['inner'];
+    const { width, height } = scene.transform;
     this.grid = Array.from({ length: height }, () =>
       Array.from({ length: width }, () => new Set<ColliderEntity>())
     );
 
-    entity.container.onChildAdded((child) => {
-      if (!child || !Collider.isCollider(child) || this.colliders.has(child)) {
-        return;
-      }
+    scene.container.onChildAdded((child) => this.onChildAdded(child));
+    scene.container.onChildRemoved((child) => this.onChildRemoved(child));
+    scene.container.children.forEach((child) => this.onChildAdded(child));
+  }
 
-      this.applyEntityToGrid(child, 'add');
+  private onChildAdded(entity: Entity) {
+    console.log('onChildAdded', entity);
+    if (!Collider.isCollider(entity) || this.colliderListeners.has(entity)) {
+      return;
+    }
 
-      const listeners = {
-        x: (x: number) => this.onColliderMove(child, 'x', x),
-        y: (y: number) => this.onColliderMove(child, 'y', y),
-      };
-      this.colliders.set(child, listeners);
-      child.transform.on('x', listeners.x);
-      child.transform.on('y', listeners.y);
-    });
+    this.applyEntityToGrid(entity, 'add');
 
-    entity.container.onChildRemoved((child) => {
-      if (!child || !Collider.isCollider(child) || !this.colliders.has(child)) {
-        return;
-      }
-      this.applyEntityToGrid(child, 'remove');
+    const listeners = {
+      x: (x: number) => this.onColliderMove(entity, 'x', x),
+      y: (y: number) => this.onColliderMove(entity, 'y', y),
+    };
+    this.colliderListeners.set(entity, listeners);
+    entity.transform.on('x', listeners.x);
+    entity.transform.on('y', listeners.y);
+  }
 
-      const listeners = this.colliders.get(child);
-      if (!listeners) {
-        return;
-      }
+  private onChildRemoved(entity: Entity) {
+    if (!Collider.isCollider(entity) || !this.colliderListeners.has(entity)) {
+      return;
+    }
 
-      this.colliders.delete(child);
-      child.transform.off('x', listeners.x);
-      child.transform.off('y', listeners.y);
-    });
+    this.applyEntityToGrid(entity, 'remove');
+
+    const listeners = this.colliderListeners.get(entity);
+    if (!listeners) {
+      return;
+    }
+    this.colliderListeners.delete(entity);
+    entity.transform.off('x', listeners.x);
+    entity.transform.off('y', listeners.y);
   }
 
   private onColliderMove(
@@ -62,10 +66,6 @@ export class Collisions {
     axis: 'x' | 'y',
     value: number
   ) {
-    this.updateGrid(entity, axis, value);
-  }
-
-  private updateGrid(entity: ColliderEntity, axis: 'x' | 'y', value: number) {
     const oldPos = entity.transform[axis];
     const newPos = value;
 
@@ -115,7 +115,9 @@ export class Collisions {
           continue;
         }
 
-        this.grid[gridY][gridX].delete(entity);
+        const cell = this.grid[gridY][gridX];
+        cell.delete(entity);
+        this.onColliderExit(entity, cell);
       }
     }
 
@@ -145,9 +147,31 @@ export class Collisions {
           continue;
         }
 
-        this.grid[gridY][gridX].add(entity);
+        const cell = this.grid[gridY][gridX];
+        cell.add(entity);
+        this.onColliderEnter(entity, cell);
       }
     }
+  }
+
+  private onColliderEnter(entity: ColliderEntity, cell: Set<ColliderEntity>) {
+    cell.forEach((cellEntity) => {
+      if (cellEntity === entity) {
+        return;
+      }
+
+      cellEntity.collider.enter(entity);
+    });
+  }
+
+  private onColliderExit(entity: ColliderEntity, cell: Set<ColliderEntity>) {
+    cell.forEach((cellEntity) => {
+      if (cellEntity === entity) {
+        return;
+      }
+
+      cellEntity.collider.exit(entity);
+    });
   }
 
   private applyEntityToGrid(entity: ColliderEntity, action: 'add' | 'remove') {

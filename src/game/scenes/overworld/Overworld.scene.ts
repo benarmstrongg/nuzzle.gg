@@ -1,4 +1,10 @@
-import { Array2d, Entity, Scene } from '../../../engine';
+import {
+  Array2d,
+  Collisions,
+  Entity,
+  ICollisions,
+  Scene,
+} from '../../../engine';
 import { World } from './entities/World/World.entity';
 import { Player } from './entities/Player.entity';
 import { BackgroundTileMetadata } from './entities/BackgroundTile/types';
@@ -46,7 +52,9 @@ const tmpBackgroundTiles: Array2d<BackgroundTileMetadata> = [
   ],
 ];
 
-export class Overworld extends Scene {
+export class Overworld extends Scene implements ICollisions {
+  collisions = new Collisions(this);
+
   player = new Player();
   world = new World({
     dimensions: { w: 20, l: 20 },

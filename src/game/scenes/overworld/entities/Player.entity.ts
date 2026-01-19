@@ -1,9 +1,16 @@
-import { Controls, Entity, IControls } from '../../../../engine';
+import {
+  Collider,
+  Controls,
+  Entity,
+  ICollider,
+  IControls,
+} from '../../../../engine';
 import { Character } from '../../../entities';
 
-export class Player extends Entity implements IControls {
+export class Player extends Entity implements IControls, ICollider {
   character = new Character('red');
   controls = Controls.selected();
+  collider = new Collider(this);
 
   constructor() {
     super();

@@ -1,19 +1,11 @@
-import {
-  Array2d,
-  Collisions,
-  Container,
-  Entity,
-  ICollisions,
-  IContainer,
-} from '../../../../../engine';
+import { Array2d, Container, Entity, IContainer } from '../../../../../engine';
 import { BackgroundTile, BackgroundTileMetadata } from '../BackgroundTile';
 import { Tile } from '../Tile';
 import { WorldData, WorldTileMetadata } from './types';
 import { WorldBorder } from './WorldBorder.entity';
 
-export class World extends Entity implements IContainer, ICollisions {
+export class World extends Entity implements IContainer {
   container: Container;
-  collisions: Collisions;
 
   constructor(data: WorldData) {
     super();
@@ -29,8 +21,6 @@ export class World extends Entity implements IContainer, ICollisions {
       this.initBackgroundTileContainer(backgroundTiles, rows, columns),
       this.initWorldTileContainer(tiles, rows, columns)
     );
-
-    this.collisions = new Collisions(this);
 
     // TODO: fix this
     this['ready'] = true;

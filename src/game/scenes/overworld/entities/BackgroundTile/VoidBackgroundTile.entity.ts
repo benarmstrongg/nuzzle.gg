@@ -31,11 +31,10 @@ export class VoidBackgroundTile extends Entity implements ISprite, ICollider {
     assetUrl,
     spritesheet: { frames, w, h, defaultFrame: 'void1' },
   });
-  collider: Collider;
+  collider = new Collider(this);
 
   constructor(position: Coordinate) {
     super();
-    this.collider = new Collider(this);
     this.transform.set({ width, height, ...position });
   }
 }
