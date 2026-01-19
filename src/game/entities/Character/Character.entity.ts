@@ -39,7 +39,6 @@ export class Character extends Entity implements ISprite {
   }
 
   walk(direction: CharacterDirection) {
-    console.log('walk', direction);
     this.orientation = direction;
     this.sprite.animation.play(`walk_${direction}`);
 

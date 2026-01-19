@@ -38,7 +38,6 @@ export class Controls {
   }
 
   press(action: ControlsAction, callback: () => void) {
-    console.log(`press ${action} registered`);
     this.pressListeners[action] = this.createKeybindingListener(
       this.keys[action],
       callback
@@ -48,7 +47,6 @@ export class Controls {
   }
 
   hold(action: ControlsAction, down: () => void, up: () => void) {
-    console.log(`hold ${action} registered`);
     this.holdListeners[action].down = this.createKeybindingListener(
       this.keys[action],
       down
@@ -63,8 +61,6 @@ export class Controls {
   }
 
   off(action: ControlsAction) {
-    console.log(`controls ${action} deregistered`);
-
     document.removeEventListener('keypress', this.pressListeners[action]);
     this.pressListeners[action] = () => {};
 

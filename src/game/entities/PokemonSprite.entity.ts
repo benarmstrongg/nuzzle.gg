@@ -11,7 +11,6 @@ export class PokemonSprite extends Entity implements ISprite {
     super();
 
     const { front, back } = PokemonSprite.getSpritePaths(pokemon);
-    console.log(front, back);
     const assetUrl = type === 'front' ? front : back;
     const fallbackAssetUrls = [
       type === 'front' ? back : front,

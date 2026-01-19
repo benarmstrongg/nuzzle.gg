@@ -263,7 +263,6 @@ export class BoxStorage extends Entity implements IContainer, ISignal {
     });
 
     this.cursor.signal.on('select', () => {
-      console.log('select');
       this.menu.show();
     });
   }

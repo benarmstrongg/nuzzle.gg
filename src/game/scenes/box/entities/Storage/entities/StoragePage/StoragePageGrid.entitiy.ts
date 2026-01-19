@@ -33,12 +33,6 @@ type StoragePageGridState = {
   data: StoragePageGridData;
 };
 
-const blankCell = () =>
-  Entity.container.flex({
-    width: PokemonIcon.width,
-    height: PokemonIcon.height,
-  });
-
 export class StoragePageGrid extends Entity implements IContainer, IState {
   container = new Container(this);
   state: State<StoragePageGridState>;
@@ -50,7 +44,6 @@ export class StoragePageGrid extends Entity implements IContainer, IState {
     this.container.layout.grid({ rows, columns });
 
     this.setGridData(pagePokemon);
-    console.log(this.state.data);
   }
 
   private setGridData(pagePokemon: Pokemon[]) {
@@ -67,7 +60,9 @@ export class StoragePageGrid extends Entity implements IContainer, IState {
         const pokemon = rowPokemon[col] ?? null;
         const index = col + startIndex;
         gridRow.push({ pokemon, index });
-        children.push(pokemon ? new PokemonIcon(pokemon) : blankCell());
+        children.push(
+          pokemon ? new PokemonIcon(pokemon) : StoragePageGrid.emptyCell()
+        );
       }
 
       grid.push(gridRow as GridRow);
@@ -102,5 +97,12 @@ export class StoragePageGrid extends Entity implements IContainer, IState {
 
     cursor.state.pokemon = pokemon;
     return pokemon;
+  }
+
+  private static emptyCell() {
+    return Entity.container.flex({
+      width: PokemonIcon.width,
+      height: PokemonIcon.height,
+    });
   }
 }
