@@ -9,8 +9,10 @@ type SceneOptions = {
   backgroundAssetUrl?: string;
 };
 
+type SceneEntity = Entity & IContainer & { _scene: Scene };
+
 export abstract class Scene {
-  private entity: Entity & IContainer;
+  private entity: SceneEntity;
   private loadingFallback?: Entity;
   private background?: Entity & ISprite;
 
@@ -26,7 +28,7 @@ export abstract class Scene {
     // TODO: do we really wanna unload scenes when we load a new one?
     // idk how we track tickers otherwise
     game.unloadScene();
-    this.entity = containerFactory();
+    this.setSceneEntity(containerFactory());
     this.init(options);
   }
 
@@ -48,7 +50,8 @@ export abstract class Scene {
   protected abstract render(): Entity & IContainer;
 
   load() {
-    this.entity = this.render();
+    this.entity.destroy();
+    this.setSceneEntity(this.render());
   }
 
   destroy() {
@@ -57,6 +60,16 @@ export abstract class Scene {
     this.background?.destroy();
     this.loadingFallback?.destroy();
     this.entity.destroy();
+  }
+
+  private setSceneEntity(entity: Entity & IContainer) {
+    const sceneEntity = entity as SceneEntity;
+    sceneEntity._scene = this;
+    this.entity = sceneEntity;
+  }
+
+  static isSceneEntity(entity: Entity): entity is SceneEntity {
+    return !!entity && '_scene' in entity && !!entity._scene;
   }
 }
 

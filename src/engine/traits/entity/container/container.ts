@@ -56,8 +56,10 @@ export class Container {
 
       this.inner.addChild(entity['inner']);
       this.children.push(entity);
+      entity.onRender(this.entity);
       this.signal.emit('childAdded', entity);
       entity.onReady(() => this.onChildReadyChange());
+
       // TODO: this works but why? what is racing here? are events not firing?
       // setTimeout(() => entity.onReady(() => this.onChildReadyChange()), 1000);
     });
