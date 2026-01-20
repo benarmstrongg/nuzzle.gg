@@ -1,5 +1,11 @@
 import { GameObject } from './object';
-import { containerFactory, spriteFactory, State } from '../traits';
+import {
+  type ContainerEntity,
+  Container,
+  containerFactory,
+  spriteFactory,
+  State,
+} from '../traits';
 import { cover, draggable, log } from '../debug';
 import { textFactory } from '../traits/entity/text';
 import { Transform } from './transform';
@@ -25,13 +31,13 @@ export class Entity {
     this.inner.visible = visible;
   }
 
-  private parentContainer?: Entity;
-  get parent(): Entity {
-    if (!this.parentContainer) {
+  private _parent?: ContainerEntity;
+  get parent(): ContainerEntity {
+    if (!this._parent) {
       throw new Error('Cannot access parent of unrendered entity');
     }
 
-    return this.parentContainer;
+    return this._parent;
   }
 
   get scene(): Scene {
@@ -61,8 +67,12 @@ export class Entity {
     });
   }
 
-  onRender(parent: Entity) {
-    this.parentContainer = parent;
+  onRender(container: Entity) {
+    if (!Container.isContainer(container)) {
+      throw new Error('Parent is not a container');
+    }
+
+    this._parent = container;
   }
 
   destroy() {

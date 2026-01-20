@@ -3,6 +3,7 @@ import { Box } from './utils/box';
 import { game, type Entity } from '../../../core';
 import { Signal } from '../../meta';
 import { GameObject } from '../../../core/object';
+import type { ContainerEntity } from './types';
 
 type ContainerSignal = {
   childAdded: Entity;
@@ -110,6 +111,12 @@ export class Container {
     if (!this.children.every((entity) => entity.ready)) return;
 
     this.entity.ready = true;
+  }
+
+  static isContainer(entity: Entity): entity is ContainerEntity {
+    return (
+      !!entity && 'container' in entity && entity.container instanceof Container
+    );
   }
 }
 
