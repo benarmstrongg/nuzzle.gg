@@ -1,15 +1,21 @@
 import { game } from './game';
 import type { Entity } from './entity';
 import type { Transform } from './transform';
-import { containerFactory, spriteFactory, Controls } from '../traits';
-import type { Container, IContainer, ISprite } from '../traits';
+import {
+  type Container,
+  type ContainerEntity,
+  type ISprite,
+  containerFactory,
+  spriteFactory,
+  Controls,
+} from '../traits';
 
 type SceneOptions = {
   loadingFallback?: Entity;
   backgroundAssetUrl?: string;
 };
 
-type SceneEntity = Entity & IContainer & { _scene: Scene };
+type SceneEntity = ContainerEntity & { _scene: Scene };
 
 export abstract class Scene {
   private entity: SceneEntity;
@@ -47,7 +53,7 @@ export abstract class Scene {
     }
   }
 
-  protected abstract render(): Entity & IContainer;
+  protected abstract render(): ContainerEntity;
 
   load() {
     this.entity.destroy();
@@ -62,7 +68,7 @@ export abstract class Scene {
     this.entity.destroy();
   }
 
-  private setSceneEntity(entity: Entity & IContainer) {
+  private setSceneEntity(entity: ContainerEntity) {
     const sceneEntity = entity as SceneEntity;
     sceneEntity._scene = this;
     this.entity = sceneEntity;

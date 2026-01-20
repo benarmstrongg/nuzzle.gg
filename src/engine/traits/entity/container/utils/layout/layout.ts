@@ -71,14 +71,14 @@ export class ContainerLayout {
     type: LayoutOptions['type'],
     fn: (options: T, container: Container, entity: Entity) => void
   ) {
-    if (this.options?.type !== type) {
+    if (!this.options || this.options.type !== type) {
       throw new Error(
         `Error applying ${type} layout: options is of type ${this.options?.type}`
       );
     }
 
     this.entity.onReady(() =>
-      fn(this.options! as T, this.container, this.entity)
+      fn(this.options as T, this.container, this.entity)
     );
   }
 
