@@ -35,7 +35,7 @@ export class Signal<
   }
 
   emit<E extends keyof TEvents>(
-    event: TEvents[E] extends never ? E : never
+    event: TEvents[E] extends void ? E : void
   ): void;
   emit<E extends keyof TEvents>(event: E, data: TEvents[E]): void;
   emit<E extends keyof TEvents>(event: E, data?: TEvents[E]): void {
