@@ -3,15 +3,15 @@ import { Box } from './utils/box';
 import { game, type Entity } from '../../../core';
 import { Signal } from '../../meta';
 import { GameObject } from '../../../core/object';
-import type { ContainerEntity } from './types';
+import { ContainerEntity, MaybeEntity } from '../../../types';
 
 type ContainerSignal = {
   childAdded: Entity;
   childRemoved: Entity;
-  cleared: never;
+  descendantAdded: Entity;
+  descendantRemoved: Entity;
+  cleared: void;
 };
-
-export type MaybeEntity = Entity | undefined | null | false;
 
 export class Container {
   private inner = new GameObject();
@@ -22,6 +22,14 @@ export class Container {
 
   private _height?: number;
   private _width?: number;
+
+  get descendants(): Entity[] {
+    return this.children.flatMap((child) =>
+      Container.isContainer(child)
+        ? [child, ...child.container.descendants]
+        : [child]
+    );
+  }
 
   constructor(private entity: Entity, ...children: MaybeEntity[]) {
     entity['inner'] = this.inner;
@@ -57,12 +65,15 @@ export class Container {
 
       this.inner.addChild(entity['inner']);
       this.children.push(entity);
-      entity.onRender(this.entity);
-      this.signal.emit('childAdded', entity);
-      entity.onReady(() => this.onChildReadyChange());
 
-      // TODO: this works but why? what is racing here? are events not firing?
-      // setTimeout(() => entity.onReady(() => this.onChildReadyChange()), 1000);
+      this.entity.onRender(() => {
+        this.signal.emit('descendantAdded', entity);
+        this.signal.emit('childAdded', entity);
+        entity.render(this.entity as ContainerEntity);
+        this.entity.parent.container.signal.emit('descendantAdded', entity);
+      });
+
+      entity.onReady(() => this.onChildReadyChange());
     });
 
     const { width, height } = this.layout.calculateSize();
@@ -96,6 +107,14 @@ export class Container {
 
   onCleared(listener: () => void) {
     this.signal.on('cleared', listener);
+  }
+
+  onDescendantAdded(listener: (entity: Entity) => void) {
+    this.signal.on('descendantAdded', listener);
+  }
+
+  onDescendantRemoved(listener: (entity: Entity) => void) {
+    this.signal.on('descendantRemoved', listener);
   }
 
   private setBoundingBox() {
