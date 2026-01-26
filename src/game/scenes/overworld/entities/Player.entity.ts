@@ -1,19 +1,24 @@
 import {
-  Collider,
+  Container,
   Controls,
   Entity,
-  ICollider,
+  IContainer,
   IControls,
 } from '../../../../engine';
 import { Character } from '../../../entities';
 
-export class Player extends Entity implements IControls, ICollider {
-  character = new Character('red');
+export class Player extends Entity implements IControls, IContainer {
+  container: Container;
   controls = Controls.selected();
-  collider = new Collider(this);
+
+  character = new Character('red');
 
   constructor() {
     super();
+
+    this.container = new Container(this, this.character);
+
+    this.transform.set(this.character.transform);
 
     this.controls.hold(
       'up',
