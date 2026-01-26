@@ -1,8 +1,10 @@
 import { Entity } from '../../core';
+import { ColliderEntity } from '../../types';
 
 type ColliderOptions = {
-  onEnter?: (entity: Entity) => void;
-  onExit?: (entity: Entity) => void;
+  solid?: boolean;
+  onEnter?: (entity: ColliderEntity) => void;
+  onExit?: (entity: ColliderEntity) => void;
 };
 
 export class Collider {
@@ -11,21 +13,26 @@ export class Collider {
       !!entity && 'collider' in entity && entity.collider instanceof Collider
     );
   }
-  private onEnter?: (entity: Entity) => void;
-  private onExit?: (entity: Entity) => void;
+  readonly solid: boolean;
+  private readonly onEnter?: (entity: ColliderEntity) => void;
+  private readonly onExit?: (entity: ColliderEntity) => void;
 
-  constructor(_entity: Entity, { onEnter, onExit }: ColliderOptions = {}) {
+  constructor(
+    private entity: Entity,
+    { solid = false, onEnter, onExit }: ColliderOptions = {}
+  ) {
+    this.solid = solid;
     this.onEnter = onEnter;
     this.onExit = onExit;
   }
 
-  enter(entity: Entity) {
-    console.log('enter', entity);
+  enter(entity: ColliderEntity) {
+    console.count('enter');
     this.onEnter?.(entity);
   }
 
-  exit(entity: Entity) {
-    console.log('exit', entity);
+  exit(entity: ColliderEntity) {
+    console.count('exit');
     this.onExit?.(entity);
   }
 }
