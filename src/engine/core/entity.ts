@@ -1,7 +1,5 @@
 import { GameObject } from './object';
 import {
-  type ContainerEntity,
-  Container,
   containerFactory,
   spriteFactory,
   State,
@@ -10,11 +8,12 @@ import { cover, draggable, log } from '../debug';
 import { textFactory } from '../traits/entity/text';
 import { Transform } from './transform';
 import { Scene } from './scene';
+import { ContainerEntity } from "../types";
 
 export class Entity {
   private inner = new GameObject();
 
-  private meta = new State({ ready: false });
+  private meta = new State({ ready: false, rendered: false });
   transform = new Transform(this);
 
   get ready(): boolean {
@@ -67,12 +66,18 @@ export class Entity {
     });
   }
 
-  onRender(container: Entity) {
-    if (!Container.isContainer(container)) {
-      throw new Error('Parent is not a container');
-    }
-
+  render(container: ContainerEntity) {
     this._parent = container;
+    this.meta.rendered = true;
+  }
+
+  onRender(fn: () => void) {
+    if (this.meta.rendered) fn();
+
+    this.meta.once('rendered', (rendered) => {
+      if (rendered === false) return;
+      fn();
+    });
   }
 
   destroy() {
