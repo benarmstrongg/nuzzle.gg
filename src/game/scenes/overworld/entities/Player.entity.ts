@@ -10,7 +10,6 @@ import { Character } from '../../../entities';
 export class Player extends Entity implements IControls, IContainer {
   container: Container;
   controls = Controls.selected();
-
   character = new Character('red');
 
   constructor() {

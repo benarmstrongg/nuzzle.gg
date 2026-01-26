@@ -55,8 +55,8 @@ export class Collisions {
       return;
     }
     this.colliderListeners.delete(entity);
-    entity.transform.off('x', listeners.x);
-    entity.transform.off('y', listeners.y);
+    entity.transform.global.off('x', listeners.x);
+    entity.transform.global.off('y', listeners.y);
   }
 
   private onColliderMove(
@@ -64,14 +64,12 @@ export class Collisions {
     axis: 'x' | 'y',
     value: number
   ) {
-    console.count('onColliderMove');
+    console.count(`onColliderMove ${entity.constructor.name}`);
     const { globalX: x, globalY: y, width, height } = entity.transform;
     const oldPos = axis === 'x' ? x : y;
     const newPos = value;
 
-    if (oldPos === newPos) {
-      return;
-    }
+    if (oldPos === newPos) return;
 
     const size = axis === 'x' ? width : height;
     const oldStart = Math.floor(oldPos);

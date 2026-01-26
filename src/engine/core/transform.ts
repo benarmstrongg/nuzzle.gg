@@ -34,8 +34,8 @@ export class Transform {
   set x(x: number) {
     this.position.x = x;
     this.entity['inner'].position.set(x, this.y);
-    const { x: globalX, y: globalY } = this.entity['inner'].getGlobalPosition();
-    this.global.set({ x: globalX, y: globalY });
+    const { x: globalX } = this.entity['inner'].getGlobalPosition();
+    this.global.x = globalX;
   }
 
   get y(): number {
@@ -44,8 +44,8 @@ export class Transform {
   set y(y: number) {
     this.position.y = y;
     this.entity['inner'].position.set(this.x, y);
-    const { x: globalX, y: globalY } = this.entity['inner'].getGlobalPosition();
-    this.global.set({ x: globalX, y: globalY });
+    const { y: globalY } = this.entity['inner'].getGlobalPosition();
+    this.global.y = globalY;
   }
 
   get width(): number {

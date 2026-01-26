@@ -56,7 +56,6 @@ export class Character extends Entity implements ISprite, ICollider {
   }
 
   walk(direction: CharacterDirection) {
-    console.count('walk');
     this.orientation = direction;
     this.sprite.animation.play(`walk_${direction}`);
 
@@ -70,7 +69,6 @@ export class Character extends Entity implements ISprite, ICollider {
   }
 
   stop() {
-    console.count('stop');
     this.sprite.animation.stop();
     // this.sprite.animation.play(`idle_${this.orientation}`);
   }
