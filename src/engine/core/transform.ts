@@ -25,6 +25,7 @@ export class Transform {
     width: 0,
     height: 0,
   });
+  global = new State<Coordinate>({ x: 0, y: 0 });
   scale: State<ScaleState> = new State({ x: 1, y: 1 });
 
   get x(): number {
@@ -33,6 +34,8 @@ export class Transform {
   set x(x: number) {
     this.position.x = x;
     this.entity['inner'].position.set(x, this.y);
+    const { x: globalX, y: globalY } = this.entity['inner'].getGlobalPosition();
+    this.global.set({ x: globalX, y: globalY });
   }
 
   get y(): number {
@@ -41,6 +44,8 @@ export class Transform {
   set y(y: number) {
     this.position.y = y;
     this.entity['inner'].position.set(this.x, y);
+    const { x: globalX, y: globalY } = this.entity['inner'].getGlobalPosition();
+    this.global.set({ x: globalX, y: globalY });
   }
 
   get width(): number {
@@ -48,7 +53,6 @@ export class Transform {
   }
   set width(width: number) {
     this.position.width = width;
-    // this.entity['inner'].width = width;
   }
 
   get height(): number {
@@ -56,27 +60,21 @@ export class Transform {
   }
   set height(height: number) {
     this.position.height = height;
-    // this.entity['inner'].height = height;
   }
 
   get globalX(): number {
-    return this.entity['inner'].getGlobalPosition().x;
+    return this.global.x;
   }
   get globalY(): number {
-    return this.entity['inner'].getGlobalPosition().y;
+    return this.global.y;
   }
 
   constructor(private entity: Entity) {
     const { x, y, width, height } = entity['inner'];
-    this.position.set({ x, y, width, height });
-    // this.scale.on('x', (scaleX) => {
-    //   this.entity['inner'].scale.x = scaleX;
-    //   this.width = this.entity['inner'].width;
-    // });
-    // this.scale.on('y', (scaleY) => {
-    //   this.entity['inner'].scale.y = scaleY;
-    //   this.height = this.entity['inner'].height;
-    // });
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
   }
 
   on = this.position.on.bind(this.position);
@@ -95,10 +93,11 @@ export class Transform {
   moveBy(position: Partial<Coordinate>, duration: number) {
     const x = this.x + (position.x ?? 0);
     const y = this.y + (position.y ?? 0);
-    this.moveTo({ x, y }, duration);
+    return this.moveTo({ x, y }, duration);
   }
 
   moveTo(position: Partial<Coordinate>, duration: number) {
+    const { promise, resolve } = Promise.withResolvers<void>();
     const toX = position.x ?? this.x;
     const toY = position.y ?? this.y;
     const stepX = (toX - this.x) / duration;
@@ -115,7 +114,8 @@ export class Transform {
         (directionY === -1 && this.y <= toY);
 
       if (isXDone && isYDone) {
-        return done();
+        done();
+        return resolve();
       }
 
       if (!isXDone) {
@@ -126,9 +126,7 @@ export class Transform {
         this.y += stepY;
       }
     });
+
+    return promise;
   }
 }
-
-// export interface ITransform {
-//   transform: Transform;
-// }
