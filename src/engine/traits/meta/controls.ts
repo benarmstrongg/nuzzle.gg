@@ -4,12 +4,14 @@ export type ControlScheme = 'wasd' | 'arrowkeys';
 
 type ControlsAction = 'up' | 'down' | 'left' | 'right' | 'a' | 'b';
 
-type ControlsCallback = (e: KeyboardEvent) => void;
+type KeyboardCallback = (e: KeyboardEvent) => void;
+
+type ControlsCallback = () => void | Promise<void>;
 
 export class Controls {
   private static activeControls: Controls[] = [];
 
-  private pressListeners: Record<ControlsAction, ControlsCallback> = {
+  private pressListeners: Record<ControlsAction, KeyboardCallback> = {
     up: () => {},
     down: () => {},
     left: () => {},
@@ -20,8 +22,8 @@ export class Controls {
   private holdListeners: Record<
     ControlsAction,
     {
-      down: ControlsCallback;
-      up: ControlsCallback;
+      down: KeyboardCallback;
+      up: KeyboardCallback;
     }
   > = {
     up: { down: () => {}, up: () => {} },
@@ -37,7 +39,7 @@ export class Controls {
     Controls.activeControls.push(this);
   }
 
-  press(action: ControlsAction, callback: () => void) {
+  press(action: ControlsAction, callback: ControlsCallback) {
     this.pressListeners[action] = this.createKeybindingListener(
       this.keys[action],
       callback
@@ -46,7 +48,7 @@ export class Controls {
     document.addEventListener('keypress', this.pressListeners[action]);
   }
 
-  hold(action: ControlsAction, down: () => void, up: () => void) {
+  hold(action: ControlsAction, down: ControlsCallback, up: ControlsCallback) {
     this.holdListeners[action].down = this.createKeybindingListener(
       this.keys[action],
       down
@@ -89,14 +91,14 @@ export class Controls {
 
   private createKeybindingListener(
     key: string,
-    callback: () => void
+    callback: ControlsCallback
   ): (e: KeyboardEvent) => void {
-    return (e: KeyboardEvent) => {
+    return async (e: KeyboardEvent) => {
       if (!this.isActive) {
         return;
       }
       if (e.key.toLowerCase() === key.toLowerCase()) {
-        callback();
+        await callback();
       }
     };
   }
