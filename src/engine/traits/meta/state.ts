@@ -6,6 +6,10 @@ class StateProxy<T extends Record<string, any> = any> {
 
   private constructor() {}
 
+  private get _state(): T {
+    return this as unknown as T;
+  }
+
   static init<T extends Record<string, any> = Record<string, any>>(
     initialValue: T
   ) {
@@ -25,7 +29,7 @@ class StateProxy<T extends Record<string, any> = any> {
   }
 
   get(prop: keyof T): T[typeof prop] {
-    return (this as any)[prop];
+    return this._state[prop];
   }
 
   set(value: Partial<T>) {
@@ -49,13 +53,19 @@ class StateProxy<T extends Record<string, any> = any> {
   }
 
   private setValue(value: Partial<T>) {
-    this.stateSignal.emit('change', { ...this, ...value } as T);
+    let didAnyChange = false;
 
     for (const prop in value) {
       const propValue = value[prop]!;
+      const didChange = propValue !== this._state[prop];
+      didAnyChange = didAnyChange || didChange;
+      if (!didChange) continue;
       this.propSignal.emit(prop, propValue);
       Object.assign(this, { [prop]: propValue });
     }
+
+    if (!didAnyChange) return;
+    this.stateSignal.emit('change', { ...this._state, ...value });
   }
 }
 
