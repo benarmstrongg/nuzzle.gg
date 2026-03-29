@@ -66,15 +66,18 @@ class FlexLayout {
   };
 
   private alignCenter: FlexPositionFn = ({ child }) => {
-    const center = this.entity.transform.height / 2;
-    return center - child.transform.height / 2;
+    const { direction = 'row' } = this.options;
+    const dimension = direction === 'row' ? 'height' : 'width';
+    const center = this.entity.transform[dimension] / 2;
+    return center - child.transform[dimension] / 2;
   };
 
   private alignEnd: FlexPositionFn = ({ child }) => {
     const { direction = 'row' } = this.options;
     const axis = direction === 'row' ? 'y' : 'x';
+    const dimension = direction === 'row' ? 'height' : 'width';
     return (
-      this.entity.transform.height - child.transform.height - this.gutter[axis]
+      this.entity.transform[dimension] - child.transform[dimension] - this.gutter[axis]
     );
   };
 
@@ -104,7 +107,7 @@ class FlexLayout {
     return lastChild.transform[axis] + lastChild.transform[dimension] + gap;
   };
 
-  private justifySpaceBetween: FlexPositionFn = ({ child, lastChild }) => {
+  private justifySpaceBetween: FlexPositionFn = ({ lastChild }) => {
     const { direction = 'row' } = this.options;
     const axis = direction === 'row' ? 'x' : 'y';
 
@@ -115,15 +118,12 @@ class FlexLayout {
     const dimension = direction === 'row' ? 'width' : 'height';
     const axisSize = this.entity.transform[dimension];
 
-    const freeSpace = axisSize - this.occupiedSpace;
+    const freeSpace = axisSize - this.occupiedSpace - this.gutter[axis];
     const gapCount = this.container.children.length - 1 || 1;
     const spaceSize = freeSpace / gapCount;
 
     return (
-      lastChild.transform[axis] +
-      lastChild.transform[dimension] +
-      spaceSize -
-      child.transform[dimension] / 2
+      lastChild.transform[axis] + lastChild.transform[dimension] + spaceSize
     );
   };
 

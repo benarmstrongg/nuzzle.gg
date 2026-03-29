@@ -1,4 +1,4 @@
-import { Entity } from '../../../core';
+import { Entity } from '../entity';
 import { FontSize } from '../../../core/fonts';
 import { Text, TextOptions } from './text';
 

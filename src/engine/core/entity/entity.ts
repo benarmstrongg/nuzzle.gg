@@ -2,12 +2,12 @@ import { GameObject } from '../object';
 import { State } from '../../traits';
 import { cover, draggable, log } from '../../debug';
 import { Transform } from '../transform';
-import { Container } from "./container";
-import { Sprite } from "./sprite";
-import { Text } from "./text";
 import { containerFactory } from "./container/factory";
 import { textFactory } from "./text/factory";
 import { spriteFactory } from "./sprite/factory";
+import type { Container } from "./container";
+import type { Sprite } from "./sprite";
+import type { Text } from "./text";
 
 export class Entity {
   private inner = new GameObject();

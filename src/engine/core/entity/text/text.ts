@@ -29,7 +29,7 @@ export class Text implements IState {
 
   private getStyles(options?: TextOptions) {
     const { size, font, lineHeight, color, wrap } = options ?? {};
-    const fontFamily = font ?? game.settings.defaultFont;
+    const fontFamily = font ?? game.settings.defaultFont ?? 'sans-serif';
     const styles: TextStyleOptions = {
       fontFamily,
     };

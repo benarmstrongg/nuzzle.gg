@@ -1,5 +1,6 @@
-import { Entity, game } from '.';
-import { State } from '../traits/state';
+import { game } from './game';
+import { Entity } from './entity';
+import { State } from '../traits';
 
 export type Coordinate = {
   x: number;

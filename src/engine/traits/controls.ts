@@ -1,4 +1,4 @@
-import { game } from '../core';
+import { game } from '../core/game';
 
 export type ControlScheme = 'wasd' | 'arrowkeys';
 

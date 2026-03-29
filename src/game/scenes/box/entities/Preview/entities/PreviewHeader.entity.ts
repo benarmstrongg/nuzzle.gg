@@ -1,7 +1,7 @@
 import { Dex, Pokemon } from '@pkmn/sim';
 import { Container, Entity } from '../../../../../../engine';
 
-const width = 178;
+const width = 170;
 const height = 40;
 
 export class PreviewHeader extends Entity.Container {

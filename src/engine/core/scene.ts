@@ -1,6 +1,5 @@
 import { Controls } from '../traits';
 import { Entity, Container } from './entity';
-import { game } from './game';
 
 type SceneOptions = {
   loadingFallback?: Entity;
@@ -14,9 +13,6 @@ export abstract class Scene extends Entity.Container {
   private background?: Entity.Sprite;
 
   constructor(options?: SceneOptions) {
-    // TODO: do we really wanna unload scenes when we load a new one?
-    // idk how we track tickers otherwise
-    game.unloadScene();
     super();
     this.container = new Container(this);
     this.init(options);
@@ -51,7 +47,7 @@ export abstract class Scene extends Entity.Container {
 
     this.background?.destroy();
     this.loadingFallback?.destroy();
-    this.entity.destroy();
+    this.entity?.destroy();
     super.destroy();
   }
 }
