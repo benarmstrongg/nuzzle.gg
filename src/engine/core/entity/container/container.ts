@@ -1,6 +1,5 @@
 import { ContainerLayout } from './utils/layout/layout';
 import { Box } from './utils/box';
-import { game } from '../../game';
 import { Signal } from '../../../traits';
 import { GameObject } from '../../object';
 import type { Entity } from "../entity";
@@ -37,14 +36,6 @@ export class Container {
       this._height = height;
       this.setBoundingBox();
     });
-
-    // TODO: this works but i'd rather have it be event based, idk why that's breaking rn
-    game.tick((done) => {
-      if (!this.children.every((child) => child.ready)) return;
-
-      this.entity.ready = true;
-      done();
-    });
   }
 
   add(...entities: MaybeEntity[]) {
@@ -59,8 +50,6 @@ export class Container {
       this.children.push(entity);
       this.signal.emit('childAdded', entity);
       entity.onReady(() => this.onChildReadyChange());
-      // TODO: this works but why? what is racing here? are events not firing?
-      // setTimeout(() => entity.onReady(() => this.onChildReadyChange()), 1000);
     });
 
     const { width, height } = this.layout.calculateSize();
