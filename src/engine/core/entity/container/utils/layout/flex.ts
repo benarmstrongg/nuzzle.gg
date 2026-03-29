@@ -1,4 +1,4 @@
-import { Entity } from '../../../..';
+import { Entity } from '../../../../entity';
 import { Container } from '../../container';
 
 type FlexJustify = 'start' | 'center' | 'space-between';

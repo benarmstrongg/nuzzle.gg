@@ -1,4 +1,4 @@
-import { Entity } from '../../../..';
+import { Entity } from '../../../../entity';
 import type { Container } from '../../container';
 import { applyGridLayout, GridOptions } from './grid';
 import { applyFlexLayout, FlexOptions } from './flex';

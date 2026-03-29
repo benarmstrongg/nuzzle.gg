@@ -1,8 +1,9 @@
 import { ContainerLayout } from './utils/layout/layout';
 import { Box } from './utils/box';
-import { game, type Entity } from '../..';
-import { Signal } from '../../../traits/meta';
+import { game } from '../../game';
+import { Signal } from '../../../traits';
 import { GameObject } from '../../object';
+import type { Entity } from "../entity";
 
 type ContainerSignal = {
   childAdded: Entity;
