@@ -1,5 +1,5 @@
-import { Controls, Container, IContainer, ISprite } from '../traits';
-import { Entity } from './entity';
+import { Controls } from '../traits';
+import { Entity, Container, SpriteEntity } from './entity';
 import { game } from './game';
 
 type SceneOptions = {
@@ -7,11 +7,11 @@ type SceneOptions = {
   backgroundAssetUrl?: string;
 };
 
-export abstract class Scene extends Entity implements IContainer {
+export abstract class Scene extends Entity.Container {
   container: Container;
   private entity: Entity;
   private loadingFallback?: Entity;
-  private background?: Entity & ISprite;
+  private background?: SpriteEntity;
 
   constructor(options?: SceneOptions) {
     // TODO: do we really wanna unload scenes when we load a new one?

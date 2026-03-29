@@ -1,5 +1,5 @@
-import { Entity, ISprite, Sprite } from '../../engine';
-import { SpritesheetFrame } from '../../engine/traits/entity/sprite/types';
+import { Entity, Sprite } from '../../engine';
+import { SpritesheetFrame } from '../../engine/core/entity/sprite/types';
 import { TypeId } from '../types';
 
 const assetUrl = 'spritesheets/type.png';
@@ -29,7 +29,7 @@ const frames: Record<TypeId, SpritesheetFrame> = {
   fairy: { x: 0, y: h * 18, w, h },
 };
 
-export class TypeIcon extends Entity implements ISprite {
+export class TypeIcon extends Entity.Sprite {
   sprite: Sprite<TypeId>;
 
   constructor(type: TypeId) {

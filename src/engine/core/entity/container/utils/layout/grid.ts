@@ -1,4 +1,4 @@
-import { Entity } from '../../../../../core';
+import { Entity } from '../../../..';
 import { Container } from '../../container';
 
 export type GridOptions = {
@@ -17,7 +17,7 @@ class GridLayout {
     private options: GridOptions,
     private container: Container,
     private entity: Entity
-  ) {}
+  ) { }
 
   private get gutter(): { x: number; y: number } {
     const { gutter, gutterX, gutterY } = this.options;

@@ -1,4 +1,4 @@
-import { Entity } from '../../../../../core';
+import { Entity } from '../../../..';
 import { Container } from '../../container';
 
 type FlexJustify = 'start' | 'center' | 'space-between';
@@ -23,7 +23,7 @@ class FlexLayout {
     private options: FlexOptions,
     private container: Container,
     private entity: Entity
-  ) {}
+  ) { }
 
   private get gutter(): { x: number; y: number } {
     const { gutter, gutterX, gutterY } = this.options;

@@ -2,7 +2,6 @@ import { Pokemon } from '@pkmn/sim';
 import {
   Container,
   Entity,
-  IContainer,
   IState,
   State,
 } from '../../../../../../../engine';
@@ -39,7 +38,7 @@ const blankCell = () =>
     height: PokemonIcon.height,
   });
 
-export class StoragePageGrid extends Entity implements IContainer, IState {
+export class StoragePageGrid extends Entity.Container implements IState {
   container = new Container(this);
   state: State<StoragePageGridState>;
 

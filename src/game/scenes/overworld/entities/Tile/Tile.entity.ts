@@ -1,4 +1,4 @@
-import { Entity, ISprite, Sprite } from '../../../../../engine';
+import { Entity, Sprite } from '../../../../../engine';
 import { WorldTileMetadata } from '../World/types';
 import { Item } from '../World/Item.entity';
 import { toItemId } from '../../../../util';
@@ -9,7 +9,7 @@ const frames = {
   grass: { x: 0, y: 0, w: 0, h: 0 },
 };
 
-export class Tile extends Entity implements ISprite {
+export class Tile extends Entity.Sprite {
   sprite = new Sprite(this, {
     assetUrl: '',
     spritesheet: { frames, w, h, defaultFrame: 'grass' },

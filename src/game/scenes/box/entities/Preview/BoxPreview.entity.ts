@@ -1,11 +1,11 @@
 import { Pokemon } from '@pkmn/sim';
-import { Container, Entity, IContainer } from '../../../../../engine';
+import { Container, Entity } from '../../../../../engine';
 import { PreviewData, PreviewHeader, PreviewPokemon } from './entities';
 
 const width = 178;
 const height = 382;
 
-export class BoxPreview extends Entity implements IContainer {
+export class BoxPreview extends Entity.Container {
   container = new Container(this);
   private bg = Entity.sprite({ assetUrl: 'sprites/ui/box/overlay_main.png' });
 

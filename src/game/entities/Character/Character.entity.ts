@@ -1,4 +1,4 @@
-import { Entity, ISprite, Sprite } from '../../../engine';
+import { Entity, Sprite } from '../../../engine';
 import {
   CharacterFrame,
   CharacterId,
@@ -17,7 +17,7 @@ import {
 const stepSize = 20;
 const walkDuration = 40;
 
-export class Character extends Entity implements ISprite {
+export class Character extends Entity.Sprite {
   sprite: Sprite<CharacterFrame, CharacterAnimation>;
   orientation: CharacterDirection;
 

@@ -1,4 +1,4 @@
-import { Entity } from '../../../../../core';
+import { Entity } from '../../../..';
 import type { Container } from '../../container';
 import { applyGridLayout, GridOptions } from './grid';
 import { applyFlexLayout, FlexOptions } from './flex';
@@ -15,7 +15,7 @@ export class ContainerLayout {
   private options?: LayoutOptions;
   private sizeAxis?: SizeAxis;
 
-  constructor(private container: Container, private entity: Entity) {}
+  constructor(private container: Container, private entity: Entity) { }
 
   /**
    * TODO: this is broken

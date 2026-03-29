@@ -1,8 +1,8 @@
 import { ContainerLayout } from './utils/layout/layout';
 import { Box } from './utils/box';
-import { game, type Entity } from '../../../core';
-import { Signal } from '../../meta';
-import { GameObject } from '../../../core/object';
+import { game, type Entity } from '../..';
+import { Signal } from '../../../traits/meta';
+import { GameObject } from '../../object';
 
 type ContainerSignal = {
   childAdded: Entity;
@@ -109,23 +109,4 @@ export class Container {
 
     this.entity.ready = true;
   }
-}
-
-/**
- * TODO: think more about this and implement it
- * 
- * I think this should instead be an abstract class called ContainerEntity
- * 
- * And then we extend it like `class MyContainer extends Entity.Container`
- * 
- * We will also add a comment to ContainerEntity that says no behavior should be added to it, 
- * it is only an abstract class to enforce IContainer interface. All behavior should be added to the Container helper class.
- * 
- * This distinguishes between "traits", which should be "stuff about a thing" or "stuff a thing can do" 
- * and what are currently thought of as "entity traits", which really describe "what a thing is".
- * 
- * This would also replace the `'prop' in obj` checks with simple `instanceof` checks.
- */
-export interface IContainer {
-  container: Container;
 }

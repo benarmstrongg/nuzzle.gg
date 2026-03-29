@@ -1,10 +1,10 @@
 import { Dex, Pokemon } from '@pkmn/sim';
-import { Container, Entity, IContainer } from '../../../../../../engine';
+import { Container, Entity } from '../../../../../../engine';
 
 const width = 178;
 const height = 40;
 
-export class PreviewHeader extends Entity implements IContainer {
+export class PreviewHeader extends Entity.Container {
   container = new Container(this);
 
   constructor(pokemon: Pokemon) {
