@@ -1,8 +1,8 @@
 import { Text as PixiText, TextStyleOptions } from 'pixi.js';
-import { game } from '../../game';
-import { Entity } from '../entity';
-import { FontSize } from '../../fonts';
 import { IState, State } from '../../../traits';
+import { game } from '../../game';
+import { FontSize } from '../../fonts';
+import { Entity } from '../entity';
 
 export type TextOptions = {
   size?: FontSize;
