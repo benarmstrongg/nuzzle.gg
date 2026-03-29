@@ -1,10 +1,10 @@
 import { GameObject } from '../object';
 import { State } from '../../traits';
 import { cover, draggable, log } from '../../debug';
-import { textFactory } from '../../traits/entity/text';
 import { Transform } from '../transform';
 import { Container, containerFactory } from "./container";
 import { Sprite, SpriteOptions } from "./sprite";
+import { Text, textFactory } from "./text";
 
 export class Entity {
   private inner = new GameObject();
@@ -50,6 +50,9 @@ export class Entity {
   }
 
 
+  static get Text(): typeof TextEntity {
+    return TextEntity;
+  }
   static get text(): typeof textFactory {
     return textFactory;
   }
@@ -73,10 +76,20 @@ export class Entity {
   }
 }
 
-export abstract class ContainerEntity extends Entity {
+abstract class ContainerEntity extends Entity {
   abstract container: Container;
 }
 
-export abstract class SpriteEntity extends Entity {
+abstract class SpriteEntity extends Entity {
   abstract sprite: Sprite;
+}
+
+abstract class TextEntity extends Entity {
+  abstract text: Text;
+}
+
+export namespace Entity {
+  export type Container = ContainerEntity;
+  export type Sprite = SpriteEntity;
+  export type Text = TextEntity;
 }

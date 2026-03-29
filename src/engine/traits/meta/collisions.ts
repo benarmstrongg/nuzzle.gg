@@ -1,4 +1,4 @@
-import { ContainerEntity, Entity } from '../../core';
+import { Entity } from '../../core';
 import { Array2d } from '../../types';
 import { Collider, ICollider } from './collider';
 
@@ -11,7 +11,7 @@ export class Collisions {
   >();
   private grid: Array2d<Set<ColliderEntity>> = [];
 
-  constructor(entity: ContainerEntity) {
+  constructor(entity: Entity.Container) {
     const { width, height } = entity['inner'];
     this.grid = Array.from({ length: height }, () =>
       Array.from({ length: width }, () => new Set<ColliderEntity>())
