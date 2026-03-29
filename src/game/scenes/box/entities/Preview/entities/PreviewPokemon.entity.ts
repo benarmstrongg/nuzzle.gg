@@ -1,12 +1,12 @@
 import { Pokemon } from '@pkmn/sim';
-import { Container, Entity, IContainer } from '../../../../../../engine';
+import { Container, Entity } from '../../../../../../engine';
 import { PokemonSprite } from '../../../../../entities';
 
 const width = 178;
 const height = 176;
 const y = 65;
 
-export class PreviewPokemon extends Entity implements IContainer {
+export class PreviewPokemon extends Entity.Container {
   container = new Container(this);
 
   constructor(pokemon: Pokemon) {

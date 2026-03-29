@@ -1,10 +1,10 @@
-import { Container, Entity, IContainer } from '../../../../../../../engine';
+import { Container, Entity } from '../../../../../../../engine';
 
 const width = 320;
 const height = 46;
 const x = 0;
 
-export class StoragePageHeader extends Entity implements IContainer {
+export class StoragePageHeader extends Entity.Container {
   container = new Container(this);
 
   constructor(name: string) {

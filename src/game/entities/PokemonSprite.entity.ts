@@ -1,10 +1,10 @@
 import { Dex, Pokemon } from '@pkmn/sim';
-import { Entity, ISprite, Sprite } from '../../engine';
+import { Entity, Sprite } from '../../engine';
 
 // const transform = { width: 150, height: 150 };
 const anchor = { x: 0.5, y: 0.5 };
 
-export class PokemonSprite extends Entity implements ISprite {
+export class PokemonSprite extends Entity.Sprite {
   sprite: Sprite;
 
   constructor(pokemon: Pokemon, type: 'front' | 'back' = 'front') {

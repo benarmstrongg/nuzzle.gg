@@ -2,7 +2,6 @@ import { Pokemon } from '@pkmn/sim';
 import {
   Container,
   Entity,
-  IContainer,
   Random,
 } from '../../../../../../../engine';
 import { StoragePageHeader } from './StoragePageHeader.entity';
@@ -54,7 +53,7 @@ const backgroundAssets = [
 const width = 320;
 const height = 292;
 
-export class StoragePage extends Entity implements IContainer {
+export class StoragePage extends Entity.Container {
   container = new Container(this);
   grid: StoragePageGrid;
 

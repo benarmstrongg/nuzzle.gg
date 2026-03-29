@@ -11,20 +11,25 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:dev": "vitest watch"
+    "test:dev": "vitest watch --config vitest.config.ts"
   },
   "devDependencies": {
     "@pkmn/types": "^4.0.0",
+    "@testing-library/user-event": "^14.6.1",
+    "canvas": "^3.2.2",
+    "jsdom": "^29.0.1",
     "typescript": "^5.2.2",
     "vite": "^8.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.2",
+    "vitest-canvas-mock": "^1.1.4"
   },
   "dependencies": {
     "@pixi/gif": "^3.0.0",
     "@pkmn/randoms": "^0.10.5",
     "@pkmn/sim": "^0.10.5",
     "comlink": "^4.4.2",
-    "pixi.js": "^8.0.4"
+    "pixi.js": "^8.17.1"
   }
 }

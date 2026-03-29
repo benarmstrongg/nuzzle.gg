@@ -3,7 +3,6 @@ import {
   ColliderEntity,
   Entity,
   ICollider,
-  ISprite,
   Sprite,
 } from '../../../engine';
 import {
@@ -26,7 +25,7 @@ import {
 const stepSize = 20;
 const walkDuration = 20;
 
-export class Character extends Entity implements ISprite, ICollider {
+export class Character extends Entity.Sprite implements ICollider {
   static height = characterHeight;
   static width = characterWidth;
 

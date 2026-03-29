@@ -1,21 +1,16 @@
 import { game } from './game';
-import type { Entity } from './entity';
+import type { Container, Entity } from './entity';
 import type { Transform } from './transform';
-import {
-  type Container,
-  containerFactory,
-  Controls,
-  Signal,
-  spriteFactory,
-} from '../traits';
-import { ContainerEntity } from '../types';
+import { Controls, Signal } from '../traits';
+import { containerFactory } from './entity/container/factory';
+import { spriteFactory } from './entity/sprite/factory';
 
 type SceneOptions = {
   loadingFallback?: Entity;
   backgroundAssetUrl?: string;
 };
 
-type SceneEntity = ContainerEntity & { _scene: Scene };
+type SceneEntity = Entity.Container & { _scene: Scene };
 
 export abstract class Scene {
   private entity: SceneEntity;
@@ -52,7 +47,7 @@ export abstract class Scene {
     }
   }
 
-  protected abstract render(): ContainerEntity;
+  protected abstract render(): Entity.Container;
 
   onLoad(fn: () => void) {
     this.signal.once('load', fn);
@@ -66,10 +61,10 @@ export abstract class Scene {
 
   destroy() {
     Controls.clear();
-    this.entity.destroy();
+    this.entity?.destroy();
   }
 
-  private setSceneEntity(entity: ContainerEntity) {
+  private setSceneEntity(entity: Entity.Container) {
     const sceneEntity = entity as SceneEntity;
     sceneEntity._scene = this;
     this.entity = sceneEntity;

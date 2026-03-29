@@ -1,10 +1,10 @@
-import { Array2d, Container, Entity, IContainer } from '../../../../../engine';
+import { Array2d, Container, Entity } from '../../../../../engine';
 import { BackgroundTile, BackgroundTileMetadata } from '../BackgroundTile';
 import { Tile } from '../Tile';
 import { WorldData, WorldTileMetadata } from './types';
 import { WorldBorder } from './WorldBorder.entity';
 
-export class World extends Entity implements IContainer {
+export class World extends Entity.Container {
   container: Container;
 
   constructor(data: WorldData) {

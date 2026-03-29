@@ -1,11 +1,5 @@
 import { Pokemon } from '@pkmn/sim';
-import {
-  Container,
-  Entity,
-  IContainer,
-  IState,
-  State,
-} from '../../../../../../../engine';
+import { Container, Entity, IState, State } from '../../../../../../../engine';
 import { PokemonIcon } from '../../../../../../entities';
 import { StorageCursor, StorageCursorMoveEvent } from '../StorageCursor.entity';
 
@@ -33,7 +27,7 @@ type StoragePageGridState = {
   data: StoragePageGridData;
 };
 
-export class StoragePageGrid extends Entity implements IContainer, IState {
+export class StoragePageGrid extends Entity.Container implements IState {
   container = new Container(this);
   state: State<StoragePageGridState>;
 

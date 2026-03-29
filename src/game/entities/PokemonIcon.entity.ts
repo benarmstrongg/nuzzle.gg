@@ -1,8 +1,8 @@
 import { Dex, Pokemon } from '@pkmn/sim';
-import { Entity, ISprite, Sprite } from '../../engine';
+import { Entity, Sprite } from '../../engine';
 import { PokemonSprite } from './PokemonSprite.entity';
 
-export class PokemonIcon extends Entity implements ISprite {
+export class PokemonIcon extends Entity.Sprite {
   static width = 68;
   static height = 56;
   sprite: Sprite;
