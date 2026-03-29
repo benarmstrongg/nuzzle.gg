@@ -1,12 +1,20 @@
 import { Signal } from './signal';
 
 class StateProxy<T extends Record<string, any> = any> {
-  private _values: T;
-  private _propSignal = new Signal<T>();
-  private _stateSignal = new Signal<{ change: T }>();
+  private _inner: {
+    values: T;
+    propSignal: Signal<T>;
+    stateSignal: Signal<{ change: T }>;
+    isSilent: boolean;
+  };
 
   private constructor(initialValue: T) {
-    this._values = initialValue;
+    this._inner = {
+      values: initialValue,
+      propSignal: new Signal<T>(),
+      stateSignal: new Signal<{ change: T }>(),
+      isSilent: false,
+    };
   }
 
   static init<T extends Record<string, any> = Record<string, any>>(
@@ -32,7 +40,7 @@ class StateProxy<T extends Record<string, any> = any> {
   }
 
   get(prop: keyof T): T[typeof prop] {
-    return this._values[prop];
+    return this._inner.values[prop];
   }
 
   set(value: Partial<T>) {
@@ -40,51 +48,51 @@ class StateProxy<T extends Record<string, any> = any> {
   }
 
   onChange(listener: (change: T) => void) {
-    this._stateSignal.on('change', listener);
+    this._inner.stateSignal.on('change', listener);
   }
 
   on(prop: keyof T, listener: (value: T[typeof prop]) => void) {
-    this._propSignal.on(prop, listener);
+    this._inner.propSignal.on(prop, listener);
   }
 
   once(prop: keyof T, listener: (value: T[typeof prop]) => void) {
-    this._propSignal.once(prop, listener);
+    this._inner.propSignal.once(prop, listener);
   }
 
   off(prop: keyof T, listener: (value: T[typeof prop]) => void) {
-    this._propSignal.off(prop, listener);
+    this._inner.propSignal.off(prop, listener);
   }
 
   emit(prop: keyof T, value: T[typeof prop]) {
-    this._propSignal.emit(prop, value);
+    this._inner.propSignal.emit(prop, value);
   }
 
-  // silent(fn: () => void) {
-  //   this.isSilent = true;
-  //   try {
-  //     fn();
-  //   } finally {
-  //     this.isSilent = false;
-  //   }
-  // }
+  silent(fn: () => void) {
+    this._inner.isSilent = true;
+    try {
+      fn();
+    } finally {
+      this._inner.isSilent = false;
+    }
+  }
 
   private setValue(value: Partial<T>) {
     let didAnyChange = false;
 
     for (const prop in value) {
       const propValue = value[prop]!;
-      const didChange = propValue !== this._values[prop];
+      const didChange = propValue !== this._inner.values[prop];
 
       if (!didChange) continue;
 
       didAnyChange = true;
 
-      this._values[prop] = propValue;
-      this._propSignal.emit(prop, propValue);
+      this._inner.values[prop] = propValue;
+      if (!this._inner.isSilent) this._inner.propSignal.emit(prop, propValue);
     }
 
-    if (!didAnyChange) return;
-    this._stateSignal.emit('change', { ...this._values, ...value });
+    if (!didAnyChange || this._inner.isSilent) return;
+    this._inner.stateSignal.emit('change', { ...this._inner.values, ...value });
   }
 }
 
