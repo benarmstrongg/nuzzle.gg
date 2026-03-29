@@ -1,14 +1,14 @@
-import { GameObject } from './object';
+import { GameObject } from '../object';
 import {
   containerFactory,
   ISprite,
   Sprite,
   SpriteOptions,
   State,
-} from '../traits';
-import { cover, draggable, log } from '../debug';
-import { textFactory } from '../traits/entity/text';
-import { Transform } from './transform';
+} from '../../traits';
+import { cover, draggable, log } from '../../debug';
+import { textFactory } from '../../traits/entity/text';
+import { Transform } from '../transform';
 
 export class Entity {
   private inner = new GameObject();
