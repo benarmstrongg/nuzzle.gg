@@ -2,9 +2,12 @@ import { GameObject } from '../object';
 import { State } from '../../traits';
 import { cover, draggable, log } from '../../debug';
 import { Transform } from '../transform';
-import { Container, containerFactory } from "./container";
-import { Sprite, SpriteOptions } from "./sprite";
-import { Text, textFactory } from "./text";
+import { Container } from "./container";
+import { Sprite } from "./sprite";
+import { Text } from "./text";
+import { containerFactory } from "./container/factory";
+import { textFactory } from "./text/factory";
+import { spriteFactory } from "./sprite/factory";
 
 export class Entity {
   private inner = new GameObject();
@@ -67,12 +70,8 @@ export class Entity {
   static get Sprite(): typeof SpriteEntity {
     return SpriteEntity;
   }
-  static sprite<TFrame extends string, TAnimation extends string>(
-    options: SpriteOptions<TFrame, TAnimation>
-  ): SpriteEntity {
-    return new (class extends SpriteEntity {
-      sprite = new Sprite<TFrame, TAnimation>(this, options);
-    })();
+  static get sprite(): typeof spriteFactory {
+    return spriteFactory;
   }
 }
 

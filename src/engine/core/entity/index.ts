@@ -1,3 +1,4 @@
 export * from './entity';
-export { Container } from './container';
-export { Sprite } from './sprite';
+export * from './container';
+export * from './sprite';
+export * from './text';
