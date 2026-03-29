@@ -1,6 +1,6 @@
 import { AnimatedSprite as PixiAnimatedSprite, Texture } from 'pixi.js';
 import { Entity } from '../..';
-import { State } from '../../../traits/meta/state';
+import { State } from '../../../traits/state';
 import { SpriteScaleMode, SpritesheetOptions } from './types';
 import { Coordinate, TransformState } from '../../transform';
 import { SpriteLoader } from './utils/loader';

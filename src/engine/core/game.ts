@@ -1,7 +1,7 @@
 import { Application as PixiApplication, Ticker } from 'pixi.js';
 import { Scene } from './scene';
 import type { ControlScheme } from '../traits';
-import { State } from '../traits/meta/state';
+import { State } from '../traits/state';
 import { Fonts } from './fonts';
 
 type Settings = {

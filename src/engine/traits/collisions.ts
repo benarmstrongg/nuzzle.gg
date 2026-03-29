@@ -1,5 +1,5 @@
-import { Entity } from '../../core';
-import { Array2d } from '../../types';
+import { Entity } from '../core';
+import { Array2d } from '../types';
 import { Collider, ICollider } from './collider';
 
 type ColliderEntity = Entity & ICollider;

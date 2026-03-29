@@ -1,5 +1,5 @@
 import { Entity, game } from '.';
-import { State } from '../traits/meta/state';
+import { State } from '../traits/state';
 
 export type Coordinate = {
   x: number;
