@@ -73,7 +73,7 @@ export class Container {
   }
 
   // TODO: implement this
-  remove() {}
+  remove() { }
 
   clear() {
     this.inner.removeChildren();
@@ -111,6 +111,21 @@ export class Container {
   }
 }
 
+/**
+ * TODO: think more about this and implement it
+ * 
+ * I think this should instead be an abstract class called ContainerEntity
+ * 
+ * And then we extend it like `class MyContainer extends Entity.Container`
+ * 
+ * We will also add a comment to ContainerEntity that says no behavior should be added to it, 
+ * it is only an abstract class to enforce IContainer interface. All behavior should be added to the Container helper class.
+ * 
+ * This distinguishes between "traits", which should be "stuff about a thing" or "stuff a thing can do" 
+ * and what are currently thought of as "entity traits", which really describe "what a thing is".
+ * 
+ * This would also replace the `'prop' in obj` checks with simple `instanceof` checks.
+ */
 export interface IContainer {
   container: Container;
 }
