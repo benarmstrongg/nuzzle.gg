@@ -1,5 +1,5 @@
 import { Pokemon, Dex } from '@pkmn/sim';
-import { Container, Entity, IContainer } from '../../../../../../engine';
+import { Container, Entity } from '../../../../../../engine';
 import { ItemIcon, TypeIcon } from '../../../../../entities';
 import { NatureText } from '../../../../../entities/NatureText.entity';
 import { toItemId, toTypeId } from '../../../../../util';
@@ -8,7 +8,7 @@ const width = 172;
 const height = 155;
 const sectionHeight = 34;
 
-export class PreviewData extends Entity implements IContainer {
+export class PreviewData extends Entity.Container {
   container = new Container(this);
 
   constructor(pokemon: Pokemon) {

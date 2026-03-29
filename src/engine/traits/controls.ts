@@ -1,4 +1,4 @@
-import { game } from '../../core';
+import { game } from '../core';
 
 export type ControlScheme = 'wasd' | 'arrowkeys';
 
@@ -10,12 +10,12 @@ export class Controls {
   private static activeControls: Controls[] = [];
 
   private pressListeners: Record<ControlsAction, ControlsCallback> = {
-    up: () => {},
-    down: () => {},
-    left: () => {},
-    right: () => {},
-    a: () => {},
-    b: () => {},
+    up: () => { },
+    down: () => { },
+    left: () => { },
+    right: () => { },
+    a: () => { },
+    b: () => { },
   };
   private holdListeners: Record<
     ControlsAction,
@@ -24,13 +24,13 @@ export class Controls {
       up: ControlsCallback;
     }
   > = {
-    up: { down: () => {}, up: () => {} },
-    down: { down: () => {}, up: () => {} },
-    left: { down: () => {}, up: () => {} },
-    right: { down: () => {}, up: () => {} },
-    a: { down: () => {}, up: () => {} },
-    b: { down: () => {}, up: () => {} },
-  };
+      up: { down: () => { }, up: () => { } },
+      down: { down: () => { }, up: () => { } },
+      left: { down: () => { }, up: () => { } },
+      right: { down: () => { }, up: () => { } },
+      a: { down: () => { }, up: () => { } },
+      b: { down: () => { }, up: () => { } },
+    };
   private isActive = true;
 
   constructor(private readonly keys: Record<ControlsAction, string>) {
@@ -66,12 +66,12 @@ export class Controls {
     console.log(`controls ${action} deregistered`);
 
     document.removeEventListener('keypress', this.pressListeners[action]);
-    this.pressListeners[action] = () => {};
+    this.pressListeners[action] = () => { };
 
     document.removeEventListener('keydown', this.holdListeners[action].down);
-    this.holdListeners[action].down = () => {};
+    this.holdListeners[action].down = () => { };
     document.removeEventListener('keyup', this.holdListeners[action].up);
-    this.holdListeners[action].up = () => {};
+    this.holdListeners[action].up = () => { };
   }
 
   pause() {

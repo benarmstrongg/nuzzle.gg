@@ -3,13 +3,12 @@ import {
   Container,
   Entity,
   ICollisions,
-  IContainer,
 } from '../../../../../engine';
 import { BackgroundTile } from '../BackgroundTile/BackgroundTile';
 import { Tile } from '../Tile';
 import { WorldData } from './types';
 
-export class World extends Entity implements IContainer, ICollisions {
+export class World extends Entity.Container implements ICollisions {
   container: Container;
   collisions: Collisions;
 

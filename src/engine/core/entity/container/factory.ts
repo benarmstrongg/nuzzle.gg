@@ -1,37 +1,37 @@
-import { Entity } from '../../../core/entity';
 import type { CenterOptions, FlexOptions, GridOptions } from './utils';
-import { Container, IContainer, MaybeEntity } from './container';
-import { TransformState } from '../../../core/transform';
+import { Container, MaybeEntity } from './container';
+import { TransformState } from '../../transform';
+import { Entity } from "../entity";
 
 type ContainerFactory = ((
   ...children: MaybeEntity[]
-) => Entity & IContainer) & {
+) => Entity.Container) & {
   box: (
     options: Partial<TransformState>,
     ...children: MaybeEntity[]
-  ) => Entity & IContainer;
+  ) => Entity.Container;
   flex: (
     options: FlexOptions & Partial<TransformState>,
     ...children: MaybeEntity[]
-  ) => Entity & IContainer;
+  ) => Entity.Container;
   grid: (
     options: GridOptions & Partial<TransformState>,
     ...children: MaybeEntity[]
-  ) => Entity & IContainer;
+  ) => Entity.Container;
   center: (
     options: CenterOptions & Partial<TransformState>,
     ...children: MaybeEntity[]
-  ) => Entity & IContainer;
+  ) => Entity.Container;
 };
 
 export const containerFactory: ContainerFactory = (...children) => {
-  return new (class extends Entity implements IContainer {
+  return new (class extends Entity.Container {
     container = new Container(this, ...children);
   })();
 };
 
 containerFactory.box = (options, ...children) => {
-  const entity = new (class extends Entity implements IContainer {
+  const entity = new (class extends Entity.Container {
     container = new Container(this);
   })();
   entity.transform.set(options);
@@ -40,7 +40,7 @@ containerFactory.box = (options, ...children) => {
 };
 
 containerFactory.flex = (options, ...children) => {
-  const entity = new (class extends Entity implements IContainer {
+  const entity = new (class extends Entity.Container {
     container = new Container(this);
   })();
   const { width, height, x, y, ...flexOptions } = options;
@@ -51,7 +51,7 @@ containerFactory.flex = (options, ...children) => {
 };
 
 containerFactory.center = (options, ...children) => {
-  const entity = new (class extends Entity implements IContainer {
+  const entity = new (class extends Entity.Container {
     container = new Container(this);
   })();
   entity.transform.set(options);
@@ -61,7 +61,7 @@ containerFactory.center = (options, ...children) => {
 };
 
 containerFactory.grid = (options, ...children) => {
-  const entity = new (class extends Entity implements IContainer {
+  const entity = new (class extends Entity.Container {
     container = new Container(this);
   })();
   const { width, height, x, y, ...gridOptions } = options;

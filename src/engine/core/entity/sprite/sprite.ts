@@ -1,8 +1,8 @@
 import { AnimatedSprite as PixiAnimatedSprite, Texture } from 'pixi.js';
-import { Entity } from '../../../core';
-import { State } from '../../meta/state';
+import { Entity } from '../entity';
+import { State } from '../../../traits';
 import { SpriteScaleMode, SpritesheetOptions } from './types';
-import { Coordinate, TransformState } from '../../../core/transform';
+import { Coordinate, TransformState } from '../../transform';
 import { SpriteLoader } from './utils/loader';
 import { SpriteAnimations } from './utils/animations';
 
@@ -120,8 +120,4 @@ export class Sprite<
     this.entity.transform.set({ width, height });
     this.ready = true;
   }
-}
-
-export interface ISprite {
-  sprite: Sprite<any>;
 }
