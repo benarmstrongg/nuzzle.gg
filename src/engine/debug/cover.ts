@@ -1,5 +1,6 @@
 import { Graphics } from 'pixi.js';
-import { Entity, game } from '../core';
+import type { Entity } from '../core/entity';
+import { game } from '../core/game';
 
 export const cover = <T extends Entity>(entity: T) => {
   entity.onReady(() => {

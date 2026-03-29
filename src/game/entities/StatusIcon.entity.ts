@@ -1,5 +1,5 @@
-import { Entity, ISprite, Sprite } from '../../engine';
-import { SpritesheetFrame } from '../../engine/traits/entity/sprite/types';
+import { Entity, Sprite } from '../../engine';
+import { SpritesheetFrame } from '../../engine/core/entity/sprite/types';
 import { StatusId } from '../types';
 
 const assetUrl = 'spritesheets/status.png';
@@ -16,7 +16,7 @@ const frames: Record<StatusId, SpritesheetFrame> = {
   tox: { x: 0, y: h * 5, w, h },
 };
 
-export class StatusIcon extends Entity implements ISprite {
+export class StatusIcon extends Entity.Sprite {
   sprite: Sprite<StatusId>;
 
   constructor(status: StatusId) {

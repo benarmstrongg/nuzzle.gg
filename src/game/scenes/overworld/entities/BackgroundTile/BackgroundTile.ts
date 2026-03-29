@@ -1,4 +1,4 @@
-import { Entity, ISprite, Sprite } from '../../../../../engine';
+import { Entity, Sprite } from '../../../../../engine';
 import {
   assetUrls,
   frames,
@@ -9,7 +9,7 @@ import {
 } from './spritesheet.const';
 import { BackgroundTileFrame, BackgroundTileId } from './types';
 
-export class BackgroundTile extends Entity implements ISprite {
+export class BackgroundTile extends Entity.Sprite {
   static width = tileWidth;
   static height = tileHeight;
 

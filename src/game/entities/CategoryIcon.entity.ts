@@ -1,5 +1,5 @@
-import { Entity, ISprite, Sprite } from '../../engine';
-import { SpritesheetFrame } from '../../engine/traits/entity/sprite/types';
+import { Entity, Sprite } from '../../engine';
+import { SpritesheetFrame } from '../../engine/core/entity/sprite/types';
 import { MoveCategoryId } from '../types/moves.types';
 
 const assetUrl = 'spritesheets/category.png';
@@ -13,7 +13,7 @@ const frames: Record<MoveCategoryId, SpritesheetFrame> = {
   status: { x: 0, y: h * 2, w, h },
 };
 
-export class CategoryIcon extends Entity implements ISprite {
+export class CategoryIcon extends Entity.Sprite {
   sprite: Sprite<MoveCategoryId>;
 
   constructor(category: MoveCategoryId) {

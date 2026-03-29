@@ -1,6 +1,7 @@
-import { FederatedPointerEvent } from 'pixi.js';
-import { GameObject } from '../core/object';
-import { Entity, game } from '../core';
+import type { FederatedPointerEvent } from 'pixi.js';
+import type { GameObject } from '../core/object';
+import type { Entity } from '../core/entity';
+import { game } from '../core/game';
 
 let isDragInitialized = false;
 let dragTarget: GameObject | null;

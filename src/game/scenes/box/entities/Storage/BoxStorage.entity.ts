@@ -2,14 +2,13 @@ import { Pokemon } from '@pkmn/sim';
 import {
   Container,
   Entity,
-  IContainer,
   ISignal,
   Signal,
 } from '../../../../../engine';
 import { Menu } from '../../../../entities';
 import { StorageCursor, StoragePage } from './entities';
 
-// export class BoxStorageSeeBelow extends Entity implements IContainer {
+// export class BoxStorageSeeBelow extends Entity.Container {
 //   private $boxCursor: BoxCursor;
 //   private pages: BoxPage[] = [];
 //   private activePageIndex = 0;
@@ -231,7 +230,7 @@ type BoxStorageSignal = {
 
 const x = 180;
 
-export class BoxStorage extends Entity implements IContainer, ISignal {
+export class BoxStorage extends Entity.Container implements ISignal {
   container = new Container(this);
   signal = new Signal<BoxStorageSignal>();
   private page: StoragePage;

@@ -2,7 +2,6 @@ import {
   Container,
   Entity,
   FontSize,
-  IContainer,
   IControls,
   TransformState,
 } from '../../engine';
@@ -20,7 +19,7 @@ type MenuOptions = Partial<TransformState> & {
   pausedControls?: IControls[];
 };
 
-export class Menu extends Entity implements IContainer {
+export class Menu extends Entity.Container {
   container = new Container(this);
   private pausedControls: IControls[];
 

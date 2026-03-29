@@ -1,11 +1,11 @@
 import { Dex, Pokemon } from '@pkmn/sim';
-import { Container, Entity, IContainer } from '../../../../../../engine';
+import { Container, Entity } from '../../../../../../engine';
 import { TypeIcon } from '../../../../../entities';
 import { toTypeId } from '../../../../../util';
 
 type MoveSlot = Pokemon['moveSlots'][number];
 
-class PreviewMove extends Entity implements IContainer {
+class PreviewMove extends Entity.Container {
   container = new Container(this);
 
   constructor(moveSlot: MoveSlot) {
@@ -20,7 +20,7 @@ class PreviewMove extends Entity implements IContainer {
   }
 }
 
-export class PreviewMoves extends Entity implements IContainer {
+export class PreviewMoves extends Entity.Container {
   container = new Container(this);
 
   constructor(pokemon: Pokemon) {

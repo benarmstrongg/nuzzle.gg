@@ -4,7 +4,6 @@ import {
   Entity,
   IControls,
   ISignal,
-  ISprite,
   IState,
   Signal,
   Sprite,
@@ -28,8 +27,7 @@ type StorageCursorSignal = {
 
 export class StorageCursor
   extends Entity
-  implements ISprite, IState, IControls, ISignal
-{
+  implements IState, IControls, ISignal {
   sprite = new Sprite(this, { assetUrl: 'sprites/ui/box/cursor_grab.png' });
   state = new State<StorageCursorState>({
     position: { row: 1, col: 1 },
