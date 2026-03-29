@@ -93,11 +93,10 @@ export class Transform {
   moveBy(position: Partial<Coordinate>, duration: number) {
     const x = this.x + (position.x ?? 0);
     const y = this.y + (position.y ?? 0);
-    return this.moveTo({ x, y }, duration);
+    this.moveTo({ x, y }, duration);
   }
 
   moveTo(position: Partial<Coordinate>, duration: number) {
-    const { promise, resolve } = Promise.withResolvers<void>();
     const toX = position.x ?? this.x;
     const toY = position.y ?? this.y;
     const stepX = (toX - this.x) / duration;
@@ -114,8 +113,7 @@ export class Transform {
         (directionY === -1 && this.y <= toY);
 
       if (isXDone && isYDone) {
-        done();
-        return resolve();
+        return done();
       }
 
       if (!isXDone) {
@@ -126,7 +124,5 @@ export class Transform {
         this.y += stepY;
       }
     });
-
-    return promise;
   }
 }
