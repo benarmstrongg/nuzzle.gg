@@ -74,13 +74,13 @@ export class Character extends Entity implements ISprite, ICollider {
   }
 
   private onCollide(entity: ColliderEntity) {
-    if (entity.collider.solid) {
-      const axis =
-        this.orientation === 'up' || this.orientation === 'down' ? 'y' : 'x';
-      const direction =
-        this.orientation === 'up' || this.orientation === 'left' ? -1 : 1;
+    if (!entity.collider.solid) return;
 
-      this.transform[axis] -= direction;
-    }
+    const axis =
+      this.orientation === 'up' || this.orientation === 'down' ? 'y' : 'x';
+    const direction =
+      this.orientation === 'up' || this.orientation === 'left' ? -1 : 1;
+
+    this.transform[axis] -= direction;
   }
 }
