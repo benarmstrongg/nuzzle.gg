@@ -45,6 +45,10 @@ export class Container {
       this._height = height;
       this.setBoundingBox();
     });
+
+    this.entity.onRender(() => {
+      this.onChildReadyChange();
+    });
   }
 
   add(...entities: MaybeEntity[]) {
