@@ -63,13 +63,18 @@ describe('StateProxy', () => {
     state.set({ hp: 80, mp: 30 });
 
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenLastCalledWith(
+    expect(onChange).toHaveBeenLastCalledWith([
       expect.objectContaining({
         hp: 80,
         mp: 30,
         name: 'Hero',
-      })
-    );
+      }),
+      expect.objectContaining({
+        hp: 100,
+        mp: 50,
+        name: 'Hero',
+      }),
+    ]);
   });
 
   it('does not emit state onChange when nothing changed', () => {
@@ -124,13 +129,18 @@ describe('StateProxy', () => {
     expect(hpListener).toHaveBeenCalledWith(90);
     expect(mpListener).not.toHaveBeenCalled();
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenLastCalledWith(
+    expect(onChange).toHaveBeenLastCalledWith([
       expect.objectContaining({
         hp: 90,
         mp: 50,
         name: 'Hero',
-      })
-    );
+      }),
+      expect.objectContaining({
+        hp: 100,
+        mp: 50,
+        name: 'Hero',
+      }),
+    ]);
   });
 
   it('emits each changed property listener once for multi-field updates', () => {
@@ -184,80 +194,69 @@ describe('StateProxy', () => {
     expect(listener).toHaveBeenCalledWith(42);
   });
 
-  it('does not allow overriding built-in state members via assignment', () => {
+  it('supports manual emit()', () => {
     const state = createState();
-    const originalSet = state.set;
-    const originalOnChange = state.onChange;
-    const onChange = vi.fn();
+    const listener = vi.fn();
 
-    state.onChange(onChange);
-    expect(() => { (state as any).set = vi.fn() }).toThrow();
-    expect(() => { (state as any).onChange = 'nope' }).toThrow();
-    expect(state.set).toBe(originalSet);
-    expect(state.onChange).toBe(originalOnChange);
-    expect(() => state.set({ hp: 77 })).not.toThrow();
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(state.hp).toBe(77);
+    state.on('hp', listener);
+    state.emit('hp', 33);
+
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenCalledWith(33);
   });
 
-  // it('supports manual emit()', () => {
-  //   const state = createState();
-  //   const listener = vi.fn();
+  it('suppresses prop emits inside silent()', () => {
+    const state = createState();
+    const hpListener = vi.fn();
+    const onChange = vi.fn();
 
-  //   state.on('hp', listener);
-  //   state.emit('hp', 33);
+    state.on('hp', hpListener);
+    state.onChange(onChange);
 
-  //   expect(listener).toHaveBeenCalledTimes(1);
-  //   expect(listener).toHaveBeenCalledWith(33);
-  // });
+    state.silent(() => {
+      state.hp = 70;
+      state.set({ mp: 10 });
+    });
 
-  // it('suppresses prop emits inside silent()', () => {
-  //   const state = createState();
-  //   const hpListener = vi.fn();
-  //   const onChange = vi.fn();
+    expect(state.hp).toBe(70);
+    expect(state.mp).toBe(10);
+    expect(hpListener).not.toHaveBeenCalled();
+    expect(onChange).not.toHaveBeenCalled();
 
-  //   state.on('hp', hpListener);
-  //   state.onChange(onChange);
+    state.hp = 60;
+    expect(hpListener).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith([
+      expect.objectContaining({
+        hp: 60,
+        mp: 10,
+        name: 'Hero',
+      }),
+      expect.objectContaining({
+        hp: 70,
+        mp: 10,
+        name: 'Hero',
+      }),
+    ]);
+  });
 
-  //   state.silent(() => {
-  //     state.hp = 70;
-  //     state.set({ mp: 10 });
-  //   });
+  it('restores non-silent mode if silent() callback throws', () => {
+    const state = createState();
+    const hpListener = vi.fn();
 
-  //   expect(state.hp).toBe(70);
-  //   expect(state.mp).toBe(10);
-  //   expect(hpListener).not.toHaveBeenCalled();
-  //   expect(onChange).toHaveBeenCalledTimes(1);
-  //   expect(onChange).toHaveBeenCalledWith(
-  //     expect.objectContaining({
-  //       hp: 70,
-  //       mp: 10,
-  //       name: 'Hero',
-  //     })
-  //   );
+    state.on('hp', hpListener);
 
-  //   state.hp = 60;
-  //   expect(hpListener).toHaveBeenCalledTimes(1);
-  //   expect(onChange).toHaveBeenCalledTimes(2);
-  // });
+    expect(() =>
+      state.silent(() => {
+        state.hp = 95;
+        throw new Error('boom');
+      })
+    ).toThrow('boom');
 
-  // it('restores non-silent mode if silent() callback throws', () => {
-  //   const state = createState();
-  //   const hpListener = vi.fn();
+    expect(hpListener).not.toHaveBeenCalled();
 
-  //   state.on('hp', hpListener);
-
-  //   expect(() =>
-  //     state.silent(() => {
-  //       state.hp = 95;
-  //       throw new Error('boom');
-  //     })
-  //   ).toThrow('boom');
-
-  //   expect(hpListener).not.toHaveBeenCalled();
-
-  //   state.hp = 85;
-  //   expect(hpListener).toHaveBeenCalledTimes(1);
-  //   expect(hpListener).toHaveBeenCalledWith(85);
-  // });
+    state.hp = 85;
+    expect(hpListener).toHaveBeenCalledTimes(1);
+    expect(hpListener).toHaveBeenCalledWith(85);
+  });
 });

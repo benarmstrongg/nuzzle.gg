@@ -1,54 +1,80 @@
-import { Controls } from '../traits';
-import { Entity, Container } from './entity';
+import { game } from './game';
+import type { Container, Entity } from './entity';
+import type { Transform } from './transform';
+import { Controls, Signal } from '../traits';
+import { containerFactory } from './entity/container/factory';
+import { spriteFactory } from './entity/sprite/factory';
 
 type SceneOptions = {
   loadingFallback?: Entity;
   backgroundAssetUrl?: string;
 };
 
-export abstract class Scene extends Entity.Container {
-  container: Container;
-  private entity: Entity;
-  private loadingFallback?: Entity;
-  private background?: Entity.Sprite;
+type SceneEntity = Entity.Container & { _scene: Scene };
 
-  constructor(options?: SceneOptions) {
-    super();
-    this.container = new Container(this);
-    this.init(options);
+export abstract class Scene {
+  private entity: SceneEntity;
+  private signal = new Signal<{
+    load: void;
+  }>();
+
+  get container(): Container {
+    return this.entity.container;
   }
 
-  private init(options?: SceneOptions) {
+  get transform(): Transform {
+    return this.entity.transform;
+  }
+
+  constructor(options?: SceneOptions) {
+    // TODO: do we really wanna unload scenes when we load a new one?
+    // idk how we track tickers otherwise
+    game.unloadScene();
+
+    this.setSceneEntity(containerFactory());
+
     const { loadingFallback, backgroundAssetUrl } = options ?? {};
 
+    // TODO: should this just be a sprite and make caller handle sprite stuff?
     if (backgroundAssetUrl) {
-      this.background = Entity.sprite({ assetUrl: backgroundAssetUrl });
-      this.container.add(this.background);
+      this.entity.container.add(
+        spriteFactory({ assetUrl: backgroundAssetUrl })
+      );
     }
 
     if (loadingFallback) {
-      this.loadingFallback = loadingFallback;
-      this.container.add(this.loadingFallback);
+      this.entity.container.add(loadingFallback);
     }
   }
 
-  protected abstract render(): Entity;
+  protected abstract render(): Entity.Container;
+
+  onLoad(fn: () => void) {
+    this.signal.once('load', fn);
+  }
 
   load() {
-    this.entity = this.render();
-    this.entity.onReady(() => {
-      this.container.clear();
-      this.container.add(this.entity);
-    });
+    this.entity.destroy();
+    this.setSceneEntity(this.render());
   }
 
   destroy() {
     Controls.clear();
-
-    this.background?.destroy();
-    this.loadingFallback?.destroy();
     this.entity?.destroy();
-    super.destroy();
+  }
+
+  private setSceneEntity(entity: Entity.Container) {
+    const sceneEntity = entity as SceneEntity;
+    sceneEntity._scene = this;
+    this.entity = sceneEntity;
+    this.entity.render(this.entity);
+    this.entity.onReady(() => {
+      this.signal.emit('load');
+    });
+  }
+
+  static isSceneEntity(entity: Entity): entity is SceneEntity {
+    return !!entity && '_scene' in entity && !!entity._scene;
   }
 }
 

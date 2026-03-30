@@ -31,7 +31,6 @@ export class SpriteLoader<TFrame extends string, TAnimation extends string> {
       },
     });
     this.textures = await spritesheet.parse();
-    this.sprite.ready = true;
 
     return this.textures[options.defaultFrame];
   }

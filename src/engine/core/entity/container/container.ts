@@ -2,15 +2,16 @@ import { ContainerLayout } from './utils/layout/layout';
 import { Box } from './utils/box';
 import { Signal } from '../../../traits';
 import { GameObject } from '../../object';
-import type { Entity } from "../entity";
+import { Entity } from '../entity';
+import { MaybeEntity } from '../../../types';
 
 type ContainerSignal = {
   childAdded: Entity;
   childRemoved: Entity;
-  cleared: never;
+  descendantAdded: Entity;
+  descendantRemoved: Entity;
+  cleared: void;
 };
-
-export type MaybeEntity = Entity | undefined | null | false;
 
 export class Container {
   private inner = new GameObject();
@@ -21,6 +22,14 @@ export class Container {
 
   private _height?: number;
   private _width?: number;
+
+  get descendants(): Entity[] {
+    return this.children.flatMap((child) =>
+      child instanceof Entity.Container
+        ? [child, ...child.container.descendants]
+        : [child]
+    );
+  }
 
   constructor(private entity: Entity, ...children: MaybeEntity[]) {
     entity['inner'] = this.inner;
@@ -36,6 +45,10 @@ export class Container {
       this._height = height;
       this.setBoundingBox();
     });
+
+    this.entity.onRender(() => {
+      this.onChildReadyChange();
+    });
   }
 
   add(...entities: MaybeEntity[]) {
@@ -48,22 +61,24 @@ export class Container {
 
       this.inner.addChild(entity['inner']);
       this.children.push(entity);
-      this.signal.emit('childAdded', entity);
+
+      this.entity.onRender(() => {
+        this.signal.emit('descendantAdded', entity);
+        this.signal.emit('childAdded', entity);
+        entity.render(this.entity as Entity.Container);
+        this.entity.parent.container.signal.emit('descendantAdded', entity);
+      });
+
       entity.onReady(() => this.onChildReadyChange());
     });
-
-    const { width, height } = this.layout.calculateSize();
-    this.entity.transform.set({
-      width: this._width ?? width,
-      height: this._height ?? height,
-    });
-
-    this.setBoundingBox();
-    this.layout.apply();
   }
 
-  // TODO: implement this
-  remove() { }
+  remove(entity: Entity) {
+    this.inner.removeChild(entity['inner']);
+    this.signal.emit('childRemoved', entity);
+    this.signal.emit('descendantRemoved', entity);
+    entity.parent.container.signal.emit('descendantRemoved', entity);
+  }
 
   clear() {
     this.inner.removeChildren();
@@ -85,6 +100,14 @@ export class Container {
     this.signal.on('cleared', listener);
   }
 
+  onDescendantAdded(listener: (entity: Entity) => void) {
+    this.signal.on('descendantAdded', listener);
+  }
+
+  onDescendantRemoved(listener: (entity: Entity) => void) {
+    this.signal.on('descendantRemoved', listener);
+  }
+
   private setBoundingBox() {
     this.inner.removeChild(this.box.inner);
     this.box = new Box(
@@ -95,8 +118,16 @@ export class Container {
   }
 
   private onChildReadyChange() {
-    if (!this.children.every((entity) => entity.ready)) return;
+    const { width, height } = this.layout.calculateSize();
+    this.entity.transform.set({
+      width: this._width ?? width,
+      height: this._height ?? height,
+    });
 
+    this.setBoundingBox();
+    this.layout.apply();
+
+    if (!this.children.every((entity) => entity.ready)) return;
     this.entity.ready = true;
   }
 }

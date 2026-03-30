@@ -4,41 +4,42 @@ export type ControlScheme = 'wasd' | 'arrowkeys';
 
 type ControlsAction = 'up' | 'down' | 'left' | 'right' | 'a' | 'b';
 
-type ControlsCallback = (e: KeyboardEvent) => void;
+type KeyboardCallback = (e: KeyboardEvent) => void;
+
+type ControlsCallback = () => void | Promise<void>;
 
 export class Controls {
   private static activeControls: Controls[] = [];
 
-  private pressListeners: Record<ControlsAction, ControlsCallback> = {
-    up: () => { },
-    down: () => { },
-    left: () => { },
-    right: () => { },
-    a: () => { },
-    b: () => { },
+  private pressListeners: Record<ControlsAction, KeyboardCallback> = {
+    up: () => {},
+    down: () => {},
+    left: () => {},
+    right: () => {},
+    a: () => {},
+    b: () => {},
   };
   private holdListeners: Record<
     ControlsAction,
     {
-      down: ControlsCallback;
-      up: ControlsCallback;
+      down: KeyboardCallback;
+      up: KeyboardCallback;
     }
   > = {
-      up: { down: () => { }, up: () => { } },
-      down: { down: () => { }, up: () => { } },
-      left: { down: () => { }, up: () => { } },
-      right: { down: () => { }, up: () => { } },
-      a: { down: () => { }, up: () => { } },
-      b: { down: () => { }, up: () => { } },
-    };
+    up: { down: () => {}, up: () => {} },
+    down: { down: () => {}, up: () => {} },
+    left: { down: () => {}, up: () => {} },
+    right: { down: () => {}, up: () => {} },
+    a: { down: () => {}, up: () => {} },
+    b: { down: () => {}, up: () => {} },
+  };
   private isActive = true;
 
   constructor(private readonly keys: Record<ControlsAction, string>) {
     Controls.activeControls.push(this);
   }
 
-  press(action: ControlsAction, callback: () => void) {
-    console.log(`press ${action} registered`);
+  press(action: ControlsAction, callback: ControlsCallback) {
     this.pressListeners[action] = this.createKeybindingListener(
       this.keys[action],
       callback
@@ -47,8 +48,7 @@ export class Controls {
     document.addEventListener('keypress', this.pressListeners[action]);
   }
 
-  hold(action: ControlsAction, down: () => void, up: () => void) {
-    console.log(`hold ${action} registered`);
+  hold(action: ControlsAction, down: ControlsCallback, up: ControlsCallback) {
     this.holdListeners[action].down = this.createKeybindingListener(
       this.keys[action],
       down
@@ -63,15 +63,13 @@ export class Controls {
   }
 
   off(action: ControlsAction) {
-    console.log(`controls ${action} deregistered`);
-
     document.removeEventListener('keypress', this.pressListeners[action]);
-    this.pressListeners[action] = () => { };
+    this.pressListeners[action] = () => {};
 
     document.removeEventListener('keydown', this.holdListeners[action].down);
-    this.holdListeners[action].down = () => { };
+    this.holdListeners[action].down = () => {};
     document.removeEventListener('keyup', this.holdListeners[action].up);
-    this.holdListeners[action].up = () => { };
+    this.holdListeners[action].up = () => {};
   }
 
   pause() {
@@ -93,14 +91,14 @@ export class Controls {
 
   private createKeybindingListener(
     key: string,
-    callback: () => void
+    callback: ControlsCallback
   ): (e: KeyboardEvent) => void {
-    return (e: KeyboardEvent) => {
+    return async (e: KeyboardEvent) => {
       if (!this.isActive) {
         return;
       }
       if (e.key.toLowerCase() === key.toLowerCase()) {
-        callback();
+        await callback();
       }
     };
   }

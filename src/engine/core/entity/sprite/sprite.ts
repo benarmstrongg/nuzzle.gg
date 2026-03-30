@@ -97,7 +97,7 @@ export class Sprite<
       this.entity.transform.height = this.entity['inner'].height;
     });
 
-    this.anchor.onChange(({ x, y }) => {
+    this.anchor.onChange(([{ x, y }]) => {
       this.inner.anchor.x = x;
       this.inner.anchor.y = y;
     });

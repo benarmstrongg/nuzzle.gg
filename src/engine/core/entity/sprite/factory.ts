@@ -1,10 +1,12 @@
-import { Entity } from "../entity";
-import { Sprite, SpriteOptions } from "./sprite";
+import { Entity } from '../entity';
+import { Sprite, SpriteOptions } from './sprite';
 
-export const spriteFactory = <TFrame extends string, TAnimation extends string>(
+type SpriteFactory = <TFrame extends string, TAnimation extends string>(
   options: SpriteOptions<TFrame, TAnimation>
-): Entity.Sprite => {
+) => Entity.Sprite;
+
+export const spriteFactory: SpriteFactory = (options) => {
   return new (class extends Entity.Sprite {
-    sprite = new Sprite<TFrame, TAnimation>(this, options);
+    sprite = new Sprite(this, options);
   })();
-}
+};

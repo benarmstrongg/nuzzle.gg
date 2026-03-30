@@ -19,8 +19,12 @@ export class SpriteAnimations<
   play(animation: TAnimation) {
     if (this.state === animation) return;
 
-    console.log(`playing animation ${animation}`);
-    const { frames } = this.spritesheet!.animations![animation];
+    const { frames } = this.spritesheet?.animations?.[animation] ?? {};
+
+    if (!frames) {
+      throw new Error(`Animation ${animation} not found`);
+    }
+
     const textures = frames.map((frame) => this.loader.textures![frame.frame]);
     this.inner.textures = textures;
     this.inner.animationSpeed = 0.08;

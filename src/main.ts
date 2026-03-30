@@ -19,7 +19,6 @@ async function box() {
   // const sets = battle.p1.pokemon.map((p) => p.set);
   // await App.loadScene(new BattleScene(sets, teamGen.getTeam()));
   teamGenWorker.generateTeam(12).then(async (team) => {
-    console.log('done', team);
     const battle = new Battle({
       formatid: toID('gen9ubers'),
       p1: {
@@ -28,7 +27,6 @@ async function box() {
       },
     });
     const box = new Box(battle.p1.pokemon);
-    console.log(box);
     await game.loadScene(box);
   });
 }

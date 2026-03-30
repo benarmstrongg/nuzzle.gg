@@ -5,10 +5,10 @@ const assetUrls: Record<CharacterId, string> = {
   red: 'spritesheets/characters/red.png',
 };
 
-const spriteSheetWidth = 128;
-const spriteSheetHeight = 192;
-const w = spriteSheetWidth / 4;
-const h = spriteSheetHeight / 4;
+const spritesheetWidth = 128;
+const spritesheetHeight = 192;
+const w = spritesheetWidth / 4;
+const h = spritesheetHeight / 4;
 const frames: Record<CharacterFrame, SpritesheetFrame> = {
   // idle
   idle_down: { x: 0, y: 0, w, h },
@@ -93,7 +93,9 @@ export {
   assetUrls,
   frames,
   defaultFrame,
-  spriteSheetWidth as w,
-  spriteSheetHeight as h,
+  spritesheetWidth as w,
+  spritesheetHeight as h,
+  w as characterWidth,
+  h as characterHeight,
   animations,
 };

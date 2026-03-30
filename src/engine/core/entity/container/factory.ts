@@ -1,11 +1,10 @@
 import type { CenterOptions, FlexOptions, GridOptions } from './utils';
-import { Container, MaybeEntity } from './container';
+import { Container } from './container';
 import { TransformState } from '../../transform';
-import { Entity } from "../entity";
+import { Entity } from '../entity';
+import { MaybeEntity } from '../../../types';
 
-type ContainerFactory = ((
-  ...children: MaybeEntity[]
-) => Entity.Container) & {
+type ContainerFactory = ((...children: MaybeEntity[]) => Entity.Container) & {
   box: (
     options: Partial<TransformState>,
     ...children: MaybeEntity[]

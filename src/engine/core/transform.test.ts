@@ -90,4 +90,70 @@ describe('Transform', () => {
     expect(transform.x).toBe(10);
     expect(transform.y).toBe(10);
   });
+
+  it('moveTo returns a Promise that resolves when movement completes', async () => {
+    const entity = createEntity();
+    const transform = new Transform(entity);
+
+    await transform.moveTo({ x: 4, y: 0 }, 2);
+    expect(transform.x).toBe(4);
+
+    await transform.moveBy({ x: 3 }, 2);
+    expect(transform.x).toBe(7);
+  });
+
+  describe('stop', () => {
+    let tickFn: ((done: () => void) => void) | null = null;
+
+    beforeEach(() => {
+      tickFn = null;
+      game.tick = (fn: (done: () => void) => void) => {
+        tickFn = fn;
+      };
+    });
+
+    function simulateTick() {
+      tickFn!(() => {
+        tickFn = null;
+      });
+    }
+
+    it('halts movement at the current position', () => {
+      const entity = createEntity();
+      const transform = new Transform(entity);
+
+      transform.moveTo({ x: 10, y: 0 }, 10);
+
+      simulateTick();
+      expect(transform.x).toBe(1);
+
+      simulateTick();
+      expect(transform.x).toBe(2);
+
+      transform.stop();
+      expect(transform.x).toBe(2);
+    });
+
+    it('prevents further ticks from advancing position', () => {
+      const entity = createEntity();
+      const transform = new Transform(entity);
+
+      transform.moveTo({ x: 10, y: 0 }, 10);
+
+      simulateTick();
+      expect(transform.x).toBe(1);
+
+      transform.stop();
+
+      const stoppedTickFn = tickFn;
+      expect(stoppedTickFn).toBeNull();
+    });
+
+    it('is safe to call when no movement is in progress', () => {
+      const entity = createEntity();
+      const transform = new Transform(entity);
+
+      expect(() => transform.stop()).not.toThrow();
+    });
+  });
 });
