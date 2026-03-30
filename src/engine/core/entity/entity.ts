@@ -58,12 +58,15 @@ export class Entity {
   }
 
   onReady(fn: () => void) {
-    if (this.ready) fn();
+    if (this.ready) return fn();
 
-    this.meta.once('ready', (ready) => {
+    const cb = (ready: boolean) => {
       if (ready === false) return;
+
       fn();
-    });
+      this.meta.off('ready', cb);
+    };
+    this.meta.on('ready', cb);
   }
 
   render(container: ContainerEntity) {
@@ -72,12 +75,14 @@ export class Entity {
   }
 
   onRender(fn: () => void) {
-    if (this.meta.rendered) fn();
+    if (this.meta.rendered) return fn();
 
-    this.meta.once('rendered', (rendered) => {
+    const cb = (rendered: boolean) => {
       if (rendered === false) return;
       fn();
-    });
+      this.meta.off('rendered', cb);
+    };
+    this.meta.on('rendered', cb);
   }
 
   destroy() {

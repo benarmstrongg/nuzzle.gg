@@ -71,15 +71,6 @@ export class Container {
 
       entity.onReady(() => this.onChildReadyChange());
     });
-
-    const { width, height } = this.layout.calculateSize();
-    this.entity.transform.set({
-      width: this._width ?? width,
-      height: this._height ?? height,
-    });
-
-    this.setBoundingBox();
-    this.layout.apply();
   }
 
   // TODO: implement this
@@ -123,8 +114,16 @@ export class Container {
   }
 
   private onChildReadyChange() {
-    if (!this.children.every((entity) => entity.ready)) return;
+    const { width, height } = this.layout.calculateSize();
+    this.entity.transform.set({
+      width: this._width ?? width,
+      height: this._height ?? height,
+    });
 
+    this.setBoundingBox();
+    this.layout.apply();
+
+    if (!this.children.every((entity) => entity.ready)) return;
     this.entity.ready = true;
   }
 }

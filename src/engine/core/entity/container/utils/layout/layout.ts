@@ -15,7 +15,7 @@ export class ContainerLayout {
   private options?: LayoutOptions;
   private sizeAxis?: SizeAxis;
 
-  constructor(private container: Container, private entity: Entity) { }
+  constructor(private container: Container, private entity: Entity) {}
 
   /**
    * TODO: this is broken
