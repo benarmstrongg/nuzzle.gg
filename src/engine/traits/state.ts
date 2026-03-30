@@ -4,15 +4,15 @@ class StateProxy<T extends Record<string, any> = any> {
   private _inner: {
     values: T;
     propSignal: Signal<T>;
-    stateSignal: Signal<{ change: T }>;
+    stateSignal: Signal<{ change: [T, T] }>;
     isSilent: boolean;
   };
 
   private constructor(initialValue: T) {
     this._inner = {
       values: initialValue,
-      propSignal: new Signal<T>(),
-      stateSignal: new Signal<{ change: T }>(),
+      propSignal: new Signal(),
+      stateSignal: new Signal(),
       isSilent: false,
     };
   }
@@ -47,8 +47,12 @@ class StateProxy<T extends Record<string, any> = any> {
     this.setValue(value);
   }
 
-  onChange(listener: (change: T) => void) {
+  onChange(listener: ([current, previous]: [T, T]) => void) {
     this._inner.stateSignal.on('change', listener);
+  }
+
+  offChange(listener: ([current, previous]: [T, T]) => void) {
+    this._inner.stateSignal.off('change', listener);
   }
 
   on(prop: keyof T, listener: (value: T[typeof prop]) => void) {
@@ -59,7 +63,10 @@ class StateProxy<T extends Record<string, any> = any> {
     this._inner.propSignal.once(prop, listener);
   }
 
-  off(prop: keyof T, listener: (value: T[typeof prop]) => void) {
+  off(
+    prop: keyof T | 'change',
+    listener: (value: T[typeof prop]) => void
+  ): void {
     this._inner.propSignal.off(prop, listener);
   }
 
@@ -78,6 +85,7 @@ class StateProxy<T extends Record<string, any> = any> {
 
   private setValue(value: Partial<T>) {
     let didAnyChange = false;
+    const previous = { ...this._inner.values };
 
     for (const prop in value) {
       const propValue = value[prop]!;
@@ -92,7 +100,8 @@ class StateProxy<T extends Record<string, any> = any> {
     }
 
     if (!didAnyChange || this._inner.isSilent) return;
-    this._inner.stateSignal.emit('change', { ...this._inner.values, ...value });
+    const current = { ...this._inner.values, ...value };
+    this._inner.stateSignal.emit('change', [current, previous]);
   }
 }
 

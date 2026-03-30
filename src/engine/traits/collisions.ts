@@ -1,11 +1,11 @@
-import { Entity, Scene } from '../core';
+import { Coordinate, Entity, Scene } from '../core';
 import { Array2d, ColliderEntity } from '../types';
 import { Collider } from './collider';
 
 export class Collisions {
   private colliderListeners = new Map<
     ColliderEntity,
-    { x: (value: number) => void; y: (value: number) => void }
+    ([current, previous]: [Coordinate, Coordinate]) => void
   >();
   private grid: Array2d<Set<ColliderEntity> | null> = [];
   private activeCollisions = new Map<ColliderEntity, Set<ColliderEntity>>();
@@ -31,13 +31,10 @@ export class Collisions {
     this.applyEntityToGrid(entity, 'add');
     this.activeCollisions.set(entity, new Set());
 
-    const listeners = {
-      x: (x: number) => this.onColliderMove(entity, 'x', x),
-      y: (y: number) => this.onColliderMove(entity, 'y', y),
-    };
-    this.colliderListeners.set(entity, listeners);
-    entity.transform.global.on('x', listeners.x);
-    entity.transform.global.on('y', listeners.y);
+    const listener = ([current, previous]: [Coordinate, Coordinate]) =>
+      this.onColliderMove(entity, current, previous);
+    this.colliderListeners.set(entity, listener);
+    entity.transform.global.onChange(listener);
 
     this.trackCollisions(entity);
   }
@@ -50,27 +47,26 @@ export class Collisions {
     this.cleanupCollisions(entity);
     this.applyEntityToGrid(entity, 'remove');
 
-    const listeners = this.colliderListeners.get(entity);
-    if (!listeners) {
+    const listener = this.colliderListeners.get(entity);
+    if (!listener) {
       return;
     }
     this.colliderListeners.delete(entity);
-    entity.transform.global.off('x', listeners.x);
-    entity.transform.global.off('y', listeners.y);
+    entity.transform.global.offChange(listener);
   }
 
   private onColliderMove(
     entity: ColliderEntity,
-    axis: 'x' | 'y',
-    value: number
+    current: Coordinate,
+    previous: Coordinate
   ) {
-    console.count(`onColliderMove ${entity.constructor.name}`);
-    const { globalX: x, globalY: y, width, height } = entity.transform;
+    const { x, y } = previous;
+    const { width, height } = entity.transform;
+    const axis = current.x !== x ? 'x' : 'y';
     const oldPos = axis === 'x' ? x : y;
-    const newPos = value;
+    const newPos = axis === 'x' ? current.x : current.y;
 
     if (oldPos === newPos) return;
-
     const size = axis === 'x' ? width : height;
     const oldStart = Math.floor(oldPos);
     const oldEnd = Math.floor(oldPos + size - 1);
@@ -92,7 +88,6 @@ export class Collisions {
 
       // Skip if the cell is in the overlap region
       if (
-        axis === 'y' &&
         gridY >= Math.max(oldYStart, newYStart) &&
         gridY <= Math.min(oldYEnd, newYEnd)
       ) {
@@ -105,7 +100,6 @@ export class Collisions {
 
         // Skip if the cell is in the overlap region
         if (
-          axis === 'x' &&
           gridX >= Math.max(oldXStart, newXStart) &&
           gridX <= Math.min(oldXEnd, newXEnd)
         ) {
@@ -122,7 +116,6 @@ export class Collisions {
 
       // Skip if the cell is in the overlap region
       if (
-        axis === 'y' &&
         gridY >= Math.max(oldYStart, newYStart) &&
         gridY <= Math.min(oldYEnd, newYEnd)
       ) {
@@ -135,7 +128,6 @@ export class Collisions {
 
         // Skip if the cell is in the overlap region
         if (
-          axis === 'x' &&
           gridX >= Math.max(oldXStart, newXStart) &&
           gridX <= Math.min(oldXEnd, newXEnd)
         ) {
@@ -300,6 +292,8 @@ export class Collisions {
       if (otherCollisions) {
         otherCollisions.delete(entity);
       }
+      entity.collider.exit(otherEntity);
+      otherEntity.collider.exit(entity);
     });
     this.activeCollisions.delete(entity);
   }

@@ -13,7 +13,7 @@ export const cover = (entity: Entity) => {
     game['inner'].stage.addChild(cover);
     entity['inner'].parent?.addChild(cover);
 
-    entity.transform.position.onChange(({ x, y }) => {
+    entity.transform.position.onChange(([{ x, y }]) => {
       cover.position.set(x, y);
     });
   });

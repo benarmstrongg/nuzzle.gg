@@ -27,12 +27,10 @@ export class Collider {
   }
 
   enter(entity: ColliderEntity) {
-    console.count('enter');
     this.onEnter?.(entity);
   }
 
   exit(entity: ColliderEntity) {
-    console.count('exit');
     this.onExit?.(entity);
   }
 }
