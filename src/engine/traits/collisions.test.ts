@@ -1,11 +1,13 @@
+import { Application, Ticker } from 'pixi.js';
 import { describe, expect, it, vi } from 'vitest';
 import { Collider, ICollider } from './collider';
 import { Collisions } from './collisions';
 import { Entity, Scene } from '../core';
+import { game } from '../core/game';
 import { ColliderEntity } from '../types';
 
 class TestScene extends Scene {
-  constructor(private _width = 20, private _height = 20) {
+  constructor(private _width = 50, private _height = 50) {
     super();
   }
 
@@ -14,11 +16,33 @@ class TestScene extends Scene {
   }
 }
 
-function setup(width = 20, height = 20) {
+function setup(width = 50, height = 50) {
   const scene = new TestScene(width, height);
   const collisions = new Collisions(scene);
   scene.load();
   return { scene, collisions };
+}
+
+function setupWithTicker(width = 50, height = 50) {
+  const scene = new TestScene(width, height);
+  const collisions = new Collisions(scene);
+
+  const ticker = new Ticker();
+  ticker.autoStart = false;
+  game['inner'] ??= new Application();
+  game['inner'].ticker = ticker;
+
+  scene.load();
+
+  let time = 0;
+  const tick = (frames = 1) => {
+    for (let i = 0; i < frames; i++) {
+      time += 100;
+      ticker.update(time);
+    }
+  };
+
+  return { scene, collisions, tick };
 }
 
 function createCollider(
@@ -232,73 +256,93 @@ describe('Collisions', () => {
     });
   });
 
-  describe('directional collision detection', () => {
-    it('fires enter when approaching from the left (moving right)', () => {
-      const { scene } = setup();
-      const enterA = vi.fn();
-      const enterB = vi.fn();
+  describe('directional collision detection (tick-based walking)', () => {
+    it('fires enter when walking right into collider', () => {
+      const { scene, tick } = setupWithTicker();
+      const enterPlayer = vi.fn();
 
-      const a = createCollider({ x: 2, y: 10, width: 1, height: 1, onEnter: enterA });
-      const b = createCollider({ x: 10, y: 10, width: 1, height: 1, onEnter: enterB });
+      const wall = createCollider({ x: 10, y: 5, width: 1, height: 1 });
+      const player = createCollider({
+        x: 2,
+        y: 5,
+        width: 1,
+        height: 1,
+        onEnter: enterPlayer,
+      });
 
-      scene.container.add(a);
-      scene.container.add(b);
+      scene.container.add(wall);
+      scene.container.add(player);
 
-      a.transform.x = 9.5;
+      player.transform.moveTo({ x: 12 }, 10);
+      tick(10);
 
-      expect(enterA).toHaveBeenCalledWith(b);
-      expect(enterB).toHaveBeenCalledWith(a);
+      expect(enterPlayer).toHaveBeenCalledWith(wall);
     });
 
-    it('fires enter when approaching from the right (moving left)', () => {
-      const { scene } = setup();
-      const enterA = vi.fn();
-      const enterB = vi.fn();
+    it('fires enter when walking left into collider', () => {
+      const { scene, tick } = setupWithTicker();
+      const enterPlayer = vi.fn();
 
-      const a = createCollider({ x: 18, y: 10, width: 1, height: 1, onEnter: enterA });
-      const b = createCollider({ x: 10, y: 10, width: 1, height: 1, onEnter: enterB });
+      const wall = createCollider({ x: 10, y: 5, width: 1, height: 1 });
+      const player = createCollider({
+        x: 18,
+        y: 5,
+        width: 1,
+        height: 1,
+        onEnter: enterPlayer,
+      });
 
-      scene.container.add(a);
-      scene.container.add(b);
+      scene.container.add(wall);
+      scene.container.add(player);
 
-      a.transform.x = 10.5;
+      player.transform.moveTo({ x: 8 }, 10);
+      tick(10);
 
-      expect(enterA).toHaveBeenCalledWith(b);
-      expect(enterB).toHaveBeenCalledWith(a);
+      expect(enterPlayer).toHaveBeenCalledWith(wall);
     });
 
-    it('fires enter when approaching from above (moving down)', () => {
-      const { scene } = setup();
-      const enterA = vi.fn();
-      const enterB = vi.fn();
+    it('fires enter when walking down into collider', () => {
+      const { scene, tick } = setupWithTicker();
+      const enterPlayer = vi.fn();
 
-      const a = createCollider({ x: 10, y: 2, width: 1, height: 1, onEnter: enterA });
-      const b = createCollider({ x: 10, y: 10, width: 1, height: 1, onEnter: enterB });
+      const wall = createCollider({ x: 5, y: 10, width: 1, height: 1 });
+      const player = createCollider({
+        x: 5,
+        y: 2,
+        width: 1,
+        height: 1,
+        onEnter: enterPlayer,
+      });
 
-      scene.container.add(a);
-      scene.container.add(b);
+      scene.container.add(wall);
+      scene.container.add(player);
 
-      a.transform.y = 9.5;
+      player.transform.moveTo({ y: 12 }, 10);
+      tick(10);
 
-      expect(enterA).toHaveBeenCalledWith(b);
-      expect(enterB).toHaveBeenCalledWith(a);
+      expect(enterPlayer).toHaveBeenCalledWith(wall);
     });
 
-    it('fires enter when approaching from below (moving up)', () => {
-      const { scene } = setup();
-      const enterA = vi.fn();
-      const enterB = vi.fn();
+    it('fires enter when walking up into collider', () => {
+      const { scene, tick } = setupWithTicker();
+      const enterPlayer = vi.fn();
 
-      const a = createCollider({ x: 10, y: 18, width: 1, height: 1, onEnter: enterA });
-      const b = createCollider({ x: 10, y: 10, width: 1, height: 1, onEnter: enterB });
+      const wall = createCollider({ x: 5, y: 10, width: 1, height: 1 });
+      const player = createCollider({
+        x: 5,
+        y: 18,
+        width: 1,
+        height: 1,
+        onEnter: enterPlayer,
+      });
 
-      scene.container.add(a);
-      scene.container.add(b);
+      scene.container.add(wall);
+      scene.container.add(player);
 
-      a.transform.y = 10.5;
+      player.transform.moveTo({ y: 8 }, 10);
+      tick(10);
 
-      expect(enterA).toHaveBeenCalledWith(b);
-      expect(enterB).toHaveBeenCalledWith(a);
+      expect(enterPlayer).toHaveBeenCalledWith(wall);
     });
   });
 

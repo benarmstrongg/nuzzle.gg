@@ -56,7 +56,6 @@ export abstract class Scene {
   load() {
     this.entity.destroy();
     this.setSceneEntity(this.render());
-    this.signal.emit('load');
   }
 
   destroy() {
@@ -69,6 +68,9 @@ export abstract class Scene {
     sceneEntity._scene = this;
     this.entity = sceneEntity;
     this.entity.render(this.entity);
+    this.entity.onReady(() => {
+      this.signal.emit('load');
+    });
   }
 
   static isSceneEntity(entity: Entity): entity is SceneEntity {

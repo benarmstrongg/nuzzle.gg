@@ -16,6 +16,7 @@ export class Collider {
   readonly solid: boolean;
   private readonly onEnter?: (entity: ColliderEntity) => void;
   private readonly onExit?: (entity: ColliderEntity) => void;
+  private readonly collidingWith = new Set<ColliderEntity>();
 
   constructor(
     _entity: Entity,
@@ -28,10 +29,16 @@ export class Collider {
 
   enter(entity: ColliderEntity) {
     this.onEnter?.(entity);
+    this.collidingWith.add(entity);
   }
 
   exit(entity: ColliderEntity) {
     this.onExit?.(entity);
+    this.collidingWith.delete(entity);
+  }
+
+  isCollidingWith(entity: ColliderEntity) {
+    return this.collidingWith.has(entity);
   }
 }
 

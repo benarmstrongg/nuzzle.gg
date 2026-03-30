@@ -28,6 +28,7 @@ export class Transform {
   });
   global = new State<Coordinate>({ x: 0, y: 0 });
   scale: State<ScaleState> = new State({ x: 1, y: 1 });
+  private moveDone: (() => void) | null = null;
 
   get x(): number {
     return this.position.x;
@@ -91,13 +92,17 @@ export class Transform {
       this.height = state.height;
   }
 
-  moveBy(position: Partial<Coordinate>, duration: number) {
+  moveBy(position: Partial<Coordinate>, duration: number): Promise<void> {
     const x = this.x + (position.x ?? 0);
     const y = this.y + (position.y ?? 0);
-    this.moveTo({ x, y }, duration);
+    return this.moveTo({ x, y }, duration);
   }
 
-  moveTo(position: Partial<Coordinate>, duration: number) {
+  moveTo(position: Partial<Coordinate>, duration: number): Promise<void> {
+    if (duration === 0) {
+      return Promise.resolve();
+    }
+
     const toX = position.x ?? this.x;
     const toY = position.y ?? this.y;
     const stepX = (toX - this.x) / duration;
@@ -105,25 +110,36 @@ export class Transform {
     const directionX = toX > this.x ? 1 : -1;
     const directionY = toY > this.y ? 1 : -1;
 
-    game.tick((done) => {
-      const isXDone =
-        (directionX === 1 && this.x >= toX) ||
-        (directionX === -1 && this.x <= toX);
-      const isYDone =
-        (directionY === 1 && this.y >= toY) ||
-        (directionY === -1 && this.y <= toY);
+    return new Promise((resolve) => {
+      game.tick((done) => {
+        this.moveDone = done;
+        const isXDone =
+          (directionX === 1 && this.x >= toX) ||
+          (directionX === -1 && this.x <= toX);
+        const isYDone =
+          (directionY === 1 && this.y >= toY) ||
+          (directionY === -1 && this.y <= toY);
 
-      if (isXDone && isYDone) {
-        return done();
-      }
+        if (isXDone && isYDone) {
+          done();
+          resolve();
+          this.moveDone = null;
+          return;
+        }
 
-      if (!isXDone) {
-        this.x += stepX;
-      }
+        if (!isXDone) {
+          this.x += stepX;
+        }
 
-      if (!isYDone) {
-        this.y += stepY;
-      }
+        if (!isYDone) {
+          this.y += stepY;
+        }
+      });
     });
+  }
+
+  stop() {
+    this.moveDone?.();
+    this.moveDone = null;
   }
 }

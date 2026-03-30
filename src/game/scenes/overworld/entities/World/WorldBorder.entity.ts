@@ -17,8 +17,6 @@ export class WorldBorder extends Entity.Container {
     const width = tileWidth * columns;
     const height = tileHeight * rows;
 
-    this.transform.set({ width, height });
-
     const topBorder = Array.from(
       { length: columns + borderExtension },
       (_, col) => new VoidBackgroundTile({ x: col * tileWidth, y: 0 })
