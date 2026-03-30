@@ -5,7 +5,7 @@ import {
   ICollider,
   Sprite,
   SpritesheetFrame,
-} from '../../../../../engine';
+} from 'nuzzlengine';
 import { tileHeight, tileWidth, h, w } from './spritesheet.const';
 
 const assetUrl = 'spritesheets/tiles/void.png';

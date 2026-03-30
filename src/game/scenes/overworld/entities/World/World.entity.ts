@@ -1,4 +1,4 @@
-import { Array2d, Container, Entity } from '../../../../../engine';
+import { Array2d, Container, Entity } from 'nuzzlengine';
 import { BackgroundTile, BackgroundTileMetadata } from '../BackgroundTile';
 import { Tile } from '../Tile';
 import { WorldData, WorldTileMetadata } from './types';

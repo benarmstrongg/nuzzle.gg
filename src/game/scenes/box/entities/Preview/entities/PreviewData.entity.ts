@@ -1,8 +1,7 @@
 import { Pokemon, Dex } from '@pkmn/sim';
-import { Container, Entity } from '../../../../../../engine';
-import { ItemIcon, TypeIcon } from '../../../../../entities';
-import { NatureText } from '../../../../../entities/NatureText.entity';
-import { toItemId, toTypeId } from '../../../../../util';
+import { Container, Entity } from 'nuzzlengine';
+import { ItemIcon, TypeIcon, NatureText } from 'nuzzle.gg/entities';
+import { toItemId, toTypeId } from 'nuzzle.gg/util';
 
 const width = 172;
 const height = 155;

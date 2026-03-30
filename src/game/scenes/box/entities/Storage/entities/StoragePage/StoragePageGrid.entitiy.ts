@@ -1,6 +1,6 @@
 import { Pokemon } from '@pkmn/sim';
-import { Container, Entity, IState, State } from '../../../../../../../engine';
-import { PokemonIcon } from '../../../../../../entities';
+import { Container, Entity, IState, State } from 'nuzzlengine';
+import { PokemonIcon } from 'nuzzle.gg/entities';
 import { StorageCursor, StorageCursorMoveEvent } from '../StorageCursor.entity';
 
 const width = 320;

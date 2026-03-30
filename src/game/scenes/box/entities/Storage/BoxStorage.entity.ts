@@ -1,11 +1,6 @@
 import { Pokemon } from '@pkmn/sim';
-import {
-  Container,
-  Entity,
-  ISignal,
-  Signal,
-} from '../../../../../engine';
-import { Menu } from '../../../../entities';
+import { Container, Entity, ISignal, Signal } from 'nuzzlengine';
+import { Menu } from 'nuzzle.gg/entities';
 import { StorageCursor, StoragePage } from './entities';
 
 // export class BoxStorageSeeBelow extends Entity.Container {

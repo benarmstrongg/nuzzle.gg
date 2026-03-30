@@ -1,5 +1,5 @@
-import { Container, Controls, Entity, IControls } from '../../../../engine';
-import { Character } from '../../../entities';
+import { Container, Controls, Entity, IControls } from 'nuzzlengine';
+import { Character } from 'nuzzle.gg/entities';
 
 export class Player extends Entity.Container implements IControls {
   container: Container;

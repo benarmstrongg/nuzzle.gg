@@ -1,5 +1,5 @@
 // import { Assets, ContainerOptions, Texture } from 'pixi.js';
-// import { App, ContainerObject, SpriteObject, TextObject } from '../engine';
+// import { App, ContainerObject, SpriteObject, TextObject } from 'nuzzlengine';
 // import { font } from '../util/font.util';
 
 // const ASSET = 'sprites/ui/common/message_box.png';

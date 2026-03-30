@@ -6,3 +6,4 @@ export * from './PokemonSprite.entity';
 export * from './StatusIcon.entity';
 export * from './Menu.entity';
 export * from './Character';
+export * from './NatureText.entity';

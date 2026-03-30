@@ -1,5 +1,5 @@
 import { Dex, Pokemon } from '@pkmn/sim';
-import { Container, Entity, TransformState } from '../../engine';
+import { Container, Entity, TransformState } from 'nuzzlengine';
 
 export class NatureText extends Entity.Container {
   container = new Container(this);
@@ -21,11 +21,11 @@ export class NatureText extends Entity.Container {
     this.container.add(
       Entity.text.lg(name || 'Serious'),
       (plus || minus) &&
-      Entity.container.flex(
-        { gap: 2 },
-        plus && Entity.text.sm(`+${plus}`, { color: 'red' }),
-        minus && Entity.text.sm(`-${minus}`, { color: 'blue' })
-      )
+        Entity.container.flex(
+          { gap: 2 },
+          plus && Entity.text.sm(`+${plus}`, { color: 'red' }),
+          minus && Entity.text.sm(`-${minus}`, { color: 'blue' })
+        )
     );
   }
 }

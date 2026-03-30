@@ -1,5 +1,5 @@
-import { Entity, Sprite } from '../../../../../engine';
-import { ItemId } from '../../../../types';
+import { Entity, Sprite } from 'nuzzlengine';
+import { ItemId } from 'nuzzle.gg/types';
 
 export class Item extends Entity.Sprite {
   sprite = new Sprite(this, { assetUrl: '' });

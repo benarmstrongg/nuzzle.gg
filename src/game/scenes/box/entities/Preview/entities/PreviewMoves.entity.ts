@@ -1,7 +1,7 @@
 import { Dex, Pokemon } from '@pkmn/sim';
-import { Container, Entity } from '../../../../../../engine';
-import { TypeIcon } from '../../../../../entities';
-import { toTypeId } from '../../../../../util';
+import { Container, Entity } from 'nuzzlengine';
+import { TypeIcon } from 'nuzzle.gg/entities';
+import { toTypeId } from 'nuzzle.gg/util';
 
 type MoveSlot = Pokemon['moveSlots'][number];
 

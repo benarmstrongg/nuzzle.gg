@@ -4,7 +4,7 @@ import {
   FontSize,
   IControls,
   TransformState,
-} from '../../engine';
+} from 'nuzzlengine';
 
 type MenuItem = {
   label: string;

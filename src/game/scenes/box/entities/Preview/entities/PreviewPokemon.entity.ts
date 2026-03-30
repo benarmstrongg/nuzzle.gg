@@ -1,6 +1,6 @@
 import { Pokemon } from '@pkmn/sim';
-import { Container, Entity } from '../../../../../../engine';
-import { PokemonSprite } from '../../../../../entities';
+import { Container, Entity } from 'nuzzlengine';
+import { PokemonSprite } from 'nuzzle.gg/entities';
 
 const width = 178;
 const height = 176;

@@ -1,9 +1,5 @@
 import { Pokemon } from '@pkmn/sim';
-import {
-  Container,
-  Entity,
-  Random,
-} from '../../../../../../../engine';
+import { Container, Entity, Random } from 'nuzzlengine';
 import { StoragePageHeader } from './StoragePageHeader.entity';
 import { StoragePageGrid } from './StoragePageGrid.entitiy';
 

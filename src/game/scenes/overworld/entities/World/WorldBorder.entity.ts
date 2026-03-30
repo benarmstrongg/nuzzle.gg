@@ -1,4 +1,4 @@
-import { Entity, Container } from '../../../../../engine';
+import { Entity, Container } from 'nuzzlengine';
 import { VoidBackgroundTile } from '../BackgroundTile/VoidBackgroundTile.entity';
 
 const borderExtension = 1;

@@ -1,5 +1,5 @@
-import { Array2d } from '../../../../../engine';
-import { PokemonId, ItemId } from '../../../../types';
+import { Array2d } from 'nuzzlengine';
+import { PokemonId, ItemId } from 'nuzzle.gg/types';
 import { BackgroundTileMetadata } from '../BackgroundTile/types';
 import { TileId } from '../Tile';
 

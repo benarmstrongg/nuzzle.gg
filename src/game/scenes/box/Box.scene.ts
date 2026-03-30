@@ -1,5 +1,5 @@
 import { Pokemon } from '@pkmn/sim';
-import { Entity, Scene } from '../../../engine';
+import { Entity, Scene } from 'nuzzlengine';
 import { BoxPreview } from './entities/Preview/BoxPreview.entity';
 import { BoxStorage } from './entities/Storage/BoxStorage.entity';
 

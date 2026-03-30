@@ -1,4 +1,4 @@
-import { SpriteAnimationOptions, SpritesheetFrame } from '../../../engine';
+import { SpriteAnimationOptions, SpritesheetFrame } from 'nuzzlengine';
 import { CharacterAnimation, CharacterFrame, CharacterId } from './types';
 
 const assetUrls: Record<CharacterId, string> = {

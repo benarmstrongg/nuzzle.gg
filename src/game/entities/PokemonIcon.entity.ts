@@ -1,5 +1,5 @@
 import { Dex, Pokemon } from '@pkmn/sim';
-import { Entity, Sprite } from '../../engine';
+import { Entity, Sprite } from 'nuzzlengine';
 import { PokemonSprite } from './PokemonSprite.entity';
 
 export class PokemonIcon extends Entity.Sprite {

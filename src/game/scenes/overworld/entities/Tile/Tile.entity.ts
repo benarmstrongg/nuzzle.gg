@@ -1,7 +1,7 @@
-import { Entity, Sprite } from '../../../../../engine';
+import { Entity, Sprite } from 'nuzzlengine';
+import { toItemId } from 'nuzzle.gg/util';
 import { WorldTileMetadata } from '../World/types';
 import { Item } from '../World/Item.entity';
-import { toItemId } from '../../../../util';
 
 const w = 10;
 const h = 10;

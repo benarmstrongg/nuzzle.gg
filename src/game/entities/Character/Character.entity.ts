@@ -4,7 +4,7 @@ import {
   Entity,
   ICollider,
   Sprite,
-} from '../../../engine';
+} from 'nuzzlengine';
 import {
   CharacterFrame,
   CharacterId,

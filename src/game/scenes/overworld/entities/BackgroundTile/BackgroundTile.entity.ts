@@ -1,4 +1,4 @@
-import { Entity, Sprite } from '../../../../../engine';
+import { Entity, Sprite } from 'nuzzlengine';
 import {
   assetUrls,
   frames,

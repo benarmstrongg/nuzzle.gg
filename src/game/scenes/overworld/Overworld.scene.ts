@@ -1,10 +1,4 @@
-import {
-  Array2d,
-  Collisions,
-  Entity,
-  ICollisions,
-  Scene,
-} from '../../../engine';
+import { Array2d, Collisions, Entity, ICollisions, Scene } from 'nuzzlengine';
 import { World } from './entities/World/World.entity';
 import { Player } from './entities/Player.entity';
 import { BackgroundTileMetadata } from './entities/BackgroundTile/types';

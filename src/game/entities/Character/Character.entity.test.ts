@@ -1,16 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Character } from './Character.entity';
-import { game } from '../../../engine/core/game';
-import { Collider, Entity, ICollider } from '../../../engine';
-import { ColliderEntity } from '../../../engine/types';
+import { game, ColliderEntity, Entity, ICollider, Collider } from 'nuzzlengine';
 
 // TODO: shoouldn't have to mock this from game module, not sure what to do about that rn
 vi.mock(
-  '../../../engine/core/entity/sprite/utils/loader',
+  'nuzzlengine/core/entity/sprite/utils/loader',
   async (importOriginal) => {
     const { Texture } = await import('pixi.js');
     const actual = await importOriginal<
-      typeof import('../../../engine/core/entity/sprite/utils/loader')
+      typeof import('nuzzlengine/core/entity/sprite/utils/loader')
     >();
     /** Non-zero frame size so `updateTexture` sets layout-sized transforms. */
     const mockTexture = Texture.WHITE;

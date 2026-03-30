@@ -1,4 +1,4 @@
-import { Container, Entity } from '../../../../../../../engine';
+import { Container, Entity } from 'nuzzlengine';
 
 const width = 320;
 const height = 46;

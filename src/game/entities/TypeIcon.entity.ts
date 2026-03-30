@@ -1,5 +1,4 @@
-import { Entity, Sprite } from '../../engine';
-import { SpritesheetFrame } from '../../engine/core/entity/sprite/types';
+import { Entity, Sprite, SpritesheetFrame } from 'nuzzlengine';
 import { TypeId } from '../types';
 
 const assetUrl = 'spritesheets/type.png';

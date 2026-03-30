@@ -1,5 +1,5 @@
 import { Dex, Pokemon } from '@pkmn/sim';
-import { Entity, Sprite } from '../../engine';
+import { Entity, Sprite } from 'nuzzlengine';
 
 // const transform = { width: 150, height: 150 };
 const anchor = { x: 0.5, y: 0.5 };

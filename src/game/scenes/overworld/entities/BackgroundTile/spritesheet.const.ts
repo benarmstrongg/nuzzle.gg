@@ -1,4 +1,4 @@
-import { SpritesheetFrame } from '../../../../../engine';
+import { SpritesheetFrame } from 'nuzzlengine';
 import { BackgroundTileFrame, BackgroundTileId } from './types';
 
 const assetUrls: Record<BackgroundTileId, string> = {

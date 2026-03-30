@@ -8,7 +8,7 @@ import {
   Signal,
   Sprite,
   State,
-} from '../../../../../../engine';
+} from 'nuzzlengine';
 
 type StorageCursorState = {
   position: { row: number; col: number };
@@ -27,7 +27,8 @@ type StorageCursorSignal = {
 
 export class StorageCursor
   extends Entity
-  implements IState, IControls, ISignal {
+  implements IState, IControls, ISignal
+{
   sprite = new Sprite(this, { assetUrl: 'sprites/ui/box/cursor_grab.png' });
   state = new State<StorageCursorState>({
     position: { row: 1, col: 1 },

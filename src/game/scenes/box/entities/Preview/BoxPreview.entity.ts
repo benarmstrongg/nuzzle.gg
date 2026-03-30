@@ -1,5 +1,5 @@
 import { Pokemon } from '@pkmn/sim';
-import { Container, Entity } from '../../../../../engine';
+import { Container, Entity } from 'nuzzlengine';
 import { PreviewData, PreviewHeader, PreviewPokemon } from './entities';
 
 const width = 178;

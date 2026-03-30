@@ -19,7 +19,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "strictPropertyInitialization": false,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "paths": {
+      "nuzzlengine": ["./src/engine/index.ts"],
+      "nuzzlengine/*": ["./src/engine/*"],
+      "nuzzle.gg/*": ["./src/game/*"]
+    }
   },
   "include": ["src"]
 }

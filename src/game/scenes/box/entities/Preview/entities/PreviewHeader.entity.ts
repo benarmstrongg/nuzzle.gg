@@ -1,5 +1,5 @@
 import { Dex, Pokemon } from '@pkmn/sim';
-import { Container, Entity } from '../../../../../../engine';
+import { Container, Entity } from 'nuzzlengine';
 
 const width = 170;
 const height = 40;
