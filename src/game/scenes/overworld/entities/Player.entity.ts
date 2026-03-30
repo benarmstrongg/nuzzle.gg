@@ -1,13 +1,7 @@
-import {
-  Container,
-  Controls,
-  Entity,
-  IContainer,
-  IControls,
-} from '../../../../engine';
+import { Container, Controls, Entity, IControls } from '../../../../engine';
 import { Character } from '../../../entities';
 
-export class Player extends Entity implements IControls, IContainer {
+export class Player extends Entity.Container implements IControls {
   container: Container;
   controls = Controls.selected();
   character = new Character('red');

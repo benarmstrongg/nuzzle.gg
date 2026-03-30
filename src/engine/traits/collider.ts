@@ -18,7 +18,7 @@ export class Collider {
   private readonly onExit?: (entity: ColliderEntity) => void;
 
   constructor(
-    private _entity: Entity,
+    _entity: Entity,
     { solid = false, onEnter, onExit }: ColliderOptions = {}
   ) {
     this.solid = solid;

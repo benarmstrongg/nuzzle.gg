@@ -3,7 +3,6 @@ import {
   Coordinate,
   Entity,
   ICollider,
-  ISprite,
   Sprite,
   SpritesheetFrame,
 } from '../../../../../engine';
@@ -23,7 +22,7 @@ const frames: Record<VoidBackgroundTileFrame, SpritesheetFrame> = {
 const width = tileWidth;
 const height = tileHeight;
 
-export class VoidBackgroundTile extends Entity implements ISprite, ICollider {
+export class VoidBackgroundTile extends Entity.Sprite implements ICollider {
   static width = width;
   static height = height;
 

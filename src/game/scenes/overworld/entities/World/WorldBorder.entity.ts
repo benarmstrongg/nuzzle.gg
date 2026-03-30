@@ -1,10 +1,10 @@
-import { Entity, Container, IContainer } from '../../../../../engine';
+import { Entity, Container } from '../../../../../engine';
 import { VoidBackgroundTile } from '../BackgroundTile/VoidBackgroundTile.entity';
 
 const borderExtension = 1;
 const borderBottomRightExtension = 2;
 
-export class WorldBorder extends Entity implements IContainer {
+export class WorldBorder extends Entity.Container {
   static gutter = VoidBackgroundTile.width;
 
   container = new Container(this);
