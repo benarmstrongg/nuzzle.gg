@@ -73,8 +73,12 @@ export class Container {
     });
   }
 
-  // TODO: implement this
-  remove() {}
+  remove(entity: Entity) {
+    this.inner.removeChild(entity['inner']);
+    this.signal.emit('childRemoved', entity);
+    this.signal.emit('descendantRemoved', entity);
+    entity.parent.container.signal.emit('descendantRemoved', entity);
+  }
 
   clear() {
     this.inner.removeChildren();
