@@ -232,6 +232,76 @@ describe('Collisions', () => {
     });
   });
 
+  describe('directional collision detection', () => {
+    it('fires enter when approaching from the left (moving right)', () => {
+      const { scene } = setup();
+      const enterA = vi.fn();
+      const enterB = vi.fn();
+
+      const a = createCollider({ x: 2, y: 10, width: 1, height: 1, onEnter: enterA });
+      const b = createCollider({ x: 10, y: 10, width: 1, height: 1, onEnter: enterB });
+
+      scene.container.add(a);
+      scene.container.add(b);
+
+      a.transform.x = 9.5;
+
+      expect(enterA).toHaveBeenCalledWith(b);
+      expect(enterB).toHaveBeenCalledWith(a);
+    });
+
+    it('fires enter when approaching from the right (moving left)', () => {
+      const { scene } = setup();
+      const enterA = vi.fn();
+      const enterB = vi.fn();
+
+      const a = createCollider({ x: 18, y: 10, width: 1, height: 1, onEnter: enterA });
+      const b = createCollider({ x: 10, y: 10, width: 1, height: 1, onEnter: enterB });
+
+      scene.container.add(a);
+      scene.container.add(b);
+
+      a.transform.x = 10.5;
+
+      expect(enterA).toHaveBeenCalledWith(b);
+      expect(enterB).toHaveBeenCalledWith(a);
+    });
+
+    it('fires enter when approaching from above (moving down)', () => {
+      const { scene } = setup();
+      const enterA = vi.fn();
+      const enterB = vi.fn();
+
+      const a = createCollider({ x: 10, y: 2, width: 1, height: 1, onEnter: enterA });
+      const b = createCollider({ x: 10, y: 10, width: 1, height: 1, onEnter: enterB });
+
+      scene.container.add(a);
+      scene.container.add(b);
+
+      a.transform.y = 9.5;
+
+      expect(enterA).toHaveBeenCalledWith(b);
+      expect(enterB).toHaveBeenCalledWith(a);
+    });
+
+    it('fires enter when approaching from below (moving up)', () => {
+      const { scene } = setup();
+      const enterA = vi.fn();
+      const enterB = vi.fn();
+
+      const a = createCollider({ x: 10, y: 18, width: 1, height: 1, onEnter: enterA });
+      const b = createCollider({ x: 10, y: 10, width: 1, height: 1, onEnter: enterB });
+
+      scene.container.add(a);
+      scene.container.add(b);
+
+      a.transform.y = 10.5;
+
+      expect(enterA).toHaveBeenCalledWith(b);
+      expect(enterB).toHaveBeenCalledWith(a);
+    });
+  });
+
   describe('grid accuracy', () => {
     it('entity occupies exactly the correct grid cells for its position and size', () => {
       const { scene, collisions } = setup();

@@ -63,13 +63,18 @@ describe('StateProxy', () => {
     state.set({ hp: 80, mp: 30 });
 
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenLastCalledWith(
+    expect(onChange).toHaveBeenLastCalledWith([
       expect.objectContaining({
         hp: 80,
         mp: 30,
         name: 'Hero',
-      })
-    );
+      }),
+      expect.objectContaining({
+        hp: 100,
+        mp: 50,
+        name: 'Hero',
+      }),
+    ]);
   });
 
   it('does not emit state onChange when nothing changed', () => {
@@ -124,13 +129,18 @@ describe('StateProxy', () => {
     expect(hpListener).toHaveBeenCalledWith(90);
     expect(mpListener).not.toHaveBeenCalled();
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenLastCalledWith(
+    expect(onChange).toHaveBeenLastCalledWith([
       expect.objectContaining({
         hp: 90,
         mp: 50,
         name: 'Hero',
-      })
-    );
+      }),
+      expect.objectContaining({
+        hp: 100,
+        mp: 50,
+        name: 'Hero',
+      }),
+    ]);
   });
 
   it('emits each changed property listener once for multi-field updates', () => {
@@ -216,13 +226,18 @@ describe('StateProxy', () => {
     state.hp = 60;
     expect(hpListener).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledWith(
+    expect(onChange).toHaveBeenCalledWith([
       expect.objectContaining({
         hp: 60,
         mp: 10,
         name: 'Hero',
-      })
-    );
+      }),
+      expect.objectContaining({
+        hp: 70,
+        mp: 10,
+        name: 'Hero',
+      }),
+    ]);
   });
 
   it('restores non-silent mode if silent() callback throws', () => {
