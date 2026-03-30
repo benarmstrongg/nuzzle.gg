@@ -86,7 +86,7 @@ export class StoragePageGrid extends Entity.Container implements IState {
     const entity = this.container.children[index];
     cursor.transform.set({
       x: entity.transform.x,
-      y: entity.transform.global.y - 10,
+      y: entity.transform.y + 10,
     });
 
     cursor.state.pokemon = pokemon;
