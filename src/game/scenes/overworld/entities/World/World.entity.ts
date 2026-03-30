@@ -21,9 +21,6 @@ export class World extends Entity.Container {
       this.initBackgroundTileContainer(backgroundTiles, rows, columns),
       this.initWorldTileContainer(tiles, rows, columns)
     );
-
-    // TODO: fix this
-    this['ready'] = true;
   }
 
   private initBackgroundTileContainer(
