@@ -63,10 +63,7 @@ class StateProxy<T extends Record<string, any> = any> {
     this._inner.propSignal.once(prop, listener);
   }
 
-  off(
-    prop: keyof T | 'change',
-    listener: (value: T[typeof prop]) => void
-  ): void {
+  off(prop: keyof T, listener: (value: T[typeof prop]) => void): void {
     this._inner.propSignal.off(prop, listener);
   }
 

@@ -61,10 +61,8 @@ export class Character extends Entity.Sprite implements ICollider {
     const axis = direction === 'up' || direction === 'down' ? 'y' : 'x';
     const magnitude = direction === 'up' || direction === 'left' ? -1 : 1;
 
-    return this.transform.moveBy(
-      { [axis]: stepSize * magnitude },
-      walkDuration
-    );
+    this.transform.moveBy({ [axis]: stepSize * magnitude }, walkDuration);
+    console.log(this.transform.global.x, this.transform.global.y);
   }
 
   stop() {

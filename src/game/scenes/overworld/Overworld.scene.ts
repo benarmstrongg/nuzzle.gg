@@ -15,10 +15,10 @@ const tmpBackgroundTiles: Array2d<BackgroundTileMetadata> = [
     ...Array.from(
       { length: 18 },
       () =>
-      ({
-        tile: 'light_grass',
-        frame: 'top_center',
-      } as BackgroundTileMetadata)
+        ({
+          tile: 'light_grass',
+          frame: 'top_center',
+        } as BackgroundTileMetadata)
     ),
     { tile: 'light_grass', frame: 'top_right' },
   ],
@@ -30,10 +30,10 @@ const tmpBackgroundTiles: Array2d<BackgroundTileMetadata> = [
         ...Array.from(
           { length: 18 },
           () =>
-          ({
-            tile: 'light_grass',
-            frame: 'center_center',
-          } as BackgroundTileMetadata)
+            ({
+              tile: 'light_grass',
+              frame: 'center_center',
+            } as BackgroundTileMetadata)
         ),
         { tile: 'light_grass', frame: 'center_right' },
       ] as BackgroundTileMetadata[]
@@ -43,10 +43,10 @@ const tmpBackgroundTiles: Array2d<BackgroundTileMetadata> = [
     ...Array.from(
       { length: 18 },
       () =>
-      ({
-        tile: 'light_grass',
-        frame: 'bottom_center',
-      } as BackgroundTileMetadata)
+        ({
+          tile: 'light_grass',
+          frame: 'bottom_center',
+        } as BackgroundTileMetadata)
     ),
     { tile: 'light_grass', frame: 'bottom_right' },
   ],

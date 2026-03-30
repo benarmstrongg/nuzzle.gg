@@ -69,18 +69,18 @@ export class Collisions {
     if (oldPos === newPos) return;
     const size = axis === 'x' ? width : height;
     const oldStart = Math.floor(oldPos);
-    const oldEnd = Math.floor(oldPos + size - 1);
+    const oldEnd = Math.ceil(oldPos + size) - 1;
     const newStart = Math.floor(newPos);
-    const newEnd = Math.floor(newPos + size - 1);
+    const newEnd = Math.ceil(newPos + size) - 1;
 
     const oldXStart = axis === 'x' ? oldStart : Math.floor(x);
-    const oldXEnd = axis === 'x' ? oldEnd : Math.floor(x + width - 1);
+    const oldXEnd = axis === 'x' ? oldEnd : Math.ceil(x + width) - 1;
     const newXStart = axis === 'x' ? newStart : Math.floor(x);
-    const newXEnd = axis === 'x' ? newEnd : Math.floor(x + width - 1);
+    const newXEnd = axis === 'x' ? newEnd : Math.ceil(x + width) - 1;
     const oldYStart = axis === 'y' ? oldStart : Math.floor(y);
-    const oldYEnd = axis === 'y' ? oldEnd : Math.floor(y + height - 1);
+    const oldYEnd = axis === 'y' ? oldEnd : Math.ceil(y + height) - 1;
     const newYStart = axis === 'y' ? newStart : Math.floor(y);
-    const newYEnd = axis === 'y' ? newEnd : Math.floor(y + height - 1);
+    const newYEnd = axis === 'y' ? newEnd : Math.ceil(y + height) - 1;
 
     for (let gridY = oldYStart; gridY <= oldYEnd; gridY++) {
       // Skip if the cell is out of bounds
@@ -88,6 +88,7 @@ export class Collisions {
 
       // Skip if the cell is in the overlap region
       if (
+        axis === 'y' &&
         gridY >= Math.max(oldYStart, newYStart) &&
         gridY <= Math.min(oldYEnd, newYEnd)
       ) {
@@ -100,6 +101,7 @@ export class Collisions {
 
         // Skip if the cell is in the overlap region
         if (
+          axis === 'x' &&
           gridX >= Math.max(oldXStart, newXStart) &&
           gridX <= Math.min(oldXEnd, newXEnd)
         ) {
@@ -116,6 +118,7 @@ export class Collisions {
 
       // Skip if the cell is in the overlap region
       if (
+        axis === 'y' &&
         gridY >= Math.max(oldYStart, newYStart) &&
         gridY <= Math.min(oldYEnd, newYEnd)
       ) {
@@ -128,6 +131,7 @@ export class Collisions {
 
         // Skip if the cell is in the overlap region
         if (
+          axis === 'x' &&
           gridX >= Math.max(oldXStart, newXStart) &&
           gridX <= Math.min(oldXEnd, newXEnd)
         ) {
@@ -144,9 +148,9 @@ export class Collisions {
   private trackCollisions(entity: ColliderEntity) {
     const { globalX: x, globalY: y, width, height } = entity.transform;
     const xStart = Math.floor(x);
-    const xEnd = Math.floor(x + width - 1);
+    const xEnd = Math.ceil(x + width) - 1;
     const yStart = Math.floor(y);
-    const yEnd = Math.floor(y + height - 1);
+    const yEnd = Math.ceil(y + height) - 1;
 
     // Use grid to find potential collision candidates (narrow phase)
     const candidates = new Set<ColliderEntity>();
@@ -243,9 +247,9 @@ export class Collisions {
   private applyEntityToGrid(entity: ColliderEntity, action: 'add' | 'remove') {
     const { globalX: x, globalY: y, width, height } = entity.transform;
     const xStart = Math.floor(x);
-    const xEnd = Math.floor(x + width - 1);
+    const xEnd = Math.ceil(x + width) - 1;
     const yStart = Math.floor(y);
-    const yEnd = Math.floor(y + height - 1);
+    const yEnd = Math.ceil(y + height) - 1;
 
     for (let gridY = yStart; gridY <= yEnd; gridY++) {
       // Skip if the cell is out of bounds
