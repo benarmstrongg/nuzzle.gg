@@ -1,9 +1,9 @@
 name: Deploy
 
 on:
-  # Runs on pushes to the default branch
-  push:
-    branches: ['main']
+  # Runs on pushes to the default branch - temporarily disabled
+  # push:
+  #   branches: ['main']
 
   # Allows manual deployment
   workflow_dispatch:
