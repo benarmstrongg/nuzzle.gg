@@ -1,10 +1,10 @@
 import { Application, Ticker } from 'pixi.js';
 import { describe, expect, it, vi } from 'vitest';
-import { Collider, ICollider } from './collider';
+import { Collider, ICollider } from '../collider';
 import { Collisions } from './collisions';
-import { Entity, Scene } from '../core';
-import { game } from '../core/game';
-import { ColliderEntity } from '../types';
+import { Entity, Scene } from '../../core';
+import { game } from '../../core/game';
+import { ColliderEntity } from '../../types';
 
 class TestScene extends Scene {
   constructor(private _width = 50, private _height = 50) {

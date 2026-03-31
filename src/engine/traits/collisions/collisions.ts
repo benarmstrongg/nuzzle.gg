@@ -1,6 +1,6 @@
-import { Coordinate, Entity, Scene } from '../core';
-import { Array2d, ColliderEntity } from '../types';
-import { Collider } from './collider';
+import { Coordinate, Entity, Scene } from '../../core';
+import { Array2d, ColliderEntity } from '../../types';
+import { Collider } from '../collider';
 
 export class Collisions {
   private colliderListeners = new Map<
