@@ -66,16 +66,12 @@ function createCollider(
   })();
 }
 
-function getGrid(collisions: Collisions) {
-  return (collisions as any).grid as (Set<ColliderEntity> | null)[][];
-}
-
 function cellEntities(
   collisions: Collisions,
   x: number,
   y: number
 ): Set<ColliderEntity> {
-  const grid = getGrid(collisions);
+  const grid = collisions['grid']['grid'];
   return grid[y]?.[x] ?? new Set();
 }
 
