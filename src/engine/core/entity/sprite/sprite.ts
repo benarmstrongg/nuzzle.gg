@@ -1,20 +1,10 @@
 import { AnimatedSprite as PixiAnimatedSprite, Texture } from 'pixi.js';
 import { Entity } from '../entity';
 import { State } from '../../../traits';
-import { SpriteScaleMode, SpritesheetOptions } from './types';
-import { Coordinate, TransformState } from '../../transform';
+import { SpriteOptions, SpriteScaleMode } from './types';
+import { Coordinate } from '../../transform';
 import { SpriteLoader } from './utils/loader';
 import { SpriteAnimations } from './utils/animations';
-
-export type SpriteOptions<TFrame extends string, TAnimation extends string> = {
-  assetUrl: string;
-  fallbackAssetUrls?: string[];
-  onLoad?: (fallback: string) => void;
-  spritesheet?: SpritesheetOptions<TFrame, TAnimation>;
-  anchor?: Partial<Coordinate>;
-  scaleMode?: SpriteScaleMode;
-  transform?: Partial<TransformState>;
-};
 
 export class Sprite<
   TFrame extends string = string,

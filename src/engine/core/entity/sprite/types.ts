@@ -1,3 +1,5 @@
+import { Coordinate, TransformState } from 'nuzzlengine';
+
 export type SpriteScaleMode = 'nearest' | 'linear';
 
 export type SpritesheetFrame = {
@@ -28,4 +30,14 @@ export type SpritesheetOptions<
   h: number;
   scaleMode?: SpriteScaleMode;
   animations?: Record<TAnimation, SpriteAnimationOptions<TFrame>>;
+};
+
+export type SpriteOptions<TFrame extends string, TAnimation extends string> = {
+  assetUrl: string;
+  fallbackAssetUrls?: string[];
+  onLoad?: (fallback: string) => void;
+  spritesheet?: SpritesheetOptions<TFrame, TAnimation>;
+  anchor?: Partial<Coordinate>;
+  scaleMode?: SpriteScaleMode;
+  transform?: Partial<TransformState>;
 };

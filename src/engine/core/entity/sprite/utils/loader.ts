@@ -1,6 +1,6 @@
 import { Assets, Spritesheet as PixiSpritesheet, Texture } from 'pixi.js';
-import type { Sprite, SpriteOptions } from '../sprite';
-import { SpritesheetOptions } from '../types';
+import type { Sprite } from '../sprite';
+import type { SpriteOptions, SpritesheetOptions } from '../types';
 
 export class SpriteLoader<TFrame extends string, TAnimation extends string> {
   textures?: Record<TFrame, Texture>;
